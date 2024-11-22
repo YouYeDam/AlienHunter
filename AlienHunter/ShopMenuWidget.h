@@ -35,11 +35,13 @@ protected:
     virtual void NativeConstruct() override;
 
 private:
+    UPROPERTY()
     TArray<FItemData> ItemDataArray;
 
 	UPROPERTY()
 	UGameManager* GameManager;
 
+    UPROPERTY()
     FItemData SelectedItem;
 
 	UPROPERTY(EditAnywhere)

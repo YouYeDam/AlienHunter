@@ -35,7 +35,7 @@ void UMissionMenuWidget::NativeConstruct()
 void UMissionMenuWidget::InitializeMissionData()
 {
     FMissionData Mission1;
-    Mission1.MissionName = TEXT("임무명 : 숲의 안전 확보하기");
+    Mission1.MissionName = TEXT("숲의 안전 확보하기");
     Mission1.MissionObject = TEXT("임무 목표 : 모든 적 섬멸");
     Mission1.MissionDescription = TEXT("인근 숲에 외계인 세력이 등장했다는 보고가 들어왔습니다. 난폭해진 동물들과 외계인을 제압하세요.");
     Mission1.MissionLevel = TEXT("Mission1");
@@ -45,7 +45,7 @@ void UMissionMenuWidget::InitializeMissionData()
     Mission1.MissionID = 1;
 
     FMissionData Mission2;
-    Mission2.MissionName = TEXT("임무명 : 쓰레기장의 안전 확보하기");
+    Mission2.MissionName = TEXT("쓰레기장의 안전 확보하기");
     Mission2.MissionObject = TEXT("임무 목표 : 모든 적 섬멸");
     Mission2.MissionDescription = TEXT("쓰레기장에 외계인 세력이 숨어 공격을 준비한다는 보고가 들어왔습니다. 이들에게 본때를 보여주세요.");
     Mission2.MissionLevel = TEXT("Mission2");

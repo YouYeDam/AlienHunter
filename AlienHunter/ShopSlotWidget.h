@@ -30,5 +30,6 @@ private:
 
     UShopMenuWidget* ShopMenuWidgetRef;
 
+    UPROPERTY()
     FItemData ItemData;
 };

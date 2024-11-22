@@ -34,6 +34,7 @@ private:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Player Stats", Meta = (AllowPrivateAccess = "true"))
 	int32 KillEnemyCount = 0;
 
+	UPROPERTY()
 	TArray<FItemData> PurchasedItems;
 
 	UPROPERTY()
@@ -42,12 +43,16 @@ private:
 	UPROPERTY(EditAnywhere, Category = "Equipment")
 	TSubclassOf<class AActor> EquippedGunClass;
 
+	UPROPERTY()
 	FItemData EquippedGunItemData;
 
 	UPROPERTY(EditAnywhere, Category = "Equipment")
 	TSubclassOf<class AActor> EquippedSwordClass;
 
+	UPROPERTY()
 	FItemData EquippedSwordItemData;
+	
+	UPROPERTY()
 	FMissionData CurrentMissionData;
 
 public:

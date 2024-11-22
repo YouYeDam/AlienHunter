@@ -27,8 +27,10 @@ protected:
 
 private:
     // 미션 데이터 배열
+    UPROPERTY()
     TArray<FMissionData> MissionDataArray;
 
+    UPROPERTY()
     FMissionData SelectedMissionData;
     
 	UPROPERTY()

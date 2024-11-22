@@ -31,5 +31,6 @@ private:
 
     UMissionMenuWidget* MissionMenuWidgetRef;
 
+    UPROPERTY()
     FMissionData MissionData;
 };
