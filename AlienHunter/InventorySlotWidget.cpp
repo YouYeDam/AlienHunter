@@ -1,4 +1,4 @@
-// Fill out your copyright notice in the Description page of Project Settings.
+
 
 
 #include "InventorySlotWidget.h"
@@ -17,6 +17,7 @@ void UInventorySlotWidget::NativeConstruct()
     }
 }
 
+// 슬롯을 설정하는 메소드
 void UInventorySlotWidget::InitializeSlot(UInventoryMenuWidget* InInventoryMenuWidget, const FItemData& InItemData)
 {
     InventoryMenuWidgetRef = InInventoryMenuWidget;
@@ -29,6 +30,7 @@ void UInventorySlotWidget::InitializeSlot(UInventoryMenuWidget* InInventoryMenuW
     }
 }
 
+// 슬롯 클릭 시 인벤토리 위젯의 아이템 세부사항을 업데이트하는 메소드
 void UInventorySlotWidget::OnSlotClicked()
 {
     if (InventoryMenuWidgetRef)

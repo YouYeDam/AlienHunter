@@ -1,4 +1,4 @@
-// Fill out your copyright notice in the Description page of Project Settings.
+
 
 
 #include "MainMenuGameMode.h"
@@ -15,6 +15,7 @@ void AMainMenuGameMode::BeginPlay()
         {
             MainMenuWidget->AddToViewport();
 
+            // 플레이어 인풋 활성화 및 마우스 커서 활성화 메소드
             APlayerController* PlayerController = GetWorld()->GetFirstPlayerController();
             if (PlayerController)
             {

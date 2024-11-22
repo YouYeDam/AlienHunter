@@ -20,9 +20,9 @@ private:
 	UGameManager* GameManager;
 
 	UPROPERTY(EditAnywhere)
-	float GameEndDelay = 5;
+	float GameEndDelay = 5; // 게임 종료 후 레벨 로드 딜레이 시간
 
-	FTimerHandle GameEndTimer;
+	FTimerHandle GameEndTimer; // 게임 종료 후 레벨 로드 타이머
 
 	UPROPERTY(EditAnywhere)
 	TSubclassOf<class UUserWidget> WinScreenClass;

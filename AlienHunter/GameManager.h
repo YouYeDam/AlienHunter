@@ -37,7 +37,7 @@ private:
 	TArray<FItemData> PurchasedItems;
 
 	UPROPERTY()
-	UInventoryMenuWidget* InventoryMenuWidgetRef;
+	UInventoryMenuWidget* InventoryMenuWidgetRef; // 인벤토리 메뉴 위젯 참조
 
 	UPROPERTY(EditAnywhere, Category = "Equipment")
 	TSubclassOf<class AActor> EquippedGunClass;

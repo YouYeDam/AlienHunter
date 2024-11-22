@@ -1,3 +1,6 @@
+
+
+
 #pragma once
 
 #include "CoreMinimal.h"
@@ -18,7 +21,6 @@ public:
     UFUNCTION()
     void OnStartMissionClicked();
 
-    // 미션 슬롯에 따른 세부 사항을 업데이트 하는 함수
     UFUNCTION(BlueprintCallable)
     void UpdateMissionDetails(const FMissionData& MissionData);
 
@@ -26,10 +28,9 @@ protected:
     virtual void NativeConstruct() override;
 
 private:
-    // 미션 데이터 배열
-    TArray<FMissionData> MissionDataArray;
+    TArray<FMissionData> MissionDataArray; // 미션 데이터 배열
 
-    FMissionData SelectedMissionData;
+    FMissionData SelectedMissionData; // 선택된 미션 데이터
     
 	UPROPERTY()
 	UGameManager* GameManager;
@@ -64,9 +65,7 @@ private:
     UPROPERTY(EditAnywhere, Category = "Mission")
     TSubclassOf<class UUserWidget> MissionSlotClass;
 
-    // 미션 데이터를 초기화하는 함수
     void InitializeMissionData();
 
-    // 슬롯을 동적으로 생성하고 UI에 추가하는 함수
     void CreateMissionSlots();
 };

@@ -1,4 +1,4 @@
-// Fill out your copyright notice in the Description page of Project Settings.
+
 
 
 #include "MeleeAIController.h"
@@ -12,7 +12,7 @@ void AMeleeAIController::BeginPlay()
     
     if (AIBehavior != nullptr) {
         RunBehaviorTree(AIBehavior);
-        GetBlackboardComponent()->SetValueAsVector(TEXT("StartLocation"), GetPawn()->GetActorLocation());
+        GetBlackboardComponent()->SetValueAsVector(TEXT("StartLocation"), GetPawn()->GetActorLocation()); // AI의 시작 위치 기억
     }
 }
 
@@ -21,6 +21,7 @@ void AMeleeAIController::Tick(float DeltaTime)
     Super::Tick(DeltaTime);
 }
 
+// AI 컨트롤러의 캐릭터 죽음을 체크하는 메소드
 bool AMeleeAIController::IsDead() const
 {
     AMainCharacter* ControlledCharacter = Cast<AMainCharacter>(GetPawn());

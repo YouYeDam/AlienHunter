@@ -1,4 +1,4 @@
-// Fill out your copyright notice in the Description page of Project Settings.
+
 
 
 #include "GameMenuGameMode.h"
@@ -6,6 +6,7 @@
 #include "CharacterMenuWidget.h"
 #include "Blueprint/UserWidget.h"
 
+// 게임 메뉴 진입 시 플레이어 인풋 활성화 및 마우스 커서 활성화 메소드
 void AGameMenuGameMode::BeginPlay()
 {
     Super::BeginPlay();
@@ -23,6 +24,7 @@ void AGameMenuGameMode::BeginPlay()
     ShowGameMenu();
 }
 
+// 게임 메뉴로 이동하는 메소드
 void AGameMenuGameMode::ShowGameMenu()
 {
     if (CurrentWidget)
@@ -41,6 +43,7 @@ void AGameMenuGameMode::ShowGameMenu()
     }
 }
 
+// 미션 메뉴로 이동하는 메소드
 void AGameMenuGameMode::ShowMissionMenu()
 {
     if (CurrentWidget)
@@ -59,6 +62,7 @@ void AGameMenuGameMode::ShowMissionMenu()
     }
 }
 
+// 상점 메뉴로 이동하는 메소드
 void AGameMenuGameMode::ShowShopMenu()
 {
     if (CurrentWidget)
@@ -83,6 +87,7 @@ void AGameMenuGameMode::ShowShopMenu()
     }
 }
 
+// 상점 메뉴로 이동하는 메소드
 void AGameMenuGameMode::ShowInventoryMenu()
 {
     if (CurrentWidget)
@@ -101,6 +106,7 @@ void AGameMenuGameMode::ShowInventoryMenu()
     }
 }
 
+// 캐릭터 메뉴로 이동하는 메소드
 void AGameMenuGameMode::ShowCharacterMenu()
 {
     if (CurrentWidget)

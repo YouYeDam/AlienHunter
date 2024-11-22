@@ -1,4 +1,4 @@
-// Fill out your copyright notice in the Description page of Project Settings.
+
 
 
 #include "MissionSlotWidget.h"
@@ -17,6 +17,7 @@ void UMissionSlotWidget::NativeConstruct()
     }
 }
 
+// 슬롯을 설정하는 메소드
 void UMissionSlotWidget::InitializeSlot(UMissionMenuWidget* InMissionMenuWidget, const FMissionData& InMissionData)
 {
     MissionMenuWidgetRef = InMissionMenuWidget;
@@ -29,6 +30,7 @@ void UMissionSlotWidget::InitializeSlot(UMissionMenuWidget* InMissionMenuWidget,
     }
 }
 
+// 슬롯 클릭 시 미션 위젯의 미션 세부사항을 업데이트하는 메소드
 void UMissionSlotWidget::OnSlotClicked()
 {
     if (MissionMenuWidgetRef)

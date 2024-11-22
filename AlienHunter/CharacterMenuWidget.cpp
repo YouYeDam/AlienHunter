@@ -1,4 +1,4 @@
-// Fill out your copyright notice in the Description page of Project Settings.
+
 
 
 #include "CharacterMenuWidget.h"
@@ -20,6 +20,7 @@ void UCharacterMenuWidget::NativeConstruct()
     }
 }
 
+// 게임 메뉴로 이동하는 메소드
 void UCharacterMenuWidget::OnMoveToGameMenuClicked()
 {
     AGameMenuGameMode* GameMode = Cast<AGameMenuGameMode>(UGameplayStatics::GetGameMode(GetWorld()));
@@ -29,6 +30,7 @@ void UCharacterMenuWidget::OnMoveToGameMenuClicked()
     }
 }
 
+// 플레이어의 스탯을 보여주는 메소드
 void UCharacterMenuWidget::ShowPlayerStat()
 {
     GameManager = Cast<UGameManager>(UGameplayStatics::GetGameInstance(GetWorld()));

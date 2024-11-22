@@ -6,7 +6,7 @@
 #include "Blueprint/UserWidget.h"
 #include "PopupWidget.generated.h"
 
-DECLARE_DYNAMIC_MULTICAST_DELEGATE(FPopupClicked);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE(FPopupClicked); // 멀티캐스트 델리게이트 타입을 선언
 
 UCLASS()
 class ALIENHUNTER_API UPopupWidget : public UUserWidget

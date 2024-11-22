@@ -1,4 +1,4 @@
-// Fill out your copyright notice in the Description page of Project Settings.
+
 
 
 #include "MainPlayerController.h"
@@ -14,21 +14,24 @@ void AMainPlayerController::BeginPlay()
 
     HUD = CreateWidget(this, HUDClass);
     if (HUD != nullptr) {
-        HUD->AddToViewport();
+        HUD->AddToViewport(); // HUD 띄우기
     }
 }
 
+// 레벨을 로드하는 메소드
 void AMainPlayerController::LoadLevelAfterDelay()
 {
     UGameplayStatics::OpenLevel(this, FName("GameMenu"));
 }
 
+// 게임 종료 시 실행되는 메소드
 void AMainPlayerController::GameHasEnded(class AActor* EndGameFocus, bool bIsWinner)
 {
     Super::GameHasEnded(EndGameFocus, bIsWinner);
 
     HUD->RemoveFromParent();
     
+    // 승리 또는 패배 화면 표시
     if (bIsWinner) {
         UUserWidget* WinScreen = CreateWidget(this, WinScreenClass);
         if (WinScreen != nullptr) {
@@ -42,25 +45,30 @@ void AMainPlayerController::GameHasEnded(class AActor* EndGameFocus, bool bIsWin
         }
     }
 
+    // 플레이어 캐릭터의 에너지 및 경험치 가져오기
     AMainCharacter* PlayerCharacter = Cast<AMainCharacter>(GetWorld()->GetFirstPlayerController()->GetPawn());
     if (PlayerCharacter)
     {
-        int32 Energy = PlayerCharacter->GetGainedEnergy();
-        int32 EXP = PlayerCharacter->GetGainedEXP();
+        int32 Energy = PlayerCharacter->GetGainedEnergy(); // 획득한 에너지
+        int32 EXP = PlayerCharacter->GetGainedEXP(); // 획득한 경험치
 
         GameManager = Cast<UGameManager>(UGameplayStatics::GetGameInstance(GetWorld()));
 
         if (GameManager)
         {
-            int32 CurrentEnergy = GameManager->GetEnergy();
-            int32 CurrentEXP = GameManager->GetEXP();
+            int32 CurrentEnergy = GameManager->GetEnergy(); // 현재 에너지
+            int32 CurrentEXP = GameManager->GetEXP(); // 현재 경험치
 
+            // 플레이어의 에너지와 경험치를 게임 매니저에 추가
             GameManager->SetEnergy(CurrentEnergy + Energy);
             GameManager->SetEXP(CurrentEXP + EXP);
+
+            // 미션 보상 지급 처리
             GameManager->GainMissionReward();
 
         }
     }
 
+    // 게임 종료 후 특정 시간 후에 레벨 로드
     GetWorldTimerManager().SetTimer(GameEndTimer, this, &AMainPlayerController::LoadLevelAfterDelay, GameEndDelay, false);
 }

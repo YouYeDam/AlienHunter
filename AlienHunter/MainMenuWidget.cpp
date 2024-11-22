@@ -1,4 +1,4 @@
-// Fill out your copyright notice in the Description page of Project Settings.
+
 
 
 #include "MainMenuWidget.h"
@@ -20,6 +20,7 @@ void UMainMenuWidget::NativeConstruct()
     }
 }
 
+// 게임을 시작하는 메소드
 void UMainMenuWidget::OnStartGameClicked()
 {
     if (APlayerController* PlayerController = GetWorld()->GetFirstPlayerController())
@@ -33,6 +34,7 @@ void UMainMenuWidget::OnStartGameClicked()
     UGameplayStatics::OpenLevel(this, FName("GameMenu"));
 }
 
+// 게임을 종료하는 메소드
 void UMainMenuWidget::OnQuitGameClicked()
 {
     UKismetSystemLibrary::QuitGame(this, nullptr, EQuitPreference::Quit, true);
