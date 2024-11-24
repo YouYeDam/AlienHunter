@@ -16,11 +16,10 @@ void UShopMenuWidget::NativeConstruct()
 {
     Super::NativeConstruct();
 
-    InitializeItemData();
+    InitializeItemData();  // 아이템 데이터 초기화
 
-    // 슬롯 동적 생성
-    CreateItemSlots();
-
+    CreateItemSlots();  // 아이템 슬롯 초기화
+ 
     ShowCurrentEnergy();
     
     GameManager = Cast<UGameManager>(UGameplayStatics::GetGameInstance(GetWorld()));
@@ -35,6 +34,7 @@ void UShopMenuWidget::NativeConstruct()
     }
 }
 
+// 아이템 데이터를 초기화하는 함수(json 파일 혹은 블루프린트 데이터 에셋을 이용한 방법으로 전환하는 것 고려)
 void UShopMenuWidget::InitializeItemData()
 {
     FItemData Item1;
@@ -80,6 +80,7 @@ void UShopMenuWidget::InitializeItemData()
     ItemDataArray.Add(Item4);
 }
 
+// 상점 슬롯을 생성하고 초기화하는 메소드
 void UShopMenuWidget::CreateItemSlots()
 {
     if (!ShopSlotClass || !ShopScrollBox)
@@ -87,6 +88,7 @@ void UShopMenuWidget::CreateItemSlots()
         return;
     }
 
+    // 아이템 데이터를 순회하며 슬롯을 생성하고 초기화
     for (const FItemData& Item : ItemDataArray)
     {
         UShopSlotWidget* ShopSlot = CreateWidget<UShopSlotWidget>(this, ShopSlotClass);
@@ -102,6 +104,7 @@ void UShopMenuWidget::CreateItemSlots()
     }
 }
 
+// 현재 보유 에너지를 보여주는 메소드
 void UShopMenuWidget::ShowCurrentEnergy()
 {
     if (EnergyAmount && GameManager)
@@ -114,6 +117,7 @@ void UShopMenuWidget::ShowCurrentEnergy()
     }
 }
 
+// 게임 메뉴로 이동하는 메소드
 void UShopMenuWidget::OnMoveToGameMenuClicked()
 {
     AGameMenuGameMode* GameMode = Cast<AGameMenuGameMode>(UGameplayStatics::GetGameMode(GetWorld()));
@@ -123,6 +127,7 @@ void UShopMenuWidget::OnMoveToGameMenuClicked()
     }
 }
 
+// 구매 버튼 클릭 시 실행되는 메소드
 void UShopMenuWidget::OnBuyItemClicked()
 {
 	if (SelectedItem.ItemName.IsEmpty())
@@ -136,13 +141,13 @@ void UShopMenuWidget::OnBuyItemClicked()
 		{
             FText FormattedText = NSLOCTEXT("ShopMenu", "InsufficientEnergy", "에너지가 부족합니다!");
 
-			UPopupWidget* Popup = CreateWidget<UPopupWidget>(this, PopupWidgetClass);
-			if (Popup)
+			PopupWidget  = CreateWidget<UPopupWidget>(this, PopupWidgetClass);
+			if (PopupWidget)
 			{
-				Popup->AddToViewport();
-				Popup->InitializePopup(FormattedText, false);
+				PopupWidget->AddToViewport();
+				PopupWidget->InitializePopup(FormattedText, false);
 
-				Popup->ConfirmClicked.AddDynamic(this, &UShopMenuWidget::OnPopupClose);
+				PopupWidget->ConfirmClicked.AddDynamic(this, &UShopMenuWidget::OnPopupClose);
 			}
 		}
 	}
@@ -150,21 +155,22 @@ void UShopMenuWidget::OnBuyItemClicked()
 	{
 		if (PopupWidgetClass)
 		{
-			UPopupWidget* Popup = CreateWidget<UPopupWidget>(this, PopupWidgetClass);
-			if (Popup)
+			PopupWidget = CreateWidget<UPopupWidget>(this, PopupWidgetClass);
+			if (PopupWidget)
 			{
                 FText FormattedText = NSLOCTEXT("ShopMenu", "PurchaseConfirmation", "구매하시겠습니까?");
 
-				Popup->AddToViewport();
-				Popup->InitializePopup(FormattedText, true);
+				PopupWidget->AddToViewport();
+				PopupWidget->InitializePopup(FormattedText, true);
 
-				Popup->ConfirmClicked.AddDynamic(this, &UShopMenuWidget::OnConfirmPurchase);
-				Popup->CancelClicked.AddDynamic(this, &UShopMenuWidget::OnPopupClose);
+				PopupWidget->ConfirmClicked.AddDynamic(this, &UShopMenuWidget::OnConfirmPurchase);
+				PopupWidget->CancelClicked.AddDynamic(this, &UShopMenuWidget::OnPopupClose);
 			}
 		}
 	}
 }
 
+// 구매 버튼 클릭 후 확인 버튼 클릭 시 실행되는 메소드
 void UShopMenuWidget::OnConfirmPurchase()
 {
 	if (GameManager)
@@ -176,13 +182,28 @@ void UShopMenuWidget::OnConfirmPurchase()
 
         ShowCurrentEnergy();
 	}
+
+    if (PopupWidget)
+    {
+        PopupWidget->ConfirmClicked.RemoveDynamic(this, &UShopMenuWidget::OnConfirmPurchase);
+        PopupWidget->CancelClicked.RemoveDynamic(this, &UShopMenuWidget::OnPopupClose);
+        PopupWidget = nullptr;
+    }
 }
 
+// 구매 버튼 클릭 후 취소 버튼 클릭 시 실행되는 메소드
 void UShopMenuWidget::OnPopupClose()
 {
-	return;
+    if (PopupWidget)
+    {
+        PopupWidget->ConfirmClicked.RemoveDynamic(this, &UShopMenuWidget::OnConfirmPurchase);
+        PopupWidget->CancelClicked.RemoveDynamic(this, &UShopMenuWidget::OnPopupClose);
+        PopupWidget->RemoveFromParent();
+        PopupWidget = nullptr;
+    }
 }
 
+// 선택된 아이템과 세부사항 UI를 업데이트하는 메소드
 void UShopMenuWidget::UpdateItemDetails(const FItemData& ItemData)
 {
     SelectedItem = ItemData;

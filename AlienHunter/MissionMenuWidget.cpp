@@ -15,11 +15,10 @@ void UMissionMenuWidget::NativeConstruct()
 {
     Super::NativeConstruct();
 
-    // 미션 데이터 초기화
-    InitializeMissionData();
+    
+    InitializeMissionData(); // 미션 데이터 초기화
 
-    // 슬롯 동적 생성
-    CreateMissionSlots();
+    CreateMissionSlots(); // 미션 슬롯 초기화
 
     if (GameMenuButton)
     {
@@ -32,6 +31,7 @@ void UMissionMenuWidget::NativeConstruct()
     }
 }
 
+// 미션 데이터를 초기화하는 함수(json 파일 혹은 블루프린트 데이터 에셋을 이용한 방법으로 전환하는 것 고려)
 void UMissionMenuWidget::InitializeMissionData()
 {
     FMissionData Mission1;
@@ -58,6 +58,7 @@ void UMissionMenuWidget::InitializeMissionData()
     MissionDataArray.Add(Mission2);
 }
 
+// 미션 슬롯을 생성하고 초기화하는 메소드
 void UMissionMenuWidget::CreateMissionSlots()
 {
     if (!MissionSlotClass || !MissionScrollBox) 
@@ -65,22 +66,20 @@ void UMissionMenuWidget::CreateMissionSlots()
         return;
     }
 
-    // 모든 미션 데이터를 기반으로 슬롯 생성
+    // 미션 데이터를 순회하며 슬롯을 생성하고 초기화
     for (const FMissionData& Mission : MissionDataArray)
     {
-        // 슬롯 생성
         UMissionSlotWidget* MissionSlot = CreateWidget<UMissionSlotWidget>(this, MissionSlotClass);
         if (MissionSlot)
         {
-            // 슬롯 초기화
             MissionSlot->InitializeSlot(this, Mission);
 
-            // 슬롯을 스크롤 박스에 추가
             MissionScrollBox->AddChild(MissionSlot);
         }
     }
 }
 
+// 메인 메뉴로 이동하는 메소드
 void UMissionMenuWidget::OnMoveToGameMenuClicked()
 {
     AGameMenuGameMode* GameMode = Cast<AGameMenuGameMode>(UGameplayStatics::GetGameMode(GetWorld()));
@@ -90,6 +89,7 @@ void UMissionMenuWidget::OnMoveToGameMenuClicked()
     }
 }
 
+// 선택한 미션으로 게임을 시작하는 메소드
 void UMissionMenuWidget::OnStartMissionClicked()
 {
     if (SelectedMissionData.MissionName.IsEmpty())
@@ -100,8 +100,10 @@ void UMissionMenuWidget::OnStartMissionClicked()
     GameManager = Cast<UGameManager>(UGameplayStatics::GetGameInstance(GetWorld()));
     if (GameManager)
     {
-        GameManager->SetCurrentMissionData(SelectedMissionData);
+        GameManager->SetCurrentMissionData(SelectedMissionData); // 선택한 미션을 게임 매니저의 현재 미션으로 설정
     }
+
+    // 미션 진입 시 플레이어 인풋 활성화 및 마우스 커서 비활성화 메소드
     if (APlayerController* PlayerController = GetWorld()->GetFirstPlayerController())
     {
         FInputModeGameOnly InputMode;
@@ -110,10 +112,11 @@ void UMissionMenuWidget::OnStartMissionClicked()
         PlayerController->bShowMouseCursor = false;
     }
 
-    SelectedMissionData = FMissionData();
-    UGameplayStatics::OpenLevel(this, SelectedMissionLevel);
+    SelectedMissionData = FMissionData(); // 선택된 미션 비우기
+    UGameplayStatics::OpenLevel(this, SelectedMissionLevel); // 선택된 미션 레벨 로드
 }
 
+// 선택된 미션과 세부사항 UI를 업데이트하는 메소드
 void UMissionMenuWidget::UpdateMissionDetails(const FMissionData& MissionData)
 {
     SelectedMissionData = MissionData;

@@ -1,4 +1,4 @@
-// Fill out your copyright notice in the Description page of Project Settings.
+
 
 #pragma once
 
@@ -27,7 +27,7 @@ private:
     UPROPERTY(meta = (BindWidget))
     class UButton* SlotButton;
 
-    UInventoryMenuWidget* InventoryMenuWidgetRef;
+    UInventoryMenuWidget* InventoryMenuWidgetRef; // 인벤토리 메뉴 위젯 참조
 
     FItemData ItemData;
 };

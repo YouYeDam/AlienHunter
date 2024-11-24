@@ -1,4 +1,4 @@
-// Fill out your copyright notice in the Description page of Project Settings.
+
 
 
 #include "GameMenuWidget.h"
@@ -32,6 +32,7 @@ void UGameMenuWidget::NativeConstruct()
     }
 }
 
+// 미션 메뉴로 이동하는 메소드
 void UGameMenuWidget::OnMoveToMissionMenuClicked()
 {
     if (GameMode)
@@ -40,6 +41,7 @@ void UGameMenuWidget::OnMoveToMissionMenuClicked()
     }
 }
 
+// 상점 메뉴로 이동하는 메소드
 void UGameMenuWidget::OnMoveToShopMenuClicked()
 {
     if (GameMode)
@@ -48,6 +50,7 @@ void UGameMenuWidget::OnMoveToShopMenuClicked()
     }
 }
 
+// 인벤토리 메뉴로 이동하는 메소드
 void UGameMenuWidget::OnMoveToInventoryMenuClicked()
 {
     if (GameMode)
@@ -56,6 +59,7 @@ void UGameMenuWidget::OnMoveToInventoryMenuClicked()
     }
 }
 
+// 캐릭터 메뉴로 이동하는 메소드
 void UGameMenuWidget::OnMoveToCharacterMenuClicked()
 {
     if (GameMode)

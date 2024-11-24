@@ -28,8 +28,8 @@ private:
     UPROPERTY(meta = (BindWidget))
     class UButton* SlotButton;
 
-    UShopMenuWidget* ShopMenuWidgetRef;
+    UShopMenuWidget* ShopMenuWidgetRef;  // 상점 메뉴 위젯 참조
 
     UPROPERTY()
-    FItemData ItemData;
+    FItemData ItemData; // 슬롯의 아이템 데이터
 };

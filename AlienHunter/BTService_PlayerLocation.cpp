@@ -1,4 +1,4 @@
-// Fill out your copyright notice in the Description page of Project Settings.
+
 
 
 #include "BTService_PlayerLocation.h"
@@ -11,6 +11,7 @@ UBTService_PlayerLocation::UBTService_PlayerLocation()
     NodeName = "Update Player Location";
 }
 
+// 틱마다 플레이어 위치를 AI 블랙보드에 업데이트하는 메소드
 void UBTService_PlayerLocation::TickNode(UBehaviorTreeComponent &OwnerComp, uint8 *NodeMemory, float DeltaSeconds)
 {
     Super::TickNode(OwnerComp, NodeMemory, DeltaSeconds);

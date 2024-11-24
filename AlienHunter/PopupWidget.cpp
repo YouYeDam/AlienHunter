@@ -1,4 +1,4 @@
-// Fill out your copyright notice in the Description page of Project Settings.
+
 
 
 #include "PopupWidget.h"
@@ -11,6 +11,7 @@ void UPopupWidget::NativeConstruct()
 	Super::NativeConstruct();
 }
 
+// 팝업창을 초기화하는 메소드
 void UPopupWidget::InitializePopup(FText Message, bool HasCancelButton)
 {
 	if (PopupText)
@@ -25,7 +26,7 @@ void UPopupWidget::InitializePopup(FText Message, bool HasCancelButton)
 
 	if (CancelButton)
 	{
-		if (HasCancelButton)
+		if (HasCancelButton) // 취소 버튼이 필요한지 검사
 		{
 			CancelButton->SetVisibility(ESlateVisibility::Visible);
 			CancelButton->OnClicked.AddDynamic(this, &UPopupWidget::OnCancelClicked);
@@ -37,15 +38,17 @@ void UPopupWidget::InitializePopup(FText Message, bool HasCancelButton)
 	}
 }
 
+// 확인 버튼 클릭 시 동작하는 메소드
 void UPopupWidget::OnConfirmClicked()
 {
-	ConfirmClicked.Broadcast();
+	ConfirmClicked.Broadcast(); // 확인 버튼 클릭 델리게이트 실행
 	RemoveFromParent();
 }
 
+// 취소 버튼 클릭 시 동작하는 메소드
 void UPopupWidget::OnCancelClicked()
 {
-	CancelClicked.Broadcast();
+	CancelClicked.Broadcast(); // 취소 버튼 클릭 델리게이트 실행
 	RemoveFromParent();
 }
 

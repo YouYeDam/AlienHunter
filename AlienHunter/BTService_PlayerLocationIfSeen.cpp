@@ -1,4 +1,4 @@
-// Fill out your copyright notice in the Description page of Project Settings.
+
 
 
 #include "BTService_PlayerLocationIfSeen.h"
@@ -12,6 +12,7 @@ UBTService_PlayerLocationIfSeen::UBTService_PlayerLocationIfSeen()
     NodeName = "Update Player Location If Seen";
 }
 
+// 틱마다 플레이어 위치를 AI 블랙보드에 업데이트하는 메소드
 void UBTService_PlayerLocationIfSeen::TickNode(UBehaviorTreeComponent &OwnerComp, uint8 *NodeMemory, float DeltaSeconds)
 {
     Super::TickNode(OwnerComp, NodeMemory, DeltaSeconds);
@@ -26,12 +27,16 @@ void UBTService_PlayerLocationIfSeen::TickNode(UBehaviorTreeComponent &OwnerComp
         return;
     }
 
+    // AI와 플레이어 사이의 거리 계산
     float Distance = FVector::Dist(PlayerPawn->GetActorLocation(), OwnerComp.GetAIOwner()->GetPawn()->GetActorLocation());
 
-    if (OwnerComp.GetAIOwner()->LineOfSightTo(PlayerPawn) && Distance <= DetectionRange) {
+    // 플레이어가 지정된 거리 내에 있고, 시야에 들어오면 위치 업데이트
+    if (OwnerComp.GetAIOwner()->LineOfSightTo(PlayerPawn) && Distance <= DetectionRange) 
+    {
         OwnerComp.GetBlackboardComponent()->SetValueAsObject(GetSelectedBlackboardKey(), PlayerPawn);
     }
-    else {
+    else // 블랙보드에서 플레이어 위치 정보를 제거
+    {
         OwnerComp.GetBlackboardComponent()->ClearValue(GetSelectedBlackboardKey());
     }
 }

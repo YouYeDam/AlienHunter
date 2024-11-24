@@ -1,4 +1,4 @@
-// Fill out your copyright notice in the Description page of Project Settings.
+
 
 
 #include "InventoryMenuWidget.h"
@@ -22,10 +22,10 @@ void UInventoryMenuWidget::NativeConstruct()
     {
         GameManager->SetInventoryMenuWidget(this);
 
-        ItemDataArray = GameManager->GetPurchasedItems();
+        ItemDataArray = GameManager->GetPurchasedItems(); // 아이템 데이터에 구매한 아이템 모두 가져오기
     }
 
-    CreateInventorySlots();
+    CreateInventorySlots(); // 인벤토리 슬롯 초기화
 
     if (GameMenuButton)
     {
@@ -38,6 +38,7 @@ void UInventoryMenuWidget::NativeConstruct()
     }
 }
 
+// 인벤토리 슬롯을 생성하고 초기화하는 메소드
 void UInventoryMenuWidget::CreateInventorySlots()
 {
     if (!InventorySlotClass || !InventoryScrollBox)
@@ -45,6 +46,7 @@ void UInventoryMenuWidget::CreateInventorySlots()
         return;
     }
 
+    // 인벤토리 아이템 데이터를 순회하며 슬롯을 생성하고 초기화
     for (const FItemData& Item : ItemDataArray)
     {
         UInventorySlotWidget* InventorySlot = CreateWidget<UInventorySlotWidget>(this, InventorySlotClass);
@@ -60,6 +62,7 @@ void UInventoryMenuWidget::CreateInventorySlots()
     }
 }
 
+// 게임 메뉴로 이동하는 메소드
 void UInventoryMenuWidget::OnMoveToGameMenuClicked()
 {
     AGameMenuGameMode* GameMode = Cast<AGameMenuGameMode>(UGameplayStatics::GetGameMode(GetWorld()));
@@ -69,6 +72,7 @@ void UInventoryMenuWidget::OnMoveToGameMenuClicked()
     }
 }
 
+// 인벤토리의 아이템을 장착하는 메소드
 void UInventoryMenuWidget::OnEquipItemClicked()
 {
     GameManager = Cast<UGameManager>(UGameplayStatics::GetGameInstance(GetWorld()));
@@ -77,6 +81,8 @@ void UInventoryMenuWidget::OnEquipItemClicked()
 	{
 		return;
 	}
+
+    // 게임 매니저에서 장착중인 무기의 아이템 데이터와 액터 바꿔주기
     if (SelectedItem.ItemType == TEXT("총기류")) 
     {
         GameManager->SetEquippedGunItemData(SelectedItem);
@@ -89,6 +95,7 @@ void UInventoryMenuWidget::OnEquipItemClicked()
     }
 }
 
+// 선택된 아이템과 세부사항 UI를 업데이트하는 메소드
 void UInventoryMenuWidget::UpdateItemDetails(const FItemData& ItemData)
 {
     SelectedItem = ItemData;
@@ -115,6 +122,7 @@ void UInventoryMenuWidget::UpdateItemDetails(const FItemData& ItemData)
     }
 }
 
+// 장착중인 총기류의 UI를 업데이트하는 메소드
 void UInventoryMenuWidget::UpdateGunDetails(const FItemData& ItemData)
 {
     if (GunName)
@@ -135,6 +143,7 @@ void UInventoryMenuWidget::UpdateGunDetails(const FItemData& ItemData)
     }
 }
 
+// 장착중인 도검류의 UI를 업데이트하는 메소드
 void UInventoryMenuWidget::UpdateSwordDetails(const FItemData& ItemData)
 {
     if (SwordName)
@@ -155,6 +164,7 @@ void UInventoryMenuWidget::UpdateSwordDetails(const FItemData& ItemData)
     }
 }
 
+// 인벤토리 아이템을 업데이트하는 메소드
 void UInventoryMenuWidget::UpdateItemDataArray()
 {
     GameManager = Cast<UGameManager>(UGameplayStatics::GetGameInstance(GetWorld()));
@@ -166,8 +176,8 @@ void UInventoryMenuWidget::UpdateItemDataArray()
 
     if (InventoryScrollBox)
     {
-        InventoryScrollBox->ClearChildren();
+        InventoryScrollBox->ClearChildren(); // 인벤토리 슬롯 생성 전 모두 비우기
     }
 
-    CreateInventorySlots();
+    CreateInventorySlots(); // 인벤토리 슬롯 재생성
 }

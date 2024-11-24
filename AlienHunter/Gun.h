@@ -1,4 +1,4 @@
-// Fill out your copyright notice in the Description page of Project Settings.
+
 
 #pragma once
 
@@ -12,44 +12,41 @@ class ALIENHUNTER_API AGun : public AActor
 	GENERATED_BODY()
 	
 public:	
-	// Sets default values for this actor's properties
 	AGun();
 
 protected:
-	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 
 public:	
-	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 
 private:
 	UPROPERTY(VisibleAnywhere)
 	USceneComponent* Root;
-
+	
 	UPROPERTY(VisibleAnywhere)
-	UStaticMeshComponent* Mesh;
+	UStaticMeshComponent* Mesh; // Gun 액터의 메시
 
 	UPROPERTY(EditAnywhere)
-	UParticleSystem* MuzzleFlash;
+	UParticleSystem* MuzzleFlash; // 총구 이펙트
 
 	UPROPERTY(EditAnywhere)
-	float MaxRange = 5000;
+	UParticleSystem* ImpactEffect; // 명중 이펙트
 
 	UPROPERTY(EditAnywhere)
-	UParticleSystem* ImpactEffect;
+	USoundBase* MuzzleSound; // 사격 사운드
 
 	UPROPERTY(EditAnywhere)
-	float Damage = 10;
+	float MaxRange = 5000; // 사격 최대 거리
+
+	UPROPERTY(EditAnywhere)
+	float Damage = 10; // 사격 데미지
 
 	bool GunTrace(FHitResult& Hit, FVector& ShotDirection);
 
 	AController* GetOwnerController() const;
 
-	UPROPERTY(EditAnywhere)
-	USoundBase* MuzzleSound;
-
 public:
 	void StartShoot();
-	void SetMeshVisibility(bool bVisible);
+	void SetMeshVisibility(bool IsVisible);
 };

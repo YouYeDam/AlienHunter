@@ -1,4 +1,4 @@
-// Fill out your copyright notice in the Description page of Project Settings.
+// 미션 시 기본 에일리언 헌터 게임 모드
 
 #pragma once
 
@@ -7,9 +7,7 @@
 #include "GameManager.h"
 #include "AlienHunterGameMode.generated.h"
 
-/**
- * 
- */
+
 UCLASS()
 class ALIENHUNTER_API AAlienHunterGameMode : public AGameModeBase
 {

@@ -1,16 +1,18 @@
-// Fill out your copyright notice in the Description page of Project Settings.
+// 미션 시 기본 에일리언 헌터 게임 모드
 
 
 #include "AlienHunterGameMode.h"
 #include "MainCharacter.h"
 #include "Kismet/GameplayStatics.h"
 
+// 폰 처치 시 기본 처리 메소드
 void AAlienHunterGameMode::PawnKilled(APawn* PawnKilled)
 {
     APlayerController* PlayerController = Cast<APlayerController>(PawnKilled->GetController());
+
     if (PlayerController != nullptr)
     {
-        return;
+        return; // 플레이어가 죽은 경우 아래의 처리가 필요하지 않음.
     }
 
     AMainCharacter* KilledCharacter = Cast<AMainCharacter>(PawnKilled);
@@ -20,6 +22,8 @@ void AAlienHunterGameMode::PawnKilled(APawn* PawnKilled)
         int32 EXP = KilledCharacter->GetEXP();
         
         AMainCharacter* PlayerCharacter = Cast<AMainCharacter>(GetWorld()->GetFirstPlayerController()->GetPawn());
+        
+        // 플레이어가 경험치와 에너지 획득
         if (PlayerCharacter)
         {
             int32 PlayerEnergy = PlayerCharacter->GetGainedEnergy();
@@ -30,6 +34,7 @@ void AAlienHunterGameMode::PawnKilled(APawn* PawnKilled)
 
             GameManager = Cast<UGameManager>(UGameplayStatics::GetGameInstance(GetWorld()));
             
+            // 플레이어의 적 처치 수 증가
             if (GameManager) 
             {
                 int32 CurrentKillEnemyCount = GameManager->GetKillEnemyCount();

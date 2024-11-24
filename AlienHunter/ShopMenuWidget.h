@@ -5,6 +5,7 @@
 #include "CoreMinimal.h"
 #include "Blueprint/UserWidget.h"
 #include "ItemData.h"
+#include "PopupWidget.h"
 #include "GameManager.h"
 #include "ShopMenuWidget.generated.h"
 
@@ -36,13 +37,13 @@ protected:
 
 private:
     UPROPERTY()
-    TArray<FItemData> ItemDataArray;
+    TArray<FItemData> ItemDataArray; // 아이템 데이터 배열
 
 	UPROPERTY()
 	UGameManager* GameManager;
 
     UPROPERTY()
-    FItemData SelectedItem;
+    FItemData SelectedItem; // 선택된 아이템 데이터
 
 	UPROPERTY(EditAnywhere)
 	TSubclassOf<UUserWidget> PopupWidgetClass;
@@ -80,6 +81,9 @@ private:
     // 슬롯 템플릿 클래스
     UPROPERTY(EditAnywhere)
     TSubclassOf<class UUserWidget> ShopSlotClass;
+
+    UPROPERTY()
+    UPopupWidget* PopupWidget;
 
     void InitializeItemData();
 

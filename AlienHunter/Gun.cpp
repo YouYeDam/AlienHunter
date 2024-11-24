@@ -1,4 +1,4 @@
-// Fill out your copyright notice in the Description page of Project Settings.
+
 
 
 #include "Gun.h"
@@ -7,10 +7,8 @@
 #include "Kismet/GameplayStatics.h"
 #include "Engine/DamageEvents.h"
 
-// Sets default values
 AGun::AGun()
 {
- 	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
 
 	Root = CreateDefaultSubobject<USceneComponent>(TEXT("Root"));
@@ -20,67 +18,76 @@ AGun::AGun()
 	Mesh->SetupAttachment(Root);
 }
 
-// Called when the game starts or when spawned
 void AGun::BeginPlay()
 {
 	Super::BeginPlay();
 }
 
-// Called every frame
 void AGun::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
 }
 
-void AGun::SetMeshVisibility(bool bVisible)
+// 조건에 따라 메시의 가시성을 재설정하는 메소드
+void AGun::SetMeshVisibility(bool IsVisible)
 {
     if (Mesh)
     {
-        Mesh->SetVisibility(bVisible);
+        Mesh->SetVisibility(IsVisible);
     }
 }
 
+// 사격 동작을 처리하는 메소드
 void AGun::StartShoot()
 {
 	UGameplayStatics::SpawnEmitterAttached(MuzzleFlash, Mesh, TEXT("MuzzleFlashSocket"));
 	UGameplayStatics::SpawnSoundAttached(MuzzleSound, Mesh, TEXT("MuzzleFlashSocket"));
 
-	FHitResult Hit;
-	FVector ShotDirection;
-	bool bSuccess = GunTrace(Hit, ShotDirection);
+	FHitResult Hit; // 충돌 정보 구조체
+	FVector ShotDirection; // 총알의 발사 방향
+	bool IsSuccess = GunTrace(Hit, ShotDirection); // 충돌 여부 계산
 
-	if (bSuccess) {
+	if (IsSuccess) {
 		UGameplayStatics::SpawnEmitterAtLocation(GetWorld(), ImpactEffect, Hit.Location, ShotDirection.Rotation());
 
 		AActor* HitActor = Hit.GetActor();
 		if (HitActor != nullptr) {
-			FPointDamageEvent DamageEvent(Damage, Hit, ShotDirection, nullptr);
-			AController* OwnerController = GetOwnerController();
+			FPointDamageEvent DamageEvent(Damage, Hit, ShotDirection, nullptr); // 데미지 정보 
+			AController* OwnerController = GetOwnerController(); // 총기의 소유자
 
-			HitActor->TakeDamage(Damage, DamageEvent, OwnerController, this);
+			HitActor->TakeDamage(Damage, DamageEvent, OwnerController, this); // 충돌한 액터에 데미지 적용
 		}
 	}
 }
 
+// 총알의 궤적을 계산하고 충돌 여부를 반환하는 메소드
 bool AGun::GunTrace(FHitResult& Hit, FVector& ShotDirection)
 {
 	AController* OwnerController = GetOwnerController();
 	if (OwnerController == nullptr) {
-		return false;
+		return false; // 컨트롤러가 없으면 충돌 계산 실패
 	}
+
+	// 플레이어의 시점 위치와 회전 정보 가져오기
 	FVector Location;
 	FRotator Rotation;
 	OwnerController->GetPlayerViewPoint(Location, Rotation);
-	ShotDirection = -Rotation.Vector();
 
-	FVector End = Location + Rotation.Vector() * MaxRange; // 끝점 계산
+	ShotDirection = -Rotation.Vector(); // 발사 방향을 설정
+
+	FVector End = Location + Rotation.Vector() * MaxRange; // 발사 끝점 계산
+
+	// 충돌을 무시할 액터 설정
 	FCollisionQueryParams Params;
 	Params.AddIgnoredActor(this);
 	Params.AddIgnoredActor(GetOwner());
-	return GetWorld()->LineTraceSingleByChannel(Hit, Location, End, ECollisionChannel::ECC_GameTraceChannel1, Params);
+
+	// 충돌 여부 계산
+	return GetWorld()->LineTraceSingleByChannel(Hit, Location, End, ECollisionChannel::ECC_GameTraceChannel1, Params); // 여기서 Hit 설정
 }
 
+// 총기의 소유자 컨트롤러를 반환하는 메소드
 AController* AGun::GetOwnerController() const
 {
 	APawn* OwnerPawn = Cast<APawn>(GetOwner());

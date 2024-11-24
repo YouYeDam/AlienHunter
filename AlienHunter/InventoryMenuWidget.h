@@ -1,4 +1,4 @@
-// Fill out your copyright notice in the Description page of Project Settings.
+
 
 #pragma once
 
@@ -21,16 +21,16 @@ public:
     UFUNCTION()
     void OnEquipItemClicked();
 
-    UFUNCTION(BlueprintCallable)
+    UFUNCTION()
     void UpdateItemDetails(const FItemData& ItemData);
 
-    UFUNCTION(BlueprintCallable)
+    UFUNCTION()
     void UpdateGunDetails(const FItemData& ItemData);
 
-    UFUNCTION(BlueprintCallable)
+    UFUNCTION()
     void UpdateSwordDetails(const FItemData& ItemData);
 
-    UFUNCTION(BlueprintCallable)
+    UFUNCTION()
     void UpdateItemDataArray();
 
 protected:
@@ -38,13 +38,13 @@ protected:
 
 private:
     UPROPERTY()
-    TArray<FItemData> ItemDataArray;
+    TArray<FItemData> ItemDataArray; // 아이템 데이터 배열
     
 	UPROPERTY()
 	UGameManager* GameManager;
 
     UPROPERTY()
-    FItemData SelectedItem;
+    FItemData SelectedItem; // 선택된 아이템 데이터
 
 	UPROPERTY(EditAnywhere)
 	TSubclassOf<UUserWidget> PopupWidgetClass;

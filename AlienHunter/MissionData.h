@@ -1,3 +1,6 @@
+
+
+
 #pragma once
 
 #include "CoreMinimal.h"
@@ -31,9 +34,11 @@ public:
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Mission")
     UTexture2D* MissionImage;
 
+    // 미션 에너지 보상
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Mission")
     int32 MissionEnergyReward;
 
+    // 미션 경험치 보상
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Mission")
     int32 MissionEXPReward;
 

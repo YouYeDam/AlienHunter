@@ -34,6 +34,7 @@ void ASword::Tick(float DeltaTime)
 
 }
 
+// 조건에 따라 메시의 가시성을 재설정하는 메소드
 void ASword::SetMeshVisibility(bool bVisible)
 {
 	if (Mesh)
@@ -42,6 +43,7 @@ void ASword::SetMeshVisibility(bool bVisible)
     }
 }
 
+// 휘두르기 동작의 시작을 처리하는 메소드
 void ASword::StartSwing()
 {
 	if (IsSwinging) {
@@ -54,16 +56,19 @@ void ASword::StartSwing()
 	UGameplayStatics::SpawnSoundAttached(SwingSound, Mesh, TEXT("SwingSoundSocket"));
 }
 
+// 휘두르기 동작의 끝을 처리하는 메소드
 void ASword::EndSwing()
 {
 	IsSwinging = false;
 	CollisionBox->SetCollisionEnabled(ECollisionEnabled::NoCollision); // 충돌 비활성화
 }
 
+// 근접 공격의 충돌 오버랩을 감지하여 적에게 데미지를 입히는 메서드
 void ASword::OnOverlapBegin(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
     if (IsSwinging && OtherActor && OtherActor != GetOwner())
     {
+        // 태그를 이용하여 같은 태그를 가진 대상이 피해를 입지 못하도록 설정
         if (GetOwner()->ActorHasTag(TEXT("Enemy")) && OtherActor->ActorHasTag(TEXT("Player")))
         {
             FVector HitDirection = (OtherActor->GetActorLocation() - GetOwner()->GetActorLocation()).GetSafeNormal();

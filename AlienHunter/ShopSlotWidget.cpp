@@ -17,6 +17,7 @@ void UShopSlotWidget::NativeConstruct()
     }
 }
 
+// 슬롯을 설정하는 메소드
 void UShopSlotWidget::InitializeSlot(UShopMenuWidget* InShopMenuWidget, const FItemData& InItemData)
 {
     ShopMenuWidgetRef = InShopMenuWidget;
@@ -29,6 +30,7 @@ void UShopSlotWidget::InitializeSlot(UShopMenuWidget* InShopMenuWidget, const FI
     }
 }
 
+// 슬롯 클릭 시 인벤토리 위젯의 아이템 세부사항을 업데이트하는 메소드
 void UShopSlotWidget::OnSlotClicked()
 {
     if (ShopMenuWidgetRef)

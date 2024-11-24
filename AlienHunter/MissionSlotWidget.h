@@ -29,8 +29,8 @@ private:
     UPROPERTY(meta = (BindWidget))
     class UButton* SlotButton;
 
-    UMissionMenuWidget* MissionMenuWidgetRef;
+    UMissionMenuWidget* MissionMenuWidgetRef; // 미션 메뉴 위젯 참조
 
     UPROPERTY()
-    FMissionData MissionData;
+    FMissionData MissionData; // 슬롯의 미션 데이터
 };
