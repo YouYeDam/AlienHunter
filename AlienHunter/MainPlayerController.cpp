@@ -18,7 +18,7 @@ void AMainPlayerController::BeginPlay()
     }
 }
 
-// 레벨을 로드하는 메소드
+// 게임 메뉴 레벨을 로드하는 메소드
 void AMainPlayerController::LoadLevelAfterDelay()
 {
     UGameplayStatics::OpenLevel(this, FName("GameMenu"));
@@ -63,9 +63,11 @@ void AMainPlayerController::GameHasEnded(class AActor* EndGameFocus, bool bIsWin
             GameManager->SetEnergy(CurrentEnergy + Energy);
             GameManager->SetEXP(CurrentEXP + EXP);
 
-            // 미션 보상 지급 처리
-            GameManager->GainMissionReward();
-
+            // 미션 성공한 경우, 미션 보상 지급 처리
+            if (bIsWinner) 
+            {
+                GameManager->GainMissionReward();
+            }
         }
     }
 

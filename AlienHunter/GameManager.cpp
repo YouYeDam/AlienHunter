@@ -5,6 +5,7 @@
 #include "InventoryMenuWidget.h"
 #include "Engine/World.h"
 
+// 게임 시작 시 기본 보유한 아이템 초기화
 void UGameManager::Init()
 {
 	Super::Init();
@@ -63,7 +64,8 @@ void UGameManager::SetEXP(int32 NewEXP)
 {
 	EXP = NewEXP;
 
-	if (EXP >= EXPRequirementForLevelup)
+	// 경험치가 레벨업 시 필요한 경험치보다 높으면 레벨업
+	if (EXP >= EXPRequirementForLevelup) 
 	{
 		Levelup();
 	}
@@ -84,19 +86,22 @@ int32 UGameManager::GetEXPRequirementForLevelup() const
 	return EXPRequirementForLevelup;
 }
 
+// 레벨업 시 처리하는 내용을 구성한 메소드
 void UGameManager::Levelup()
 {
 	EXP -= EXPRequirementForLevelup;
 	PlayerLevel++;
-	EXPRequirementForLevelup *= 1.1;
-	Health += 50;
+	EXPRequirementForLevelup *= 1.1; // 레벨업 시 필요한 경험치 1.1배 증가시키기
+	Health += 50; // 레벨업마다 체력 50 증가
 
+	// 2단 레벨업 방지 설정
 	if (EXP >= EXPRequirementForLevelup)
 	{
 		EXP = EXPRequirementForLevelup - 1;
 	}
 }
 
+// 임무 완료 시 보상을 처리하는 메소드
 void UGameManager::GainMissionReward()
 {
 	Energy += CurrentMissionData.MissionEnergyReward;
@@ -108,6 +113,7 @@ void UGameManager::GainMissionReward()
 	}
 }
 
+// 구매한 아이템을 추가하는 메소드
 void UGameManager::AddPurchasedItem(const FItemData& Item)
 {
     PurchasedItems.Add(Item);
@@ -123,6 +129,7 @@ const TArray<FItemData>& UGameManager::GetPurchasedItems() const
     return PurchasedItems;
 }
 
+// 인벤토리 메뉴 위젯의 참조를 설정하는 메소드
 void UGameManager::SetInventoryMenuWidget(UInventoryMenuWidget* InventoryWidget)
 {
     InventoryMenuWidgetRef = InventoryWidget;
