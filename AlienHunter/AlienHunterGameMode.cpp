@@ -2,7 +2,8 @@
 
 
 #include "AlienHunterGameMode.h"
-#include "MainCharacter.h"
+#include "MonsterCharacter.h"
+#include "PlayerCharacter.h"
 #include "Kismet/GameplayStatics.h"
 
 // 폰 처치 시 기본 처리 메소드
@@ -15,13 +16,13 @@ void AAlienHunterGameMode::PawnKilled(APawn* PawnKilled)
         return; // 플레이어가 죽은 경우 아래의 처리가 필요하지 않음.
     }
 
-    AMainCharacter* KilledCharacter = Cast<AMainCharacter>(PawnKilled);
+    AMonsterCharacter* KilledCharacter = Cast<AMonsterCharacter>(PawnKilled);
     if (KilledCharacter)
     {
         int32 Energy = KilledCharacter->GetEnergy();
         int32 EXP = KilledCharacter->GetEXP();
         
-        AMainCharacter* PlayerCharacter = Cast<AMainCharacter>(GetWorld()->GetFirstPlayerController()->GetPawn());
+        APlayerCharacter* PlayerCharacter = Cast<APlayerCharacter>(GetWorld()->GetFirstPlayerController()->GetPawn());
         
         // 플레이어가 경험치와 에너지 획득
         if (PlayerCharacter)

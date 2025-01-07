@@ -3,7 +3,7 @@
 
 #include "BTTask_Shoot.h"
 #include "AIController.h"
-#include "MainCharacter.h"
+#include "GunMonsterCharacter.h"
 
 UBTTask_Shoot::UBTTask_Shoot()
 {
@@ -20,7 +20,7 @@ EBTNodeResult::Type UBTTask_Shoot::ExecuteTask(UBehaviorTreeComponent &OwnerComp
         return EBTNodeResult::Failed;
     }
     
-    AMainCharacter* Character = Cast<AMainCharacter>(OwnerComp.GetAIOwner()->GetPawn());
+    AGunMonsterCharacter* Character = Cast<AGunMonsterCharacter>(OwnerComp.GetAIOwner()->GetPawn());
 
     if (Character == nullptr) 
     {

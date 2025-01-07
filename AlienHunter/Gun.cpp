@@ -45,7 +45,7 @@ void AGun::StartShoot()
 	UGameplayStatics::SpawnSoundAttached(MuzzleSound, Mesh, TEXT("MuzzleFlashSocket"));
 
 	FHitResult Hit; // 충돌 정보 구조체
-	FVector ShotDirection; // 총알의 발사 방향
+	FVector ShotDirection; // 총알이 날아온 방향(발사 원점을 기준으로 하는 방향)
 	bool IsSuccess = GunTrace(Hit, ShotDirection); // 충돌 여부 계산
 
 	if (IsSuccess) {
@@ -74,7 +74,7 @@ bool AGun::GunTrace(FHitResult& Hit, FVector& ShotDirection)
 	FRotator Rotation;
 	OwnerController->GetPlayerViewPoint(Location, Rotation);
 
-	ShotDirection = -Rotation.Vector(); // 발사 방향을 설정
+	ShotDirection = -Rotation.Vector(); // 총알이 날아온 방향(발사 원점을 기준으로 반대 방향)을 설정
 
 	FVector End = Location + Rotation.Vector() * MaxRange; // 발사 끝점 계산
 

@@ -12,7 +12,7 @@ UBTService_PlayerLocationIfSeen::UBTService_PlayerLocationIfSeen()
     NodeName = "Update Player Location If Seen";
 }
 
-// 틱마다 플레이어 위치를 AI 블랙보드에 업데이트하는 메소드
+// 플레이어가 시야에 들어왔을 때 블랙보드에 위치 정보를 업데이트
 void UBTService_PlayerLocationIfSeen::TickNode(UBehaviorTreeComponent &OwnerComp, uint8 *NodeMemory, float DeltaSeconds)
 {
     Super::TickNode(OwnerComp, NodeMemory, DeltaSeconds);

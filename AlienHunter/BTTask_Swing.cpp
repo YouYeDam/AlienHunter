@@ -3,7 +3,7 @@
 
 #include "BTTask_Swing.h"
 #include "AIController.h"
-#include "MainCharacter.h"
+#include "SwordMonsterCharacter.h"
 
 UBTTask_Swing::UBTTask_Swing()
 {
@@ -19,7 +19,7 @@ EBTNodeResult::Type UBTTask_Swing::ExecuteTask(UBehaviorTreeComponent &OwnerComp
     {
         return EBTNodeResult::Failed;
     }
-    AMainCharacter* Character = Cast<AMainCharacter>(OwnerComp.GetAIOwner()->GetPawn());
+    ASwordMonsterCharacter* Character = Cast<ASwordMonsterCharacter>(OwnerComp.GetAIOwner()->GetPawn());
 
     if (Character == nullptr) 
     {

@@ -3,17 +3,20 @@
 
 #include "MainPlayerController.h"
 #include "Blueprint/UserWidget.h"
+#include "HUDWidget.h"
+#include "Components/TextBlock.h"
 #include "TimerManager.h"
 #include "Kismet/GameplayStatics.h"
-#include "MainCharacter.h"
+#include "PlayerCharacter.h"
 #include "EnemyKillGameMode.h"
 
 void AMainPlayerController::BeginPlay()
 {
     Super::BeginPlay();
 
-    HUD = CreateWidget(this, HUDClass);
-    if (HUD != nullptr) {
+    HUD = CreateWidget<UHUDWidget>(this, HUDClass);
+    if (HUD != nullptr) 
+    {
         HUD->AddToViewport(); // HUD 띄우기
     }
 }
@@ -29,7 +32,10 @@ void AMainPlayerController::GameHasEnded(class AActor* EndGameFocus, bool bIsWin
 {
     Super::GameHasEnded(EndGameFocus, bIsWinner);
 
-    HUD->RemoveFromParent();
+    if (HUD != nullptr) 
+    {
+        HUD->RemoveFromParent();
+    }
     
     // 승리 또는 패배 화면 표시
     if (bIsWinner) {
@@ -46,7 +52,8 @@ void AMainPlayerController::GameHasEnded(class AActor* EndGameFocus, bool bIsWin
     }
 
     // 플레이어 캐릭터의 에너지 및 경험치 가져오기
-    AMainCharacter* PlayerCharacter = Cast<AMainCharacter>(GetWorld()->GetFirstPlayerController()->GetPawn());
+    APlayerCharacter* PlayerCharacter = Cast<APlayerCharacter>(GetWorld()->GetFirstPlayerController()->GetPawn());
+
     if (PlayerCharacter)
     {
         int32 Energy = PlayerCharacter->GetGainedEnergy(); // 획득한 에너지

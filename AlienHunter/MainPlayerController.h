@@ -5,6 +5,7 @@
 #include "CoreMinimal.h"
 #include "GameFramework/PlayerController.h"
 #include "GameManager.h"
+#include "HUDWidget.h"
 #include "MainPlayerController.generated.h"
 
 UCLASS()
@@ -31,10 +32,10 @@ private:
 	TSubclassOf<class UUserWidget> LoseScreenClass;
 
 	UPROPERTY(EditAnywhere)
-	TSubclassOf<class UUserWidget> HUDClass;
+	TSubclassOf<class UHUDWidget> HUDClass;
 	
 	UPROPERTY(EditAnywhere)
-	UUserWidget *HUD;
+	UHUDWidget *HUD;
 
 	void LoadLevelAfterDelay();
 	

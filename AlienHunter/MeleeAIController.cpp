@@ -4,7 +4,7 @@
 #include "MeleeAIController.h"
 #include "Kismet/GameplayStatics.h"
 #include "BehaviorTree/BlackboardComponent.h"
-#include "MainCharacter.h"
+#include "SwordMonsterCharacter.h"
 
 void AMeleeAIController::BeginPlay()
 {
@@ -24,7 +24,7 @@ void AMeleeAIController::Tick(float DeltaTime)
 // AI 컨트롤러의 캐릭터 죽음을 체크하는 메소드
 bool AMeleeAIController::IsDead() const
 {
-    AMainCharacter* ControlledCharacter = Cast<AMainCharacter>(GetPawn());
+    ASwordMonsterCharacter* ControlledCharacter = Cast<ASwordMonsterCharacter>(GetPawn());
 
     if (ControlledCharacter != nullptr) {
         return ControlledCharacter->IsDead();
