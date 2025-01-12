@@ -3,12 +3,12 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "UObject/NoExportTypes.h"
+#include "Engine/DataTable.h"
 #include "ItemData.generated.h"
 
 // 아이템 데이터 구조체
 USTRUCT(BlueprintType)
-struct ALIENHUNTER_API FItemData
+struct ALIENHUNTER_API FItemData : public FTableRowBase
 {
     GENERATED_BODY()
 

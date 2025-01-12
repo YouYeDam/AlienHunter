@@ -35,10 +35,12 @@ private:
 	TSubclassOf<class UHUDWidget> HUDClass;
 	
 	UPROPERTY(EditAnywhere)
-	UHUDWidget *HUD;
+	UHUDWidget *HUDWidget;
 
 	void LoadLevelAfterDelay();
 	
 public:
 	virtual void GameHasEnded(class AActor* EndGameFocus = nullptr, bool bIsWinner = false) override;
+
+	UHUDWidget* GetHUDWidget() const;
 };

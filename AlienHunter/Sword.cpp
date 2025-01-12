@@ -19,19 +19,16 @@ ASword::ASword()
 	
 	CollisionBox->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 	CollisionBox->OnComponentBeginOverlap.AddDynamic(this, &ASword::OnOverlapBegin);
-
 }
 
 void ASword::BeginPlay()
 {
 	Super::BeginPlay();
-	
 }
 
 void ASword::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
-
 }
 
 // 조건에 따라 메시의 가시성을 재설정하는 메소드

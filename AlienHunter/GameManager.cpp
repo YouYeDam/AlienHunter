@@ -8,24 +8,32 @@
 // 게임 시작 시 기본 보유한 아이템 초기화
 void UGameManager::Init()
 {
-	Super::Init();
+    Super::Init();
 
-	EquippedGunClass = LoadClass<AActor>(nullptr, TEXT("/Game/Weapon/Gun/BP_Rifle.BP_Rifle_C"));
-	EquippedGunItemData.ItemName = TEXT("라이플 건");
-    EquippedGunItemData.ItemType = TEXT("총기류");
-	EquippedGunItemData.ItemDescription = TEXT("가장 기초적인 총기입니다.");
-	EquippedGunItemData.ItemPrice = 0;
-    EquippedGunItemData.ItemDamage = 20;
-	EquippedGunItemData.ItemImage = LoadObject<UTexture2D>(nullptr, TEXT("/Game/Image/Weapon/Rifle.Rifle"));
+    if (!ItemDataTable)
+    {
+        return;
+    }
 
-	EquippedSwordClass = LoadClass<AActor>(nullptr, TEXT("/Game/Weapon/Sword/BP_Katana.BP_Katana_C"));
-	EquippedSwordItemData.ItemName = TEXT("카타나");
-    EquippedSwordItemData.ItemType = TEXT("도검류");
-	EquippedSwordItemData.ItemDescription = TEXT("사이버풍이 나는 카타나입니다.");
-	EquippedSwordItemData.ItemPrice = 0;
-    EquippedSwordItemData.ItemDamage = 20;
-	EquippedSwordItemData.ItemImage = LoadObject<UTexture2D>(nullptr, TEXT("/Game/Image/Weapon/Katana.Katana"));
+    static const FString ContextString(TEXT("GameManager Item Initialization"));
 
+    // 플레이어 기본 총기류 장비 설정
+    FItemData* GunItemData = ItemDataTable->FindRow<FItemData>(FName("RifleGun"), ContextString);
+    if (GunItemData)
+    {
+        EquippedGunClass = GunItemData->ItemBlueprint;
+        EquippedGunItemData = *GunItemData;
+    }
+
+    // 플레이어 기본 도검류 장비 설정
+    FItemData* SwordItemData = ItemDataTable->FindRow<FItemData>(FName("Katana"), ContextString);
+    if (SwordItemData)
+    {
+        EquippedSwordClass = SwordItemData->ItemBlueprint;
+        EquippedSwordItemData = *SwordItemData;
+    }
+
+    // 기본 보유 장비를 구매 장비로 추가
     AddPurchasedItem(EquippedGunItemData);
     AddPurchasedItem(EquippedSwordItemData);
 }

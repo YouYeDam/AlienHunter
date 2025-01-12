@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "Blueprint/UserWidget.h"
+#include "Engine/DataTable.h"
 #include "ItemData.h"
 #include "PopupWidget.h"
 #include "GameManager.h"
@@ -36,6 +37,9 @@ protected:
     virtual void NativeConstruct() override;
 
 private:
+    UPROPERTY(EditAnywhere)
+    UDataTable* ShopItemDataTable;
+
     UPROPERTY()
     TArray<FItemData> ItemDataArray; // 아이템 데이터 배열
 

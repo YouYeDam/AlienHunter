@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "Engine/GameInstance.h"
+#include "Engine/DataTable.h"
 #include "ItemData.h"
 #include "MissionData.h"
 #include "GameManager.generated.h"
@@ -34,19 +35,22 @@ private:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Player Stats", Meta = (AllowPrivateAccess = "true"))
 	int32 KillEnemyCount = 0;
 
+    UPROPERTY(EditAnywhere)
+    UDataTable* ItemDataTable;
+
 	UPROPERTY()
 	TArray<FItemData> PurchasedItems;
 
 	UPROPERTY()
 	UInventoryMenuWidget* InventoryMenuWidgetRef; // 인벤토리 메뉴 위젯 참조
 
-	UPROPERTY(EditAnywhere, Category = "Equipment")
+	UPROPERTY(EditAnywhere)
 	TSubclassOf<class AActor> EquippedGunClass;
 
 	UPROPERTY()
 	FItemData EquippedGunItemData;
 
-	UPROPERTY(EditAnywhere, Category = "Equipment")
+	UPROPERTY(EditAnywhere)
 	TSubclassOf<class AActor> EquippedSwordClass;
 
 	UPROPERTY()

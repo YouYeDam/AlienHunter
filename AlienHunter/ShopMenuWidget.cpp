@@ -34,50 +34,27 @@ void UShopMenuWidget::NativeConstruct()
     }
 }
 
-// 아이템 데이터를 초기화하는 함수(json 파일 혹은 블루프린트 데이터 에셋을 이용한 방법으로 전환하는 것 고려)
+// 아이템 데이터를 초기화하는 함수
 void UShopMenuWidget::InitializeItemData()
 {
-    FItemData Item1;
-    Item1.ItemName = TEXT("런쳐 건");
-    Item1.ItemDescription = TEXT("라이플 건보다 강화된 런쳐 건입니다.");
-    Item1.ItemType = TEXT("총기류");
-    Item1.ItemPrice = 100;
-    Item1.ItemDamage = 20;
-    Item1.ItemImage = Cast<UTexture2D>(StaticLoadObject(UTexture2D::StaticClass(), nullptr, TEXT("/Game/Image/Weapon/Launcher.Launcher")));
-    Item1.ItemBlueprint = LoadClass<AActor>(nullptr, TEXT("/Game/Weapon/Gun/BP_Launcher.BP_Launcher_C"));
+    if (!ShopItemDataTable)
+    {
+        return;
+    }
 
-    FItemData Item2;
-    Item2.ItemName = TEXT("사이버 소드");
-    Item2.ItemDescription = TEXT("밝게 빛나는 사이버 소드입니다.");
-    Item2.ItemType = TEXT("도검류");
-    Item2.ItemPrice = 150;
-    Item2.ItemDamage = 40;
-    Item2.ItemImage = Cast<UTexture2D>(StaticLoadObject(UTexture2D::StaticClass(), nullptr, TEXT("/Game/Image/Weapon/CyberSword.CyberSword")));
-    Item2.ItemBlueprint = LoadClass<AActor>(nullptr, TEXT("/Game/Weapon/Sword/BP_CyberSword.BP_CyberSword_C"));
+    static const FString ContextString(TEXT("Shop Menu Item Initialization"));
+    TArray<FItemData*> ShopItems;
 
-    FItemData Item3;
-    Item3.ItemName = TEXT("레이저 라이플");
-    Item3.ItemDescription = TEXT("레이저 탄이 나가는 라이플 건입니다.");
-    Item3.ItemType = TEXT("총기류");
-    Item3.ItemPrice = 150;
-    Item3.ItemDamage = 40;
-    Item3.ItemImage = Cast<UTexture2D>(StaticLoadObject(UTexture2D::StaticClass(), nullptr, TEXT("/Game/Image/Weapon/LaserRifle.LaserRifle")));
-    Item3.ItemBlueprint = LoadClass<AActor>(nullptr, TEXT("/Game/Weapon/Gun/BP_LaserRifle.BP_LaserRifle_C"));
+    // 데이터 테이블에서 모든 행 가져오기
+    ShopItemDataTable->GetAllRows(ContextString, ShopItems);
 
-    FItemData Item4;
-    Item4.ItemName = TEXT("플라즈마 소드");
-    Item4.ItemDescription = TEXT("칼날이 초고압 에너지 필드로 코팅되어 있어 일반적인 금속도 절단할 수 있는 플라즈마 소드입니다.");
-    Item4.ItemType = TEXT("도검류");
-    Item4.ItemPrice = 150;
-    Item4.ItemDamage = 40;
-    Item4.ItemImage = Cast<UTexture2D>(StaticLoadObject(UTexture2D::StaticClass(), nullptr, TEXT("/Game/Image/Weapon/PlasmaSword.PlasmaSword")));
-    Item4.ItemBlueprint = LoadClass<AActor>(nullptr, TEXT("/Game/Weapon/Sword/BP_PlasmaSword.BP_PlasmaSword_C"));
-
-
-    ItemDataArray.Add(Item1);
-    ItemDataArray.Add(Item2);
-    ItemDataArray.Add(Item3);
-    ItemDataArray.Add(Item4);
+    for (FItemData* Item : ShopItems)
+    {
+        if (Item)
+        {
+            ItemDataArray.Add(*Item); // 배열에 아이템 추가
+        }
+    }
 }
 
 // 상점 슬롯을 생성하고 초기화하는 메소드

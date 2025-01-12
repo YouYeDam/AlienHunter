@@ -14,10 +14,16 @@ void AMainPlayerController::BeginPlay()
 {
     Super::BeginPlay();
 
-    HUD = CreateWidget<UHUDWidget>(this, HUDClass);
-    if (HUD != nullptr) 
+    HUDWidget = CreateWidget<UHUDWidget>(this, HUDClass);
+    if (HUDWidget != nullptr) 
     {
-        HUD->AddToViewport(); // HUD 띄우기
+        HUDWidget->AddToViewport(); // HUD 띄우기
+    }
+
+    // GameMode에 HUD 참조 업데이트
+    if (AAlienHunterGameMode* GameMode = Cast<AAlienHunterGameMode>(UGameplayStatics::GetGameMode(GetWorld())))
+    {
+        GameMode->UpdateHUDReference();
     }
 }
 
@@ -32,9 +38,9 @@ void AMainPlayerController::GameHasEnded(class AActor* EndGameFocus, bool bIsWin
 {
     Super::GameHasEnded(EndGameFocus, bIsWinner);
 
-    if (HUD != nullptr) 
+    if (HUDWidget != nullptr) 
     {
-        HUD->RemoveFromParent();
+        HUDWidget->RemoveFromParent();
     }
     
     // 승리 또는 패배 화면 표시
@@ -80,4 +86,9 @@ void AMainPlayerController::GameHasEnded(class AActor* EndGameFocus, bool bIsWin
 
     // 게임 종료 후 특정 시간 후에 레벨 로드
     GetWorldTimerManager().SetTimer(GameEndTimer, this, &AMainPlayerController::LoadLevelAfterDelay, GameEndDelay, false);
+}
+
+UHUDWidget* AMainPlayerController::GetHUDWidget() const
+{
+    return HUDWidget;
 }

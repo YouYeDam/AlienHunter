@@ -4,12 +4,12 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "UObject/NoExportTypes.h"
+#include "Engine/DataTable.h"
 #include "MissionData.generated.h"
 
 // 미션 데이터를 저장하는 구조체
 USTRUCT(BlueprintType)
-struct ALIENHUNTER_API FMissionData
+struct ALIENHUNTER_API FMissionData : public FTableRowBase
 {
     GENERATED_BODY()
 

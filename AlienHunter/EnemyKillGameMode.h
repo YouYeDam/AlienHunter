@@ -16,10 +16,10 @@ public:
 	virtual void BeginPlay() override;
 
 	void PawnKilled(APawn* PawnKilled) override;	
+	int32 GetDeadEnemyCount() const;
+	int32 GetTotalEnemyCount() const;
 
 private:
-	int32 AllEnemyCount = 0;
+	int32 TotalEnemyCount = 0;
 	int32 DeadEnemyCount = 0;
-	
-	void EndGame(bool bIsPlayerWinner);
 };
