@@ -3,6 +3,7 @@
 
 #include "GameMenuGameMode.h"
 #include "ShopMenuWidget.h"
+#include "InventoryMenuWidget.h"
 #include "CharacterMenuWidget.h"
 #include "Blueprint/UserWidget.h"
 
@@ -87,7 +88,7 @@ void AGameMenuGameMode::ShowShopMenu()
     }
 }
 
-// 상점 메뉴로 이동하는 메소드
+// 인벤토리 메뉴로 이동하는 메소드
 void AGameMenuGameMode::ShowInventoryMenu()
 {
     if (CurrentWidget)
@@ -102,6 +103,12 @@ void AGameMenuGameMode::ShowInventoryMenu()
         if (CurrentWidget)
         {
             CurrentWidget->AddToViewport();
+
+            UInventoryMenuWidget* InventoryMenuWidget = Cast<UInventoryMenuWidget>(CurrentWidget);
+            if (InventoryMenuWidget)
+            {
+                InventoryMenuWidget->CreateGunInventorySlots();
+            }
         }
     }
 }

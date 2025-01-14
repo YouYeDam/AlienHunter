@@ -17,16 +17,31 @@ void UInventorySlotWidget::NativeConstruct()
     }
 }
 
-// 슬롯을 설정하는 메소드
-void UInventorySlotWidget::InitializeSlot(UInventoryMenuWidget* InInventoryMenuWidget, const FItemData& InItemData)
+// 총기류 슬롯을 설정하는 메소드
+void UInventorySlotWidget::InitializeGunSlot(UInventoryMenuWidget* InInventoryMenuWidget, const FGunItemData& InGunItemData)
 {
     InventoryMenuWidgetRef = InInventoryMenuWidget;
-    ItemData = InItemData;
+    ItemData = InGunItemData;
+    GunItemData = InGunItemData;
 
     UTextBlock* ItemNameText = Cast<UTextBlock>(GetWidgetFromName(TEXT("ItemName")));
     if (ItemNameText)
     {
-        ItemNameText->SetText(FText::FromString(ItemData.ItemName));
+        ItemNameText->SetText(FText::FromString(GunItemData.ItemName));
+    }
+}
+
+// 도검류 슬롯을 설정하는 메소드
+void UInventorySlotWidget::InitializeSwordSlot(UInventoryMenuWidget* InInventoryMenuWidget, const FSwordItemData& InSwordItemData)
+{
+    InventoryMenuWidgetRef = InInventoryMenuWidget;
+    ItemData = InSwordItemData;
+    SwordItemData = InSwordItemData;
+
+    UTextBlock* ItemNameText = Cast<UTextBlock>(GetWidgetFromName(TEXT("ItemName")));
+    if (ItemNameText)
+    {
+        ItemNameText->SetText(FText::FromString(SwordItemData.ItemName));
     }
 }
 
@@ -35,6 +50,17 @@ void UInventorySlotWidget::OnSlotClicked()
 {
     if (InventoryMenuWidgetRef)
     {
+        InventoryMenuWidgetRef->ResetSelectedItems();
+
+        if (ItemData.ItemType == TEXT("총기류"))
+        {
+            InventoryMenuWidgetRef->SetSelectedGunItem(GunItemData);
+        }
+        else if (ItemData.ItemType == TEXT("도검류"))
+        {
+            InventoryMenuWidgetRef->SetSelectedSwordItem(SwordItemData);
+        }
+
         InventoryMenuWidgetRef->UpdateItemDetails(ItemData);
     }
 }

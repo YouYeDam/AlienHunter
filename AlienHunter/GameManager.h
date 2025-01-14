@@ -5,7 +5,8 @@
 #include "CoreMinimal.h"
 #include "Engine/GameInstance.h"
 #include "Engine/DataTable.h"
-#include "ItemData.h"
+#include "GunItemData.h"
+#include "SwordItemData.h"
 #include "MissionData.h"
 #include "GameManager.generated.h"
 
@@ -36,25 +37,31 @@ private:
 	int32 KillEnemyCount = 0;
 
     UPROPERTY(EditAnywhere)
-    UDataTable* ItemDataTable;
+    UDataTable* GunItemDataTable;
+
+    UPROPERTY(EditAnywhere)
+    UDataTable* SwordItemDataTable;
 
 	UPROPERTY()
-	TArray<FItemData> PurchasedItems;
+	TArray<FGunItemData> PurchasedGunItems;
+
+	UPROPERTY()
+	TArray<FSwordItemData> PurchasedSwordItems;
 
 	UPROPERTY()
 	UInventoryMenuWidget* InventoryMenuWidgetRef; // 인벤토리 메뉴 위젯 참조
 
-	UPROPERTY(EditAnywhere)
+	UPROPERTY()
 	TSubclassOf<class AActor> EquippedGunClass;
 
 	UPROPERTY()
-	FItemData EquippedGunItemData;
+	FGunItemData EquippedGunItemData;
 
-	UPROPERTY(EditAnywhere)
+	UPROPERTY()
 	TSubclassOf<class AActor> EquippedSwordClass;
 
 	UPROPERTY()
-	FItemData EquippedSwordItemData;
+	FSwordItemData EquippedSwordItemData;
 	
 	UPROPERTY()
 	FMissionData CurrentMissionData;
@@ -94,9 +101,13 @@ public:
 
 	void GainMissionReward();
 
-	void AddPurchasedItem(const FItemData& Item);
+	void AddPurchasedGunItem(const FGunItemData& Item);
 
-	const TArray<FItemData>& GetPurchasedItems() const;
+	void AddPurchasedSwordItem(const FSwordItemData& Item);
+
+	const TArray<FGunItemData>& GetPurchasedGunItems() const;
+
+	const TArray<FSwordItemData>& GetPurchasedSwordItems() const;
 
 	void SetInventoryMenuWidget(UInventoryMenuWidget* InventoryWidget);
 
@@ -106,11 +117,11 @@ public:
 	TSubclassOf<AActor> GetEquippedSword() const;
 	void SetEquippedSword(TSubclassOf<AActor> NewSword);
 
-	FItemData GetEquippedGunItemData() const;
-	void SetEquippedGunItemData(const FItemData& NewGunItemData);
+	FGunItemData GetEquippedGunItemData() const;
+	void SetEquippedGunItemData(const FGunItemData& NewGunItemData);
 
-	FItemData GetEquippedSwordItemData() const;
-	void SetEquippedSwordItemData(const FItemData& NewSwordItemData);
+	FSwordItemData GetEquippedSwordItemData() const;
+	void SetEquippedSwordItemData(const FSwordItemData& NewSwordItemData);
 
 	FMissionData GetCurrentMissionData() const;
 	void SetCurrentMissionData(const FMissionData& NewMissionData);

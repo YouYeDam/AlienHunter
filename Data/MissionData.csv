@@ -1,0 +1,3 @@
+﻿ID,MissionName,MissionObject,MissionDescription,MissionLevel,MissionImage,MissionEnergyReward,MissionEXPReward
+1,"숲의 안전 확보하기","임무 목표 : 모든 적 섬멸","인근 숲에 외계인 세력이 등장했다는 보고가 들어왔습니다. 난폭해진 동물들과 외계인을 제압하세요.","Mission1","/Game/Image/Background/Forest.Forest",300,100
+2,"쓰레기장의 안전 확보하기","임무 목표 : 모든 적 섬멸","쓰레기장에 외계인 세력이 숨어 공격을 준비한다는 보고가 들어왔습니다. 이들에게 본때를 보여주세요.","Mission2","/Game/Image/Background/Junkyard.Junkyard",500,200

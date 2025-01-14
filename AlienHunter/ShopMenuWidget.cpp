@@ -18,7 +18,7 @@ void UShopMenuWidget::NativeConstruct()
 
     InitializeItemData();  // 아이템 데이터 초기화
 
-    CreateItemSlots();  // 아이템 슬롯 초기화
+    CreateGunInventorySlots();  // 아이템 슬롯 초기화
  
     ShowCurrentEnergy();
     
@@ -32,51 +32,93 @@ void UShopMenuWidget::NativeConstruct()
     {
         BuyButton->OnClicked.AddDynamic(this, &UShopMenuWidget::OnBuyItemClicked);
     }
+
+    if (GunTabButton)
+    {
+        GunTabButton->OnClicked.AddDynamic(this, &UShopMenuWidget::OnGunTabClicked);
+    }
+
+    if (SwordTabButton)
+    {
+        SwordTabButton->OnClicked.AddDynamic(this, &UShopMenuWidget::OnSwordTabClicked);
+    }
 }
 
 // 아이템 데이터를 초기화하는 함수
 void UShopMenuWidget::InitializeItemData()
 {
-    if (!ShopItemDataTable)
+    if (!GunItemDataTable || !SwordItemDataTable)
     {
         return;
     }
 
-    static const FString ContextString(TEXT("Shop Menu Item Initialization"));
-    TArray<FItemData*> ShopItems;
+    static const FString GunContextString(TEXT("Shop Menu Gun Item Initialization"));
+    static const FString SwordContextString(TEXT("Shop Menu Sword Item Initialization"));
 
-    // 데이터 테이블에서 모든 행 가져오기
-    ShopItemDataTable->GetAllRows(ContextString, ShopItems);
+    TArray<FGunItemData*> GunItems;
+    TArray<FSwordItemData*> SwordItems;
 
-    for (FItemData* Item : ShopItems)
+    // 총기류 데이터 테이블에서 모든 행 가져오기
+    GunItemDataTable->GetAllRows(GunContextString, GunItems);
+    for (FGunItemData* GunItem : GunItems)
     {
-        if (Item)
+        if (GunItem)
         {
-            ItemDataArray.Add(*Item); // 배열에 아이템 추가
+            GunItemDataArray.Add(*GunItem); // 총기류 배열에 추가
+        }
+    }
+
+    // 도검류 데이터 테이블에서 모든 행 가져오기
+    SwordItemDataTable->GetAllRows(SwordContextString, SwordItems);
+    for (FSwordItemData* SwordItem : SwordItems)
+    {
+        if (SwordItem)
+        {
+            SwordItemDataArray.Add(*SwordItem); // 도검류 배열에 추가
         }
     }
 }
 
-// 상점 슬롯을 생성하고 초기화하는 메소드
-void UShopMenuWidget::CreateItemSlots()
+// 총기류 상점 슬롯을 생성하고 초기화하는 메소드
+void UShopMenuWidget::CreateGunInventorySlots()
 {
     if (!ShopSlotClass || !ShopScrollBox)
     {
         return;
     }
 
-    // 아이템 데이터를 순회하며 슬롯을 생성하고 초기화
-    for (const FItemData& Item : ItemDataArray)
-    {
-        UShopSlotWidget* ShopSlot = CreateWidget<UShopSlotWidget>(this, ShopSlotClass);
-        if (ShopSlot)
-        {
-            if (ShopSlot)
-            {
-                ShopSlot->InitializeSlot(this, Item);
-            }
+    ShopScrollBox->ClearChildren(); // 기존 슬롯 초기화
 
-            ShopScrollBox->AddChild(ShopSlot);
+    // 총기류 슬롯 생성
+    for (const FGunItemData& GunItem : GunItemDataArray)
+    {
+        UShopSlotWidget* GunSlot = CreateWidget<UShopSlotWidget>(this, ShopSlotClass);
+        if (GunSlot)
+        {
+            GunSlot->InitializeGunSlot(this, GunItem);
+            ShopScrollBox->AddChild(GunSlot);
+        }
+    }
+}
+
+// 도검류 상점 슬롯을 생성하고 초기화하는 메소드
+void UShopMenuWidget::CreateSwordInventorySlots()
+{
+    if (!ShopSlotClass || !ShopScrollBox)
+    {
+        return;
+    }
+
+    ShopScrollBox->ClearChildren(); // 기존 슬롯 초기화
+
+    // 도검류 슬롯 생성
+    for (const FSwordItemData& SwordItem : SwordItemDataArray)
+    {
+        UShopSlotWidget* SwordSlot = CreateWidget<UShopSlotWidget>(this, ShopSlotClass);
+        if (SwordSlot)
+        {
+            SwordSlot->InitializeSwordSlot(this, SwordItem);
+            ShopScrollBox->AddChild(SwordSlot);
         }
     }
 }
@@ -147,6 +189,16 @@ void UShopMenuWidget::OnBuyItemClicked()
 	}
 }
 
+void UShopMenuWidget::OnGunTabClicked()
+{
+    CreateGunInventorySlots();
+}
+
+void UShopMenuWidget::OnSwordTabClicked()
+{
+    CreateSwordInventorySlots();
+}
+
 // 구매 버튼 클릭 후 확인 버튼 클릭 시 실행되는 메소드
 void UShopMenuWidget::OnConfirmPurchase()
 {
@@ -155,7 +207,14 @@ void UShopMenuWidget::OnConfirmPurchase()
 		int32 CurrentEnergy = GameManager->GetEnergy();
 		GameManager->SetEnergy(CurrentEnergy -SelectedItem.ItemPrice);
 
-        GameManager->AddPurchasedItem(SelectedItem);
+        if (SelectedItem.ItemType == TEXT("총기류"))
+        {
+            GameManager->AddPurchasedGunItem(SelectedGunItem);
+        }
+        else if (SelectedItem.ItemType == TEXT("도검류")) 
+        {
+            GameManager->AddPurchasedSwordItem(SelectedSwordItem);
+        }
 
         ShowCurrentEnergy();
 	}
@@ -181,7 +240,7 @@ void UShopMenuWidget::OnPopupClose()
 }
 
 // 선택된 아이템과 세부사항 UI를 업데이트하는 메소드
-void UShopMenuWidget::UpdateItemDetails(const FItemData& ItemData)
+void UShopMenuWidget::UpdateItemDetails(const FBaseItemData& ItemData)
 {
     SelectedItem = ItemData;
 
@@ -219,7 +278,22 @@ void UShopMenuWidget::UpdateItemDetails(const FItemData& ItemData)
     }
 }
 
+// 빈 데이터로 초기화하는 메소드
+void UShopMenuWidget::ResetSelectedItems()
+{
+    SelectedGunItem = FGunItemData();
+    SelectedSwordItem = FSwordItemData();
+}
 
+void UShopMenuWidget::SetSelectedGunItem(const FGunItemData& GunItem)
+{
+    SelectedGunItem = GunItem;
+}
+
+void UShopMenuWidget::SetSelectedSwordItem(const FSwordItemData& SwordItem)
+{
+    SelectedSwordItem = SwordItem;
+}
 
 
 

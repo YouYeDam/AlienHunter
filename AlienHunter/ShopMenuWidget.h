@@ -1,11 +1,13 @@
-// Fill out your copyright notice in the Description page of Project Settings.
+
 
 #pragma once
 
 #include "CoreMinimal.h"
 #include "Blueprint/UserWidget.h"
 #include "Engine/DataTable.h"
-#include "ItemData.h"
+#include "BaseItemData.h"
+#include "GunItemData.h"
+#include "SwordItemData.h"
 #include "PopupWidget.h"
 #include "GameManager.h"
 #include "ShopMenuWidget.generated.h"
@@ -22,8 +24,14 @@ public:
     UFUNCTION()
     void OnBuyItemClicked();
 
+    UFUNCTION()
+    void OnGunTabClicked();
+
+    UFUNCTION()
+    void OnSwordTabClicked();
+
     UFUNCTION(BlueprintCallable)
-    void UpdateItemDetails(const FItemData& ItemData);
+    void UpdateItemDetails(const FBaseItemData& ItemData);
 
 	UFUNCTION()
 	void OnConfirmPurchase();
@@ -33,21 +41,39 @@ public:
 
     void ShowCurrentEnergy();
     
+    void ResetSelectedItems();
+
+    void SetSelectedGunItem(const FGunItemData& GunItem);
+
+    void SetSelectedSwordItem(const FSwordItemData& SwordItem);
+
 protected:
     virtual void NativeConstruct() override;
 
 private:
     UPROPERTY(EditAnywhere)
-    UDataTable* ShopItemDataTable;
+    UDataTable* GunItemDataTable; // 총기류 아이템 데이터 테이블
+
+    UPROPERTY(EditAnywhere)
+    UDataTable* SwordItemDataTable;// 도검류 아이템 데이터 테이블
 
     UPROPERTY()
-    TArray<FItemData> ItemDataArray; // 아이템 데이터 배열
+    TArray<FGunItemData> GunItemDataArray; // 총기류 아이템 데이터 배열
+
+    UPROPERTY()
+    TArray<FSwordItemData> SwordItemDataArray; // 도검류 아이템 데이터 배열
 
 	UPROPERTY()
 	UGameManager* GameManager;
 
     UPROPERTY()
-    FItemData SelectedItem; // 선택된 아이템 데이터
+    FBaseItemData SelectedItem; // 선택된 아이템 데이터
+
+    UPROPERTY()
+    FGunItemData SelectedGunItem; // 선택된 총기류 아이템 데이터
+
+    UPROPERTY()
+    FSwordItemData SelectedSwordItem; // 선택된 도검류 아이템 데이터
 
 	UPROPERTY(EditAnywhere)
 	TSubclassOf<UUserWidget> PopupWidgetClass;
@@ -57,6 +83,12 @@ private:
 
     UPROPERTY(meta = (BindWidget))
     class UButton* BuyButton;
+
+    UPROPERTY(meta = (BindWidget))
+    class UButton* GunTabButton;
+
+    UPROPERTY(meta = (BindWidget))
+    class UButton* SwordTabButton;
 
     UPROPERTY(meta = (BindWidget))
     class UScrollBox* ShopScrollBox;
@@ -91,5 +123,7 @@ private:
 
     void InitializeItemData();
 
-    void CreateItemSlots();
+    void CreateGunInventorySlots();
+
+    void CreateSwordInventorySlots();
 };

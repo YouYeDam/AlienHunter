@@ -18,10 +18,38 @@ void UShopSlotWidget::NativeConstruct()
 }
 
 // 슬롯을 설정하는 메소드
-void UShopSlotWidget::InitializeSlot(UShopMenuWidget* InShopMenuWidget, const FItemData& InItemData)
+void UShopSlotWidget::InitializeSlot(UShopMenuWidget* InShopMenuWidget, const FBaseItemData& InItemData)
 {
     ShopMenuWidgetRef = InShopMenuWidget;
     ItemData = InItemData;
+
+    UTextBlock* ItemNameText = Cast<UTextBlock>(GetWidgetFromName(TEXT("ItemName")));
+    if (ItemNameText)
+    {
+        ItemNameText->SetText(FText::FromString(ItemData.ItemName));
+    }
+}
+
+// 총기류 슬롯을 설정하는 메소드
+void UShopSlotWidget::InitializeGunSlot(UShopMenuWidget* InShopMenuWidget, const FGunItemData& InGunItemData)
+{
+    ShopMenuWidgetRef = InShopMenuWidget;
+    ItemData = InGunItemData;
+    GunItemData = InGunItemData;
+
+    UTextBlock* ItemNameText = Cast<UTextBlock>(GetWidgetFromName(TEXT("ItemName")));
+    if (ItemNameText)
+    {
+        ItemNameText->SetText(FText::FromString(ItemData.ItemName));
+    }
+}
+
+// 도검류 슬롯을 설정하는 메소드
+void UShopSlotWidget::InitializeSwordSlot(UShopMenuWidget* InShopMenuWidget, const FSwordItemData& InSwordItemData)
+{
+    ShopMenuWidgetRef = InShopMenuWidget;
+    ItemData = InSwordItemData;
+    SwordItemData = InSwordItemData;
 
     UTextBlock* ItemNameText = Cast<UTextBlock>(GetWidgetFromName(TEXT("ItemName")));
     if (ItemNameText)
@@ -35,6 +63,17 @@ void UShopSlotWidget::OnSlotClicked()
 {
     if (ShopMenuWidgetRef)
     {
+        ShopMenuWidgetRef->ResetSelectedItems();
+
+        if (ItemData.ItemType == TEXT("총기류"))
+        {
+            ShopMenuWidgetRef->SetSelectedGunItem(GunItemData);
+        }
+        else if (ItemData.ItemType == TEXT("도검류"))
+        {
+            ShopMenuWidgetRef->SetSelectedSwordItem(SwordItemData);
+        }
+
         ShopMenuWidgetRef->UpdateItemDetails(ItemData);
     }
 }

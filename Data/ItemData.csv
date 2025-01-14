@@ -1,7 +1,0 @@
-﻿ID,ItemName,ItemDescription,ItemType,ItemPrice,ItemDamage,ItemImage,ItemBlueprint
-RifleGun,"라이플 건","가장 기초적인 총기입니다.","총기류",0,20,"/Game/Image/Weapon/Rifle.Rifle","/Game/Weapon/Gun/BP_Rifle.BP_Rifle_C"
-Katana,"카타나","사이버풍이 나는 카타나입니다.","도검류",0,20,"/Game/Image/Weapon/Katana.Katana","/Game/Weapon/Sword/BP_Katana.BP_Katana_C"
-LauncherGun,"런쳐 건","라이플 건보다 강화된 런쳐 건입니다.","총기류",100,20,"/Game/Image/Weapon/Launcher.Launcher","/Game/Weapon/Gun/BP_Launcher.BP_Launcher_C"
-CyberSword,"사이버 소드","밝게 빛나는 사이버 소드입니다.","도검류",150,40,"/Game/Image/Weapon/CyberSword.CyberSword","/Game/Weapon/Sword/BP_CyberSword.BP_CyberSword_C"
-LaserRifle,"레이저 라이플","레이저 탄이 나가는 라이플 건입니다.","총기류",150,40,"/Game/Image/Weapon/LaserRifle.LaserRifle","/Game/Weapon/Gun/BP_LaserRifle.BP_LaserRifle_C"
-PlasmaSword,"플라즈마 소드","칼날이 초고압 에너지 필드로 코팅되어 있어 일반적인 금속도 절단할 수 있는 플라즈마 소드입니다.","도검류",150,40,"/Game/Image/Weapon/PlasmaSword.PlasmaSword","/Game/Weapon/Sword/BP_PlasmaSword.BP_PlasmaSword_C"

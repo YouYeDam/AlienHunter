@@ -10,15 +10,17 @@ void UGameManager::Init()
 {
     Super::Init();
 
-    if (!ItemDataTable)
+    if (!GunItemDataTable || !SwordItemDataTable)
     {
         return;
     }
 
-    static const FString ContextString(TEXT("GameManager Item Initialization"));
+    static const FString GunContextString(TEXT("GameManager Gun Item Initialization"));
+	static const FString SwordContextString(TEXT("GameManager Sword Item Initialization"));
 
     // 플레이어 기본 총기류 장비 설정
-    FItemData* GunItemData = ItemDataTable->FindRow<FItemData>(FName("RifleGun"), ContextString);
+    const int32 RifleGunID = 1; // RifleGun의 ID
+    FGunItemData* GunItemData = GunItemDataTable->FindRow<FGunItemData>(FName(*FString::FromInt(RifleGunID)), GunContextString);
     if (GunItemData)
     {
         EquippedGunClass = GunItemData->ItemBlueprint;
@@ -26,7 +28,8 @@ void UGameManager::Init()
     }
 
     // 플레이어 기본 도검류 장비 설정
-    FItemData* SwordItemData = ItemDataTable->FindRow<FItemData>(FName("Katana"), ContextString);
+    const int32 KatanaID = 1; // Katana의 ID
+    FSwordItemData* SwordItemData = SwordItemDataTable->FindRow<FSwordItemData>(FName(*FString::FromInt(KatanaID)), SwordContextString);
     if (SwordItemData)
     {
         EquippedSwordClass = SwordItemData->ItemBlueprint;
@@ -34,8 +37,8 @@ void UGameManager::Init()
     }
 
     // 기본 보유 장비를 구매 장비로 추가
-    AddPurchasedItem(EquippedGunItemData);
-    AddPurchasedItem(EquippedSwordItemData);
+    AddPurchasedGunItem(EquippedGunItemData);
+    AddPurchasedSwordItem(EquippedSwordItemData);
 }
 
 int32 UGameManager::GetInitialHealth() const
@@ -121,20 +124,26 @@ void UGameManager::GainMissionReward()
 	}
 }
 
-// 구매한 아이템을 추가하는 메소드
-void UGameManager::AddPurchasedItem(const FItemData& Item)
+// 구매한 총기류 아이템을 추가하는 메소드
+void UGameManager::AddPurchasedGunItem(const FGunItemData& Item)
 {
-    PurchasedItems.Add(Item);
+    PurchasedGunItems.Add(Item);
 
 	if (InventoryMenuWidgetRef)
 	{
-		InventoryMenuWidgetRef->UpdateItemDataArray();
+		InventoryMenuWidgetRef->UpdateGunItemDataArray();
 	}
 }
 
-const TArray<FItemData>& UGameManager::GetPurchasedItems() const
+// 구매한 도검류 아이템을 추가하는 메소드
+void UGameManager::AddPurchasedSwordItem(const FSwordItemData& Item)
 {
-    return PurchasedItems;
+    PurchasedSwordItems.Add(Item);
+
+	if (InventoryMenuWidgetRef)
+	{
+		InventoryMenuWidgetRef->UpdateSwordItemDataArray();
+	}
 }
 
 // 인벤토리 메뉴 위젯의 참조를 설정하는 메소드
@@ -147,6 +156,16 @@ void UGameManager::SetInventoryMenuWidget(UInventoryMenuWidget* InventoryWidget)
 		InventoryMenuWidgetRef->UpdateGunDetails(EquippedGunItemData);
         InventoryMenuWidgetRef->UpdateSwordDetails(EquippedSwordItemData);
 	}
+}
+
+const TArray<FGunItemData>& UGameManager::GetPurchasedGunItems() const
+{
+	return PurchasedGunItems;
+}
+
+const TArray<FSwordItemData>& UGameManager::GetPurchasedSwordItems() const
+{
+	return PurchasedSwordItems;
 }
 
 void UGameManager::SetEquippedGun(TSubclassOf<AActor> NewGun)
@@ -169,12 +188,12 @@ TSubclassOf<AActor> UGameManager::GetEquippedSword() const
     return EquippedSwordClass;
 }
 
-FItemData UGameManager::GetEquippedGunItemData() const
+FGunItemData UGameManager::GetEquippedGunItemData() const
 {
 	return EquippedGunItemData;
 }
 
-void UGameManager::SetEquippedGunItemData(const FItemData& NewGunItemData)
+void UGameManager::SetEquippedGunItemData(const FGunItemData& NewGunItemData)
 {
 	EquippedGunItemData = NewGunItemData;
 
@@ -184,12 +203,12 @@ void UGameManager::SetEquippedGunItemData(const FItemData& NewGunItemData)
 	}
 }
 
-FItemData UGameManager::GetEquippedSwordItemData() const
+FSwordItemData UGameManager::GetEquippedSwordItemData() const
 {
 	return EquippedSwordItemData;
 }
 
-void UGameManager::SetEquippedSwordItemData(const FItemData& NewSwordItemData)
+void UGameManager::SetEquippedSwordItemData(const FSwordItemData& NewSwordItemData)
 {
 	EquippedSwordItemData = NewSwordItemData;
 

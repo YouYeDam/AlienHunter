@@ -42,10 +42,6 @@ public:
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Mission")
     int32 MissionEXPReward;
 
-    // 미션 아이디
-    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Mission")
-    int32 MissionID;
-
     FMissionData()
         : MissionName(TEXT(""))
         , MissionObject(TEXT(""))
@@ -53,6 +49,5 @@ public:
         , MissionImage(nullptr)
         , MissionEnergyReward(0)
         , MissionEXPReward(0)
-        , MissionID(0)
     {}
 };

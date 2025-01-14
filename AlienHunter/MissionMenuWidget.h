@@ -28,6 +28,9 @@ protected:
     virtual void NativeConstruct() override;
 
 private:
+    UPROPERTY(EditAnywhere)
+    UDataTable* MissionDataTable; // 미션 데이터 테이블
+
     UPROPERTY()
     TArray<FMissionData> MissionDataArray; // 미션 데이터 배열
 

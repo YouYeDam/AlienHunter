@@ -1,0 +1,4 @@
+﻿ID,ItemName,ItemDescription,ItemType,ItemPrice,ItemDamage,ItemImage,ItemBlueprint,MagazineSize,MagazineCount,GunRange,GunRecoil
+1,"라이플 건","가장 기초적인 총기입니다.","총기류",0,20,"/Game/Image/Weapon/Rifle.Rifle","/Game/Weapon/Gun/BP_Rifle.BP_Rifle_C",30,3,100,10
+2,"런쳐 건","라이플 건보다 강화된 런쳐 건입니다.","총기류",100,20,"/Game/Image/Weapon/Launcher.Launcher","/Game/Weapon/Gun/BP_Launcher.BP_Launcher_C",20,3,100,10
+3,"레이저 라이플","레이저 탄이 나가는 라이플 건입니다.","총기류",150,40,"/Game/Image/Weapon/LaserRifle.LaserRifle","/Game/Weapon/Gun/BP_LaserRifle.BP_LaserRifle_C",10,3,100,10

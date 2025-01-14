@@ -4,7 +4,9 @@
 
 #include "CoreMinimal.h"
 #include "Blueprint/UserWidget.h"
-#include "ItemData.h"
+#include "BaseItemData.h"
+#include "GunItemData.h"
+#include "SwordItemData.h"
 #include "InventoryMenuWidget.h"
 #include "InventorySlotWidget.generated.h"
 
@@ -21,7 +23,8 @@ public:
     UFUNCTION()
     void OnSlotClicked();
 
-    void InitializeSlot(UInventoryMenuWidget* InInventoryMenuWidget, const FItemData& InItemData);
+    void InitializeGunSlot(UInventoryMenuWidget* InInventoryMenuWidget, const FGunItemData& InGunItemData);
+    void InitializeSwordSlot(UInventoryMenuWidget* InInventoryMenuWidget, const FSwordItemData& InSwordItemData);
 
 private:
     UPROPERTY(meta = (BindWidget))
@@ -29,5 +32,7 @@ private:
 
     UInventoryMenuWidget* InventoryMenuWidgetRef; // 인벤토리 메뉴 위젯 참조
 
-    FItemData ItemData;
+    FBaseItemData ItemData;
+    FGunItemData GunItemData;
+    FSwordItemData SwordItemData;
 };

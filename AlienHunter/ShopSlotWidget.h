@@ -4,12 +4,12 @@
 
 #include "CoreMinimal.h"
 #include "Blueprint/UserWidget.h"
-#include "ItemData.h"
+#include "BaseItemData.h"
+#include "GunItemData.h"
+#include "SwordItemData.h"
 #include "ShopMenuWidget.h"
 #include "ShopSlotWidget.generated.h"
-/**
- * 
- */
+
 UCLASS()
 class ALIENHUNTER_API UShopSlotWidget : public UUserWidget
 {
@@ -22,7 +22,9 @@ public:
     UFUNCTION()
     void OnSlotClicked();
 
-    void InitializeSlot(UShopMenuWidget* InShopMenuWidget, const FItemData& InItemData);
+    void InitializeSlot(UShopMenuWidget* InShopMenuWidget, const FBaseItemData& InItemData);
+    void InitializeGunSlot(UShopMenuWidget* InShopMenuWidget, const FGunItemData& InGunItemData);
+    void InitializeSwordSlot(UShopMenuWidget* InShopMenuWidget, const FSwordItemData& InSwordItemData);
 
 private:
     UPROPERTY(meta = (BindWidget))
@@ -31,5 +33,7 @@ private:
     UShopMenuWidget* ShopMenuWidgetRef;  // 상점 메뉴 위젯 참조
 
     UPROPERTY()
-    FItemData ItemData; // 슬롯의 아이템 데이터
+    FBaseItemData ItemData;
+    FGunItemData GunItemData;
+    FSwordItemData SwordItemData;
 };
