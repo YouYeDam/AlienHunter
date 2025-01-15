@@ -13,13 +13,13 @@ struct ALIENHUNTER_API FGunItemData : public FBaseItemData
     GENERATED_BODY()
 
 public:
-	// 탄창 크기
+	// 탄약 개수
     UPROPERTY(EditAnywhere, BlueprintReadWrite)
-    int32 MagazineSize;
+    int32 AmmoCount;
 
-	// 탄창 개수
+	// 여분 탄약 개수
     UPROPERTY(EditAnywhere, BlueprintReadWrite)
-    int32 MagazineCount;
+    int32 SpareAmmoCount;
 
 	// 사거리
     UPROPERTY(EditAnywhere, BlueprintReadWrite)
@@ -27,12 +27,12 @@ public:
 
 	// 반동 정도
     UPROPERTY(EditAnywhere, BlueprintReadWrite)
-    int32 GunRecoil;
+    float GunRecoil;
 
 	FGunItemData()
         : FBaseItemData()
-        , MagazineSize(0)
-        , MagazineCount(0)
+        , AmmoCount(0)
+        , SpareAmmoCount(0)
         , GunRange(0)
         , GunRecoil(0)
     {}

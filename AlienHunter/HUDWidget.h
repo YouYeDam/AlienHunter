@@ -29,6 +29,10 @@ private:
 	UPROPERTY(meta = (BindWidget))
     class UTextBlock* MissionProgress;
 
+	UPROPERTY(meta = (BindWidget))
+    class UTextBlock* Ammo;
+
 	void UpdateGainedEnergyText();
 	void UpdateGainedEXPText();
+	void UpdateAmmoText();
 };

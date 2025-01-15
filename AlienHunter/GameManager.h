@@ -1,4 +1,4 @@
-// Fill out your copyright notice in the Description page of Project Settings.
+
 
 #pragma once
 
@@ -11,6 +11,8 @@
 #include "GameManager.generated.h"
 
 class UInventoryMenuWidget;
+class AGun;
+class ASword;
 
 UCLASS(Blueprintable)
 class ALIENHUNTER_API UGameManager : public UGameInstance
@@ -18,22 +20,22 @@ class ALIENHUNTER_API UGameManager : public UGameInstance
 	GENERATED_BODY()
 
 private:
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Player Stats", Meta = (AllowPrivateAccess = "true"))
+	UPROPERTY(EditAnywhere)
 	int32 Health = 100;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Player Stats", Meta = (AllowPrivateAccess = "true"))
+	UPROPERTY(EditAnywhere)
 	int32 Energy = 0;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Player Stats", Meta = (AllowPrivateAccess = "true"))
+	UPROPERTY(EditAnywhere)
 	int32 PlayerLevel = 1;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Player Stats", Meta = (AllowPrivateAccess = "true"))
+	UPROPERTY(EditAnywhere)
 	int32 EXP = 0;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Player Stats", Meta = (AllowPrivateAccess = "true"))
+	UPROPERTY(EditAnywhere)
 	int32 EXPRequirementForLevelup = 100;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Player Stats", Meta = (AllowPrivateAccess = "true"))
+	UPROPERTY(EditAnywhere)
 	int32 KillEnemyCount = 0;
 
     UPROPERTY(EditAnywhere)
@@ -68,6 +70,7 @@ private:
 
 public:
 	virtual void Init() override;
+	virtual void Shutdown() override;
 
 	UFUNCTION(BlueprintCallable)
 	int32 GetInitialHealth() const;

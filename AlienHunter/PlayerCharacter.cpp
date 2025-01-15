@@ -67,6 +67,7 @@ void APlayerCharacter::SetupPlayerInputComponent(class UInputComponent* PlayerIn
 	PlayerInputComponent->BindAction(TEXT("SwapGun"), EInputEvent::IE_Pressed, this, &APlayerCharacter::SwapGun);
 	PlayerInputComponent->BindAction(TEXT("SwapSword"), EInputEvent::IE_Pressed, this, &APlayerCharacter::SwapSword);
 	PlayerInputComponent->BindAction(TEXT("Interact"), EInputEvent::IE_Pressed, this, &APlayerCharacter::Interact);
+	PlayerInputComponent->BindAction(TEXT("Reload"), EInputEvent::IE_Pressed, this, &APlayerCharacter::Reload);
 }
 
 void APlayerCharacter::MoveForward(float AxisValue)
@@ -197,6 +198,14 @@ void APlayerCharacter::Interact()
     }
 }
 
+void APlayerCharacter::Reload()
+{
+    if (Gun && IsUsingGun)
+    {
+        Gun->ReloadAmmo();
+    }
+}
+
 // 플레이어의 초기 스탯을 설정하는 메소드
 void APlayerCharacter::InitializePlayerStats()
 {
@@ -231,3 +240,9 @@ void APlayerCharacter::SetGainedEXP(int32 NewEXP)
 {
     GainedEXP = NewEXP;
 }
+
+AGun* APlayerCharacter::GetEquippedGun() const
+{
+	return Gun;
+}
+

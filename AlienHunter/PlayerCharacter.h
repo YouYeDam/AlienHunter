@@ -72,10 +72,13 @@ public:
 	void SwapGun();
 	void SwapSword();
 	void Interact();
+	void Reload();
 	
 	int32 GetGainedEnergy() const;
 	void SetGainedEnergy(int32 NewEnergy);
 	
 	int32 GetGainedEXP() const;
 	void SetGainedEXP(int32 NewEXP);
+
+	AGun* GetEquippedGun() const;
 };

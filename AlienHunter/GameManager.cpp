@@ -1,9 +1,9 @@
-// Fill out your copyright notice in the Description page of Project Settings.
-
-
 #include "GameManager.h"
+#include "Editor.h"
 #include "InventoryMenuWidget.h"
 #include "Engine/World.h"
+#include "Gun.h"
+#include "Sword.h"
 
 // 게임 시작 시 기본 보유한 아이템 초기화
 void UGameManager::Init()
@@ -39,6 +39,11 @@ void UGameManager::Init()
     // 기본 보유 장비를 구매 장비로 추가
     AddPurchasedGunItem(EquippedGunItemData);
     AddPurchasedSwordItem(EquippedSwordItemData);
+}
+
+void UGameManager::Shutdown()
+{
+    Super::Shutdown();
 }
 
 int32 UGameManager::GetInitialHealth() const

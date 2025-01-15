@@ -3,6 +3,7 @@
 
 #include "HUDWidget.h"
 #include "PlayerCharacter.h"
+#include "Gun.h"
 #include "Components/TextBlock.h"
 #include "Kismet/GameplayStatics.h"
 #include "CollectObjectGameMode.h"
@@ -15,14 +16,14 @@ void UHUDWidget::NativeConstruct()
     PlayerCharacter = Cast<APlayerCharacter>(GetWorld()->GetFirstPlayerController()->GetPawn());
 }
 
-// 획득한 에너지와 경험치를 매 틱마다 갱신
 void UHUDWidget::NativeTick(const FGeometry& MyGeometry, float InDeltaTime)
 {
     Super::NativeTick(MyGeometry, InDeltaTime);
 
-    // 에너지와 경험치 업데이트 함수 호출
     UpdateGainedEnergyText();
     UpdateGainedEXPText();
+
+    UpdateAmmoText();
 }
 
 // 획득한 에너지 텍스트를 갱신하는 메소드
@@ -46,6 +47,23 @@ void UHUDWidget::UpdateGainedEXPText()
             NSLOCTEXT("HUD", "EXPText", "획득한 경험치: {0}"),
             FText::AsNumber(PlayerCharacter->GetGainedEXP())
         ));
+    }
+}
+
+// 플레이어의 탄약 현황을 갱신하는 메소드
+void UHUDWidget::UpdateAmmoText()
+{
+    if (PlayerCharacter && Ammo)
+    {
+        AGun* EquippedGun = PlayerCharacter->GetEquippedGun();
+        if (EquippedGun)
+        {
+            Ammo->SetText(FText::Format(
+                NSLOCTEXT("HUD", "AmmoText", "탄약: {0} / {1}"),
+                FText::AsNumber(EquippedGun->GetAmmoCount()),
+                FText::AsNumber(EquippedGun->GetSpareAmmoCount())
+            ));
+        }
     }
 }
 
