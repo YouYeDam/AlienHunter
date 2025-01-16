@@ -1,7 +1,9 @@
 #include "GameManager.h"
-#include "Editor.h"
-#include "InventoryMenuWidget.h"
+#include "Engine/StreamableManager.h"
+#include "Engine/AssetManager.h"
+#include "Kismet/GameplayStatics.h"
 #include "Engine/World.h"
+#include "InventoryMenuWidget.h"
 #include "Gun.h"
 #include "Sword.h"
 
@@ -231,4 +233,14 @@ FMissionData UGameManager::GetCurrentMissionData() const
 void UGameManager::SetCurrentMissionData(const FMissionData& NewMissionData)
 {
 	CurrentMissionData = NewMissionData;
+}
+
+FName UGameManager::GetCurrentMissionName() const
+{
+	return CurrentMissionName;
+}
+
+void UGameManager::SetCurrentMissionName(const FName& NewMissionName)
+{
+	CurrentMissionName = NewMissionName;
 }

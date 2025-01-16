@@ -68,6 +68,9 @@ private:
 	UPROPERTY()
 	FMissionData CurrentMissionData;
 
+	UPROPERTY()
+	FName CurrentMissionName;
+
 public:
 	virtual void Init() override;
 	virtual void Shutdown() override;
@@ -128,6 +131,9 @@ public:
 
 	FMissionData GetCurrentMissionData() const;
 	void SetCurrentMissionData(const FMissionData& NewMissionData);
+
+	FName GetCurrentMissionName() const;
+	void SetCurrentMissionName(const FName& NewMissionName);
 
 private:
 	void Levelup();

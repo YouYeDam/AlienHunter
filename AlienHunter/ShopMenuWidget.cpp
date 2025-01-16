@@ -154,7 +154,7 @@ void UShopMenuWidget::OnBuyItemClicked()
 		return;
 	}
 
-	if (GameManager->GetEnergy() < SelectedItem.ItemPrice)
+	if (GameManager->GetEnergy() < SelectedItem.ItemPrice) // 보유 에너지가 아이템 가격보다 낮으면 구매 불가
 	{
 		if (PopupWidgetClass)
 		{
@@ -170,6 +170,22 @@ void UShopMenuWidget::OnBuyItemClicked()
 			}
 		}
 	}
+    else if (CheckItemAlreadyPurchased()) // 이미 아이템을 구매한 상태라면 구매 불가
+    {
+        if (PopupWidgetClass)
+        {
+            FText FormattedText = NSLOCTEXT("ShopMenu", "AlreadyPurchased", "이미 구매한 아이템입니다!");
+
+            PopupWidget = CreateWidget<UPopupWidget>(this, PopupWidgetClass);
+            if (PopupWidget)
+            {
+                PopupWidget->AddToViewport();
+                PopupWidget->InitializePopup(FormattedText, false);
+
+                PopupWidget->ConfirmClicked.AddDynamic(this, &UShopMenuWidget::OnPopupClose);
+            }
+        }
+    }
 	else
 	{
 		if (PopupWidgetClass)
@@ -276,6 +292,30 @@ void UShopMenuWidget::UpdateItemDetails(const FBaseItemData& ItemData)
     {
         ItemImage->SetBrushFromTexture(ItemData.ItemImage);
     }
+}
+
+// 아이템을 이미 구매했는지 확인하는 메소드
+bool UShopMenuWidget::CheckItemAlreadyPurchased() const
+{
+    // 총기류 아이템에서 중복 확인
+    for (const FGunItemData& GunItem : GameManager->GetPurchasedGunItems())
+    {
+        if (GunItem.ItemName == SelectedItem.ItemName)
+        {
+            return true;
+        }
+    }
+
+    // 도검류 아이템에서 중복 확인
+    for (const FSwordItemData& SwordItem : GameManager->GetPurchasedSwordItems())
+    {
+        if (SwordItem.ItemName == SelectedItem.ItemName)
+        {
+            return true;
+        }
+    }
+
+    return false;
 }
 
 // 빈 데이터로 초기화하는 메소드

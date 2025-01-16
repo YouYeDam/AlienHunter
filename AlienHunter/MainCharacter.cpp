@@ -16,7 +16,7 @@ void AMainCharacter::BeginPlay()
 {
 	Super::BeginPlay();
 
-	GameMode = GetWorld()->GetAuthGameMode<AAlienHunterGameMode>();
+	GameMode = Cast<AAlienHunterGameMode>(UGameplayStatics::GetGameMode(GetWorld()));
 
 	IsControlledByPlayer = IsPlayerControlled();
 }

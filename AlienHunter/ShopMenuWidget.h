@@ -126,4 +126,6 @@ private:
     void CreateGunInventorySlots();
 
     void CreateSwordInventorySlots();
+
+    bool CheckItemAlreadyPurchased() const;
 };

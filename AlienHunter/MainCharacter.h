@@ -6,7 +6,6 @@
 #include "GameFramework/Character.h"
 #include "AlienHunterGameMode.h"
 #include "GameManager.h"
-
 #include "MainCharacter.generated.h"
 
 UCLASS()

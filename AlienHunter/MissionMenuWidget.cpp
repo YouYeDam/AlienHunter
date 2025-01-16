@@ -96,20 +96,20 @@ void UMissionMenuWidget::OnStartMissionClicked()
     GameManager = Cast<UGameManager>(UGameplayStatics::GetGameInstance(GetWorld()));
     if (GameManager)
     {
-        GameManager->SetCurrentMissionData(SelectedMissionData); // 선택한 미션을 게임 매니저의 현재 미션으로 설정
+        GameManager->SetCurrentMissionData(SelectedMissionData);
+        GameManager->SetCurrentMissionName(SelectedMissionLevel);
+        UGameplayStatics::OpenLevel(this, FName("LoadingScreen")); // 로딩 화면 레벨로 이동
     }
 
-    // 미션 진입 시 플레이어 인풋 활성화 및 마우스 커서 비활성화 메소드
+    // UI 상태 초기화
     if (APlayerController* PlayerController = GetWorld()->GetFirstPlayerController())
     {
         FInputModeGameOnly InputMode;
         PlayerController->SetInputMode(InputMode);
-
         PlayerController->bShowMouseCursor = false;
     }
 
     SelectedMissionData = FMissionData(); // 선택된 미션 비우기
-    UGameplayStatics::OpenLevel(this, SelectedMissionLevel); // 선택된 미션 레벨 로드
 }
 
 // 선택된 미션과 세부사항 UI를 업데이트하는 메소드
