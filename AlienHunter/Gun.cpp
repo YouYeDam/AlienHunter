@@ -65,6 +65,7 @@ void AGun::InitializeWeaponData()
         SpareAmmoCount = GunData->SpareAmmoCount;
         GunRange = GunData->GunRange;
         GunRecoil = GunData->GunRecoil;
+		Barrage = GunData->Barrage;
     }
 }
 
@@ -83,6 +84,12 @@ void AGun::StartShoot()
 	if (bIsPlayerWeapon && AmmoCount <= 0) // 플레이어는 탄약이 없으면 발사 불가
     {
 		UGameplayStatics::SpawnSoundAttached(EmptyAmmoSound, Mesh, TEXT("MuzzleFlashSocket"));
+
+		// 연발 사격 중이라면 타이머 종료
+        if (bIsFiring)
+        {
+            StopBarrage();
+        }
         return;
     }
 
@@ -110,6 +117,34 @@ void AGun::StartShoot()
 			HitActor->TakeDamage(Damage, DamageEvent, OwnerController, this); // 충돌한 액터에 데미지 적용
 		}
 	}
+}
+
+// 연발 사격을 시작하는 메소드
+void AGun::StartBarrage()
+{
+    if (bIsFiring || AmmoCount <= 0)
+	{
+		if (AmmoCount <= 0)
+		{
+			UGameplayStatics::SpawnSoundAttached(EmptyAmmoSound, Mesh, TEXT("MuzzleFlashSocket"));
+		}
+		return;
+	}
+
+    bIsFiring = true;
+    GetWorld()->GetTimerManager().SetTimer(FireTimerHandle, this, &AGun::StartShoot, FireRate, true);
+}
+
+// 연발 사격을 중지하는 메소드
+void AGun::StopBarrage()
+{
+    if (!bIsFiring)
+	{
+		return;
+	}
+
+    bIsFiring = false;
+    GetWorld()->GetTimerManager().ClearTimer(FireTimerHandle);
 }
 
 // 탄약을 재장전하는 메소드
@@ -194,4 +229,9 @@ int32 AGun::GetAmmoCount() const
 int32 AGun::GetSpareAmmoCount() const
 {
 	return SpareAmmoCount;
+}
+
+bool AGun::GetBarrage() const
+{
+	return Barrage;
 }

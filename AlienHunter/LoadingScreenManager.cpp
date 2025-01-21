@@ -3,24 +3,31 @@
 
 #include "LoadingScreenManager.h"
 #include "GameManager.h"
+#include "LoadingScreenWidget.h"
 #include "Kismet/GameplayStatics.h"
 #include "Blueprint/UserWidget.h"
 #include "Engine/StreamableManager.h"
 #include "Engine/AssetManager.h"
-
 
 void ALoadingScreenManager::BeginPlay()
 {
     Super::BeginPlay();
 
     // 로딩 위젯 생성 및 화면에 추가
+    ULoadingScreenWidget* LoadingScreen = nullptr;
     if (LoadingScreenClass)
     {
-        LoadingWidget = CreateWidget<UUserWidget>(GetWorld(), LoadingScreenClass);
+        LoadingWidget = CreateWidget<ULoadingScreenWidget>(GetWorld(), LoadingScreenClass);
         if (LoadingWidget)
         {
             LoadingWidget->AddToViewport();
         }
+    }
+
+    LoadingScreen = Cast<ULoadingScreenWidget>(LoadingWidget);
+    if (!LoadingScreen)
+    {
+        return;
     }
 
     UGameManager* GameManager = Cast<UGameManager>(UGameplayStatics::GetGameInstance(GetWorld()));
@@ -32,19 +39,31 @@ void ALoadingScreenManager::BeginPlay()
     FName CurrentMissionName = GameManager->GetCurrentMissionName();
     if (CurrentMissionName.IsNone())
     {
-        return;
+        return; 
     }
 
     MissionName = CurrentMissionName;
-    FString LevelPath = FString::Format(TEXT("/Game/Levels/Missions/{0}"), {MissionName.ToString()});
+
+    FMissionData CurrentMissionData = GameManager->GetCurrentMissionData();
+    LoadingScreen->UpdateBackground(CurrentMissionData.MissionImage);
+
+    LoadingScreen->UpdateLoadingText(false);
 
     // 비동기 로드 시작
+    FString LevelPath = FString::Format(TEXT("/Game/Levels/Missions/{0}"), {MissionName.ToString()});
     FStreamableManager& Streamable = UAssetManager::GetStreamableManager();
-    Streamable.RequestAsyncLoad(LevelPath, FStreamableDelegate::CreateLambda([this]()
+    Streamable.RequestAsyncLoad(LevelPath, FStreamableDelegate::CreateLambda([this, LoadingScreen]()
     {
-        // 로딩 완료 시 키 입력 대기
+        // 로딩 완료 처리
+        UE_LOG(LogTemp, Warning, TEXT("로딩 완료"));
+
         bIsMissionReady = true;
         WaitForAnyKey();
+
+        if (LoadingScreen)
+        {
+            LoadingScreen->UpdateLoadingText(true);
+        }
     }));
 }
 
@@ -67,11 +86,11 @@ void ALoadingScreenManager::WaitForAnyKey()
 
 void ALoadingScreenManager::OnKeyPressed()
 {
-    UGameplayStatics::OpenLevel(GetWorld(), MissionName);
-
     if (LoadingWidget)
     {
         LoadingWidget->RemoveFromParent();
         LoadingWidget = nullptr;
     }
+
+    UGameplayStatics::OpenLevel(GetWorld(), MissionName);
 }

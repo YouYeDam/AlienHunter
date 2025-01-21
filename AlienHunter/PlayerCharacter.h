@@ -73,7 +73,8 @@ public:
 	void SwapSword();
 	void Interact();
 	void Reload();
-	
+	void StopShoot();
+
 	int32 GetGainedEnergy() const;
 	void SetGainedEnergy(int32 NewEnergy);
 	

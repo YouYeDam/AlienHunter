@@ -10,7 +10,10 @@ UCLASS()
 class ALIENHUNTER_API ALoadingScreenManager : public AActor
 {
     GENERATED_BODY()
-    
+
+protected:
+    virtual void BeginPlay() override;
+
 private:
     bool bIsMissionReady = false;
 
@@ -24,8 +27,6 @@ private:
     FName MissionName;
 
 public:
-    virtual void BeginPlay() override;
-
     void WaitForAnyKey();
     void OnKeyPressed();
 };

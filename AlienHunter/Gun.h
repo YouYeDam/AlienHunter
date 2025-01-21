@@ -66,6 +66,9 @@ private:
     UPROPERTY(EditAnywhere)
     float GunRecoil; // 반동 정도
 
+    UPROPERTY(EditAnywhere)
+    bool Barrage; // 연발 가능 여부
+
 	int32 MaxAmmoCount; // 최대 탄약 개수
 
 	bool GunTrace(FHitResult& Hit, FVector& ShotDirection);
@@ -82,4 +85,20 @@ public:
 
 	int32 GetAmmoCount() const;
 	int32 GetSpareAmmoCount() const;
+
+// 연발 사격 가능용 변수
+private: 
+    UPROPERTY(EditAnywhere)
+	bool bIsFiring = false; // 연발 사격 중인지 여부
+
+	UPROPERTY(EditAnywhere)
+	float FireRate = 0.1f; // 연발 사격 속도 (초)
+
+	FTimerHandle FireTimerHandle; // 연발 사격 타이머 핸들
+
+public:
+	void StartBarrage();
+	void StopBarrage();
+	bool GetBarrage() const;
+
 };

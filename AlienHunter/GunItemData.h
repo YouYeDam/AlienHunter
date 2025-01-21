@@ -29,11 +29,16 @@ public:
     UPROPERTY(EditAnywhere, BlueprintReadWrite)
     float GunRecoil;
 
+    // 연발 가능 여부
+    UPROPERTY(EditAnywhere, BlueprintReadWrite)
+    bool Barrage;
+
 	FGunItemData()
         : FBaseItemData()
         , AmmoCount(0)
         , SpareAmmoCount(0)
         , GunRange(0)
         , GunRecoil(0)
+        , Barrage(false)
     {}
 };

@@ -68,6 +68,7 @@ void APlayerCharacter::SetupPlayerInputComponent(class UInputComponent* PlayerIn
 	PlayerInputComponent->BindAction(TEXT("SwapSword"), EInputEvent::IE_Pressed, this, &APlayerCharacter::SwapSword);
 	PlayerInputComponent->BindAction(TEXT("Interact"), EInputEvent::IE_Pressed, this, &APlayerCharacter::Interact);
 	PlayerInputComponent->BindAction(TEXT("Reload"), EInputEvent::IE_Pressed, this, &APlayerCharacter::Reload);
+	PlayerInputComponent->BindAction(TEXT("Shoot"), EInputEvent::IE_Released, this, &APlayerCharacter::StopShoot);
 }
 
 void APlayerCharacter::MoveForward(float AxisValue)
@@ -117,10 +118,14 @@ bool APlayerCharacter::IsAttacking() const
 // 캐릭터의 사격 메소드
 void APlayerCharacter::Shoot()
 {
-	if (Gun && IsUsingGun)
-	{
-		Gun->StartShoot();
-	}
+    if (Gun && Gun->GetBarrage() && IsUsingGun) // 연발 가능 여부 체크
+    {
+        Gun->StartBarrage();
+    }
+    else if (Gun && IsUsingGun)
+    {
+        Gun->StartShoot();
+    }
 }
 
 // 캐릭터의 휘두르기 메소드
@@ -203,6 +208,14 @@ void APlayerCharacter::Reload()
     if (Gun && IsUsingGun)
     {
         Gun->ReloadAmmo();
+    }
+}
+
+void APlayerCharacter::StopShoot()
+{
+    if (Gun && Gun->GetBarrage())
+    {
+        Gun->StopBarrage();
     }
 }
 
