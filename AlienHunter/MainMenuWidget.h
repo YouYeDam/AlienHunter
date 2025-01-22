@@ -14,6 +14,9 @@ class ALIENHUNTER_API UMainMenuWidget : public UUserWidget
 	
 public:
     UFUNCTION()
+    void OnLoadGameClicked();
+
+    UFUNCTION()
     void OnStartGameClicked();
 
     UFUNCTION()
@@ -23,6 +26,9 @@ protected:
     virtual void NativeConstruct() override;
 
 private:
+    UPROPERTY(meta = (BindWidget))
+    class UButton* LoadGameButton;
+
     UPROPERTY(meta = (BindWidget))
     class UButton* StartGameButton;
 

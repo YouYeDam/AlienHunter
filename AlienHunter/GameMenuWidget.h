@@ -26,6 +26,9 @@ public:
     UFUNCTION()
     void OnMoveToCharacterMenuClicked();
 
+    UFUNCTION()
+    void OnSaveGameClicked();
+
 protected:
     virtual void NativeConstruct() override;
 
@@ -43,4 +46,7 @@ private:
 
     UPROPERTY(meta = (BindWidget))
     class UButton* CharacterMenuButton;
+
+    UPROPERTY(meta = (BindWidget))
+    class UButton* SaveGameButton;
 };

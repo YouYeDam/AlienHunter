@@ -98,6 +98,7 @@ void UMissionMenuWidget::OnStartMissionClicked()
     {
         GameManager->SetCurrentMissionData(SelectedMissionData);
         GameManager->SetCurrentMissionName(SelectedMissionLevel);
+        GameManager->SaveGame(); // 게임 저장
         UGameplayStatics::OpenLevel(this, FName("LoadingScreen")); // 로딩 화면 레벨로 이동
     }
 

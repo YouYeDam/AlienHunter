@@ -3,11 +3,17 @@
 
 #include "MainMenuWidget.h"
 #include "Components/Button.h"
+#include "GameManager.h"
 #include "Kismet/GameplayStatics.h"
 
 void UMainMenuWidget::NativeConstruct()
 {
     Super::NativeConstruct();
+
+    if (LoadGameButton)
+    {
+        LoadGameButton->OnClicked.AddDynamic(this, &UMainMenuWidget::OnLoadGameClicked);
+    }
 
     if (StartGameButton)
     {
@@ -20,7 +26,18 @@ void UMainMenuWidget::NativeConstruct()
     }
 }
 
-// 게임을 시작하는 메소드
+// 게임을 로드하는 메소드
+void UMainMenuWidget::OnLoadGameClicked()
+{
+    UGameManager* GameManager = Cast<UGameManager>(UGameplayStatics::GetGameInstance(GetWorld()));
+    if (GameManager)
+    {
+        GameManager->LoadGame();
+        OnStartGameClicked();
+    }
+}
+
+// 새 게임을 시작하는 메소드
 void UMainMenuWidget::OnStartGameClicked()
 {
     if (APlayerController* PlayerController = GetWorld()->GetFirstPlayerController())
@@ -39,3 +56,5 @@ void UMainMenuWidget::OnQuitGameClicked()
 {
     UKismetSystemLibrary::QuitGame(this, nullptr, EQuitPreference::Quit, true);
 }
+
+

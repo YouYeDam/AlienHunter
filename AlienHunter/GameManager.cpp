@@ -1,8 +1,12 @@
+
+
+
 #include "GameManager.h"
 #include "Engine/StreamableManager.h"
 #include "Engine/AssetManager.h"
 #include "Kismet/GameplayStatics.h"
 #include "Engine/World.h"
+#include "GameSaveData.h"
 #include "InventoryMenuWidget.h"
 #include "Gun.h"
 #include "Sword.h"
@@ -46,6 +50,82 @@ void UGameManager::Init()
 void UGameManager::Shutdown()
 {
     Super::Shutdown();
+}
+
+void UGameManager::SaveGame()
+{
+    UGameSaveData* SaveGameData = Cast<UGameSaveData>(UGameplayStatics::CreateSaveGameObject(UGameSaveData::StaticClass()));
+
+    if (!SaveGameData)
+    {
+        return;
+    }
+
+    // 플레이어 상태 저장
+    SaveGameData->SetHealth(Health);
+    SaveGameData->SetEnergy(Energy);
+    SaveGameData->SetPlayerLevel(PlayerLevel);
+    SaveGameData->SetEXP(EXP);
+    SaveGameData->SetEXPRequirementForLevelup(EXPRequirementForLevelup);
+    SaveGameData->SetKillEnemyCount(KillEnemyCount);
+
+    // 인벤토리 상태 저장
+    SaveGameData->SetPurchasedGunItems(PurchasedGunItems);
+    SaveGameData->SetPurchasedSwordItems(PurchasedSwordItems);
+    SaveGameData->SetEquippedGunClass(EquippedGunClass);
+    SaveGameData->SetEquippedGunItemData(EquippedGunItemData);
+    SaveGameData->SetEquippedSwordClass(EquippedSwordClass);
+    SaveGameData->SetEquippedSwordItemData(EquippedSwordItemData);
+
+    // 게임 저장
+	#if WITH_EDITOR
+		FString SlotName = TEXT("EditorSaveSlot");
+	#else
+		FString SlotName = TEXT("SaveSlot");
+	#endif
+
+	if (UGameplayStatics::SaveGameToSlot(SaveGameData, SlotName, 0))
+	{
+		UE_LOG(LogTemp, Log, TEXT("Game Saved Successfully! Slot: %s"), *SlotName);
+	}
+	else
+	{
+		UE_LOG(LogTemp, Warning, TEXT("Failed to save game! Slot: %s"), *SlotName);
+	}
+}
+
+void UGameManager::LoadGame()
+{
+    // 슬롯 이름 설정
+    #if WITH_EDITOR
+        FString SlotName = TEXT("EditorSaveSlot");
+    #else
+        FString SlotName = TEXT("SaveSlot");
+    #endif
+
+    // 저장된 데이터를 로드
+    UGameSaveData* LoadedGame = Cast<UGameSaveData>(UGameplayStatics::LoadGameFromSlot(SlotName, 0));
+
+    if (!LoadedGame)
+    {
+        return;
+    }
+
+    // 플레이어 상태 복원
+    Health = LoadedGame->GetHealth();
+    Energy = LoadedGame->GetEnergy();
+    PlayerLevel = LoadedGame->GetPlayerLevel();
+    EXP = LoadedGame->GetEXP();
+    EXPRequirementForLevelup = LoadedGame->GetEXPRequirementForLevelup();
+    KillEnemyCount = LoadedGame->GetKillEnemyCount();
+
+    // 인벤토리 상태 복원
+    PurchasedGunItems = LoadedGame->GetPurchasedGunItems();
+    PurchasedSwordItems = LoadedGame->GetPurchasedSwordItems();
+    EquippedGunClass = LoadedGame->GetEquippedGunClass();
+    EquippedGunItemData = LoadedGame->GetEquippedGunItemData();
+    EquippedSwordClass = LoadedGame->GetEquippedSwordClass();
+    EquippedSwordItemData = LoadedGame->GetEquippedSwordItemData();
 }
 
 int32 UGameManager::GetInitialHealth() const

@@ -13,14 +13,18 @@ class ALIENHUNTER_API AMonsterCharacter : public AMainCharacter
 protected:
 	virtual void BeginPlay() override;
 
-	UPROPERTY(EditDefaultsOnly)
+	UPROPERTY(EditAnywhere)
 	int32 EXP = 0; // 몬스터가 제공하는 경험치
 
-	UPROPERTY(EditDefaultsOnly)
+	UPROPERTY(EditAnywhere)
 	int32 Energy = 0; // 몬스터가 제공하는 에너지
+
 private:
+    UPROPERTY(EditAnywhere)
+    USoundBase* HeadshotSound;
 
 public:
 	int32 GetEnergy() const;
 	int32 GetEXP() const;
+	void PlayHeadshotSound();
 };

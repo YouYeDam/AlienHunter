@@ -76,6 +76,12 @@ public:
 	virtual void Shutdown() override;
 
 	UFUNCTION(BlueprintCallable)
+	void SaveGame();
+
+	UFUNCTION(BlueprintCallable)
+	void LoadGame();
+
+	UFUNCTION(BlueprintCallable)
 	int32 GetInitialHealth() const;
 
 	UFUNCTION(BlueprintCallable)

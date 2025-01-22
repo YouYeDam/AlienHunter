@@ -3,6 +3,7 @@
 
 #include "GameMenuWidget.h"
 #include "Components/Button.h"
+#include "GameManager.h"
 #include "Kismet/GameplayStatics.h"
 
 void UGameMenuWidget::NativeConstruct()
@@ -29,6 +30,11 @@ void UGameMenuWidget::NativeConstruct()
     if (CharacterMenuButton)
     {
         CharacterMenuButton->OnClicked.AddDynamic(this, &UGameMenuWidget::OnMoveToCharacterMenuClicked);
+    }
+
+    if (SaveGameButton)
+    {
+        SaveGameButton->OnClicked.AddDynamic(this, &UGameMenuWidget::OnSaveGameClicked);
     }
 }
 
@@ -68,4 +74,12 @@ void UGameMenuWidget::OnMoveToCharacterMenuClicked()
     }
 }
 
-
+// 게임을 저장하는 메소드
+void UGameMenuWidget::OnSaveGameClicked()
+{
+    UGameManager* GameManager = Cast<UGameManager>(UGameplayStatics::GetGameInstance(GetWorld()));
+    if (GameManager)
+    {
+        GameManager->SaveGame();
+    }
+}

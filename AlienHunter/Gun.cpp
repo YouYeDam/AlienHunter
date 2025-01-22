@@ -3,6 +3,7 @@
 
 #include "Gun.h"
 #include "ShooterAIController.h"
+#include "MonsterCharacter.h"
 #include "Components/SkeletalMeshComponent.h"
 #include "Kismet/GameplayStatics.h"
 #include "Engine/DamageEvents.h"
@@ -107,14 +108,30 @@ void AGun::StartShoot()
 	bool IsSuccess = GunTrace(Hit, ShotDirection); // 충돌 여부 계산
 
 	if (IsSuccess) {
-		UGameplayStatics::SpawnEmitterAtLocation(GetWorld(), ImpactEffect, Hit.Location, ShotDirection.Rotation());
-
 		AActor* HitActor = Hit.GetActor();
 		if (HitActor != nullptr) {
-			FPointDamageEvent DamageEvent(Damage, Hit, ShotDirection, nullptr); // 데미지 정보 
-			AController* OwnerController = GetOwnerController(); // 총기의 소유자
+			// 기본 데미지 값
+			float AppliedDamage = Damage;
 
-			HitActor->TakeDamage(Damage, DamageEvent, OwnerController, this); // 충돌한 액터에 데미지 적용
+			// 헤드샷 판정
+			if (Hit.BoneName.ToString().Contains(TEXT("Head")) || Hit.BoneName.ToString().Contains(TEXT("Skull")))
+			{
+				AppliedDamage *= 2.0f; // 헤드샷 데미지 2배 적용
+
+				// 헤드샷 소리 출력
+				AMonsterCharacter* Monster = Cast<AMonsterCharacter>(HitActor);
+				if (Monster)
+				{
+					Monster->PlayHeadshotSound(); // 헤드샷 소리 출력
+				}
+			}
+
+			UE_LOG(LogTemp, Warning, TEXT("Applied Damage: %.2f"), AppliedDamage);
+			// 데미지 이벤트 생성 및 데미지 적용
+			FPointDamageEvent DamageEvent(AppliedDamage, Hit, ShotDirection, nullptr);
+			AController* OwnerController = GetOwnerController();
+
+			HitActor->TakeDamage(AppliedDamage, DamageEvent, OwnerController, this);
 		}
 	}
 }
