@@ -24,7 +24,7 @@ private:
     UUserWidget* LoadingWidget;
 
     UPROPERTY()
-    FName MissionName;
+    FName MissionLevel;
 
 public:
     void WaitForAnyKey();

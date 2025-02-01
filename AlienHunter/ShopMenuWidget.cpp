@@ -126,13 +126,13 @@ void UShopMenuWidget::CreateSwordInventorySlots()
 // 현재 보유 에너지를 보여주는 메소드
 void UShopMenuWidget::ShowCurrentEnergy()
 {
-    if (EnergyAmount && GameManager)
+    if (EnergyAmountText && GameManager)
     {
         FText FormattedText = FText::Format(
             NSLOCTEXT("ShopMenu", "EnergyText", "보유 에너지: {0}"),
             FText::AsNumber(GameManager->GetEnergy())
         );
-        EnergyAmount->SetText(FormattedText);
+        EnergyAmountText->SetText(FormattedText);
     }
 }
 
@@ -239,6 +239,53 @@ void UShopMenuWidget::OnConfirmPurchase()
     {
         PopupWidget->ConfirmClicked.RemoveDynamic(this, &UShopMenuWidget::OnConfirmPurchase);
         PopupWidget->CancelClicked.RemoveDynamic(this, &UShopMenuWidget::OnPopupClose);
+        PopupWidget->RemoveFromParent();
+        PopupWidget = nullptr;
+    }
+
+    // 구매한 아이템을 바로 장착할 것인지 확인
+    if (PopupWidgetClass)
+    {
+        PopupWidget = CreateWidget<UPopupWidget>(this, PopupWidgetClass);
+        if (PopupWidget)
+        {
+            FText EquipMessage = NSLOCTEXT("ShopMenu", "EquipConfirmation", "구매한 아이템을 장착하시겠습니까?");
+            
+            PopupWidget->InitializePopup(EquipMessage, true);
+
+            PopupWidget->ConfirmClicked.AddDynamic(this, &UShopMenuWidget::OnConfirmEquip);
+            PopupWidget->CancelClicked.AddDynamic(this, &UShopMenuWidget::OnPopupClose);
+
+            PopupWidget->AddToViewport();
+        }
+    }
+}
+
+// 장비 장착 확인 버튼 클릭 시 실행되는 메소드
+void UShopMenuWidget::OnConfirmEquip()
+{
+	if (!GameManager || SelectedItem.ItemName.IsEmpty())
+	{
+		return;
+	}
+
+    // 게임 매니저에서 장착중인 무기의 아이템 데이터와 액터 바꿔주기
+    if (SelectedItem.ItemType == TEXT("총기류")) 
+    {
+        GameManager->SetEquippedGunItemData(SelectedGunItem);
+        GameManager->SetEquippedGun(SelectedItem.ItemBlueprint);
+    }
+    else if (SelectedItem.ItemType == TEXT("도검류")) 
+    {
+        GameManager->SetEquippedSwordItemData(SelectedSwordItem);
+        GameManager->SetEquippedSword(SelectedItem.ItemBlueprint);
+    }
+    
+    if (PopupWidget)
+    {
+        PopupWidget->ConfirmClicked.RemoveDynamic(this, &UShopMenuWidget::OnConfirmEquip);
+        PopupWidget->CancelClicked.RemoveDynamic(this, &UShopMenuWidget::OnPopupClose);
+        PopupWidget->RemoveFromParent();
         PopupWidget = nullptr;
     }
 }
@@ -260,33 +307,33 @@ void UShopMenuWidget::UpdateItemDetails(const FBaseItemData& ItemData)
 {
     SelectedItem = ItemData;
 
-    if (ItemName)
+    if (ItemNameText)
     {
-        ItemName->SetText(FText::FromString(ItemData.ItemName));
+        ItemNameText->SetText(FText::FromString(ItemData.ItemName));
     }
-    if (ItemType)
+    if (ItemTypeText)
     {
-        ItemType->SetText(FText::FromString(ItemData.ItemType.ToString()));
+        ItemTypeText->SetText(FText::FromString(ItemData.ItemType.ToString()));
     }
-    if (ItemDescription)
+    if (ItemDescriptionText)
     {
-        ItemDescription->SetText(FText::FromString(ItemData.ItemDescription));
+        ItemDescriptionText->SetText(FText::FromString(ItemData.ItemDescription));
     }
-    if (ItemPrice)
+    if (ItemPriceText)
     {
         FText FormattedText = FText::Format(
             NSLOCTEXT("ShopMenu", "ItemPriceText", "에너지: {0}"),
             FText::AsNumber(ItemData.ItemPrice)
         );
-        ItemPrice->SetText(FormattedText);
+        ItemPriceText->SetText(FormattedText);
     }
-    if (ItemDamage)
+    if (ItemDamageText)
     {
         FText FormattedText = FText::Format(
             NSLOCTEXT("ShopMenu", "ItemDamageText", "공격력: {0}"),
             FText::AsNumber(ItemData.ItemDamage)
         );
-        ItemDamage->SetText(FormattedText);
+        ItemDamageText->SetText(FormattedText);
     }
     if (ItemImage && ItemData.ItemImage)
     {
@@ -334,6 +381,3 @@ void UShopMenuWidget::SetSelectedSwordItem(const FSwordItemData& SwordItem)
 {
     SelectedSwordItem = SwordItem;
 }
-
-
-

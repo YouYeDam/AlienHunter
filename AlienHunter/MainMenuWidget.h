@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "Blueprint/UserWidget.h"
+#include "PopupWidget.h"
 #include "MainMenuWidget.generated.h"
 
 
@@ -17,20 +18,34 @@ public:
     void OnLoadGameClicked();
 
     UFUNCTION()
-    void OnStartGameClicked();
+    void OnStartNewGameClicked();
+
+	UFUNCTION()
+	void OnConfirmNewGame();
+
+	UFUNCTION()
+	void OnPopupClose();
 
     UFUNCTION()
     void OnQuitGameClicked();
 
+    void GameStart();
+    
 protected:
     virtual void NativeConstruct() override;
 
 private:
+	UPROPERTY(EditAnywhere)
+	TSubclassOf<UUserWidget> PopupWidgetClass;
+
+    UPROPERTY()
+    UPopupWidget* PopupWidget;
+
     UPROPERTY(meta = (BindWidget))
     class UButton* LoadGameButton;
 
     UPROPERTY(meta = (BindWidget))
-    class UButton* StartGameButton;
+    class UButton* StartNewGameButton;
 
     UPROPERTY(meta = (BindWidget))
     class UButton* QuitGameButton;

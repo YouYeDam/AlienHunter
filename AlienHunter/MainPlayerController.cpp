@@ -27,10 +27,10 @@ void AMainPlayerController::BeginPlay()
     }
 }
 
-// 게임 메뉴 레벨을 로드하는 메소드
+// 미션 결과창 레벨을 로드하는 메소드
 void AMainPlayerController::LoadLevelAfterDelay()
 {
-    UGameplayStatics::OpenLevel(this, FName("GameMenu"));
+    UGameplayStatics::OpenLevel(this, FName("MissionSummary"));
 }
 
 // 게임 종료 시 실행되는 메소드
@@ -76,11 +76,23 @@ void AMainPlayerController::GameHasEnded(class AActor* EndGameFocus, bool bIsWin
             GameManager->SetEnergy(CurrentEnergy + Energy);
             GameManager->SetEXP(CurrentEXP + EXP);
 
+            // 현재 미션 에너지와 경험치를 저장
+            GameManager->SetPrevMissionEnergy(Energy);
+            GameManager->SetPrevMissionEXP(EXP);
+
             // 미션 성공한 경우, 미션 보상 지급 처리
             if (bIsWinner) 
             {
                 GameManager->GainMissionReward();
+                GameManager->SetPrevMissionSuccess(true);
             }
+            else
+            {
+                GameManager->SetPrevMissionSuccess(false);
+            }
+
+            // 미션 종료 시 자동 저장되도록
+            GameManager->SaveGame();
         }
     }
 

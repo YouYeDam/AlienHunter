@@ -57,11 +57,7 @@ void AAlienHunterGameMode::PawnKilled(APawn* PawnKilled)
             GameManager = Cast<UGameManager>(UGameplayStatics::GetGameInstance(GetWorld()));
             
             // 플레이어의 적 처치 수 증가
-            if (GameManager) 
-            {
-                int32 CurrentKillEnemyCount = GameManager->GetKillEnemyCount();
-                GameManager->SetKillEnemyCount(CurrentKillEnemyCount + 1);
-            }
+            KillEnemyCount++;
         }
     }
 }
@@ -73,6 +69,14 @@ void AAlienHunterGameMode::EndGame(bool bIsPlayerWinner)
     {
         bool bIsWinner = Controller->IsPlayerController() == bIsPlayerWinner;
         Controller->GameHasEnded(Controller->GetPawn(), bIsWinner);
+    }
+
+    // 처치한 적의 수 반영
+    if (GameManager) 
+    {
+        int32 CurrentKillEnemyCount = GameManager->GetKillEnemyCount();
+        GameManager->SetKillEnemyCount(CurrentKillEnemyCount + KillEnemyCount);
+        GameManager->SetPrevEnemyKillCount(KillEnemyCount);
     }
 }
 

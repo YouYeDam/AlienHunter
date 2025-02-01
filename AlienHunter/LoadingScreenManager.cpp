@@ -22,6 +22,13 @@ void ALoadingScreenManager::BeginPlay()
         {
             LoadingWidget->AddToViewport();
         }
+
+        // LoadingScreenWidget ShowMissionName을 호출해 이름 표시
+		ULoadingScreenWidget* LoadingScreendWidget = Cast<ULoadingScreenWidget>(LoadingWidget);
+        if (LoadingScreendWidget)
+        {
+            LoadingScreendWidget->ShowMissionName();
+        }
     }
 
     LoadingScreen = Cast<ULoadingScreenWidget>(LoadingWidget);
@@ -36,13 +43,13 @@ void ALoadingScreenManager::BeginPlay()
         return;
     }
 
-    FName CurrentMissionName = GameManager->GetCurrentMissionName();
-    if (CurrentMissionName.IsNone())
+    FName CurrentMissionLevel = GameManager->GetCurrentMissionLevel();
+    if (CurrentMissionLevel.IsNone())
     {
         return; 
     }
 
-    MissionName = CurrentMissionName;
+    MissionLevel = CurrentMissionLevel;
 
     FMissionData CurrentMissionData = GameManager->GetCurrentMissionData();
     LoadingScreen->UpdateBackground(CurrentMissionData.MissionImage);
@@ -50,7 +57,7 @@ void ALoadingScreenManager::BeginPlay()
     LoadingScreen->UpdateLoadingText(false);
 
     // 비동기 로드 시작
-    FString LevelPath = FString::Format(TEXT("/Game/Levels/Missions/{0}"), {MissionName.ToString()});
+    FString LevelPath = FString::Format(TEXT("/Game/Levels/Missions/{0}"), {MissionLevel.ToString()});
     FStreamableManager& Streamable = UAssetManager::GetStreamableManager();
     Streamable.RequestAsyncLoad(LevelPath, FStreamableDelegate::CreateLambda([this, LoadingScreen]()
     {
@@ -92,5 +99,5 @@ void ALoadingScreenManager::OnKeyPressed()
         LoadingWidget = nullptr;
     }
 
-    UGameplayStatics::OpenLevel(GetWorld(), MissionName);
+    UGameplayStatics::OpenLevel(GetWorld(), MissionLevel);
 }

@@ -36,6 +36,11 @@ void UGameMenuWidget::NativeConstruct()
     {
         SaveGameButton->OnClicked.AddDynamic(this, &UGameMenuWidget::OnSaveGameClicked);
     }
+
+    if (QuitGameButton)
+    {
+        QuitGameButton->OnClicked.AddDynamic(this, &UGameMenuWidget::OnQuitGameClicked);
+    }
 }
 
 // 미션 메뉴로 이동하는 메소드
@@ -74,12 +79,79 @@ void UGameMenuWidget::OnMoveToCharacterMenuClicked()
     }
 }
 
-// 게임을 저장하는 메소드
+// 게임 저장을 요청하는 메소드
 void UGameMenuWidget::OnSaveGameClicked()
 {
     UGameManager* GameManager = Cast<UGameManager>(UGameplayStatics::GetGameInstance(GetWorld()));
     if (GameManager)
     {
-        GameManager->SaveGame();
+        bool bSaveSuccessful = GameManager->SaveGame();
+
+        if (PopupWidgetClass)
+        {
+            PopupWidget = CreateWidget<UPopupWidget>(this, PopupWidgetClass);
+            if (PopupWidget)
+            {
+                FText FormattedText;
+                if (bSaveSuccessful)
+                {
+                    FormattedText = NSLOCTEXT("GameMenu", "SaveSuccessful", "게임이 성공적으로 저장되었습니다!");
+                }
+                else
+                {
+                    FormattedText = NSLOCTEXT("GameMenu", "SaveFailed", "게임 저장에 실패했습니다.");
+                }
+
+                PopupWidget->AddToViewport();
+                PopupWidget->InitializePopup(FormattedText, false);
+
+                PopupWidget->ConfirmClicked.AddDynamic(this, &UGameMenuWidget::OnPopupClose);
+            }
+        }
+    }
+}
+
+// 게임을 종료하는 메소드
+void UGameMenuWidget::OnQuitGameClicked()
+{
+    if (PopupWidgetClass)
+    {
+        PopupWidget = CreateWidget<UPopupWidget>(this, PopupWidgetClass);
+        if (PopupWidget)
+        {
+            FText FormattedText = NSLOCTEXT("GameMenu", "QuitGameConfirmation", "정말 게임을 종료하시겠습니까?\n게임은 자동 저장됩니다.");
+
+            PopupWidget->AddToViewport();
+            PopupWidget->InitializePopup(FormattedText, true);
+
+            PopupWidget->ConfirmClicked.AddDynamic(this, &UGameMenuWidget::OnConfirmQuitGame);
+            PopupWidget->CancelClicked.AddDynamic(this, &UGameMenuWidget::OnPopupClose);
+        }
+    }
+}
+
+// 게임 종료 버튼 클릭 후 확인 버튼 클릭 시 실행되는 메소드
+void UGameMenuWidget::OnConfirmQuitGame()
+{
+    if (PopupWidget)
+    {
+        PopupWidget->ConfirmClicked.RemoveDynamic(this, &UGameMenuWidget::OnConfirmQuitGame);
+        PopupWidget->CancelClicked.RemoveDynamic(this, &UGameMenuWidget::OnPopupClose);
+        PopupWidget->RemoveFromParent();
+        PopupWidget = nullptr;
+    }
+    OnSaveGameClicked();
+    UKismetSystemLibrary::QuitGame(this, nullptr, EQuitPreference::Quit, true);
+}
+
+// 게임 종료 버튼 클릭 후 취소 버튼 클릭 시 실행되는 메소드
+void UGameMenuWidget::OnPopupClose()
+{
+    if (PopupWidget)
+    {
+        PopupWidget->ConfirmClicked.RemoveDynamic(this, &UGameMenuWidget::OnConfirmQuitGame);
+        PopupWidget->CancelClicked.RemoveDynamic(this, &UGameMenuWidget::OnPopupClose);
+        PopupWidget->RemoveFromParent();
+        PopupWidget = nullptr;
     }
 }

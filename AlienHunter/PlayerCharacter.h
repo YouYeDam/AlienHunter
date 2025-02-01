@@ -1,4 +1,4 @@
-// Fill out your copyright notice in the Description page of Project Settings.
+
 
 #pragma once
 
@@ -55,6 +55,9 @@ private:
 	bool CanAttack = true; // 공격 가능 상태인지
 	bool CanMove = true; // 이동 가능 상태인지
 
+	UPROPERTY(EditAnywhere)
+	USoundBase* JumpSound;
+
 public:
 	UFUNCTION(BlueprintPure)
 	bool SwitchUsingGun() const;
@@ -67,6 +70,7 @@ public:
 
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 
+	virtual void Jump() override;
 	void Shoot();
 	void Swing();
 	void SwapGun();

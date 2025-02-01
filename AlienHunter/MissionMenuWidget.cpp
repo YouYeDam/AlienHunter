@@ -31,7 +31,6 @@ void UMissionMenuWidget::NativeConstruct()
     }
 }
 
-// 미션 데이터를 초기화하는 함수(json 파일 혹은 블루프린트 데이터 에셋을 이용한 방법으로 전환하는 것 고려)
 void UMissionMenuWidget::InitializeMissionData()
 {
     if (!MissionDataTable)
@@ -97,7 +96,7 @@ void UMissionMenuWidget::OnStartMissionClicked()
     if (GameManager)
     {
         GameManager->SetCurrentMissionData(SelectedMissionData);
-        GameManager->SetCurrentMissionName(SelectedMissionLevel);
+        GameManager->SetCurrentMissionLevel(SelectedMissionLevel);
         GameManager->SaveGame(); // 게임 저장
         UGameplayStatics::OpenLevel(this, FName("LoadingScreen")); // 로딩 화면 레벨로 이동
     }

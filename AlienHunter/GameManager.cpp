@@ -52,13 +52,14 @@ void UGameManager::Shutdown()
     Super::Shutdown();
 }
 
-void UGameManager::SaveGame()
+// 게임을 저장하는 메소드
+bool UGameManager::SaveGame()
 {
     UGameSaveData* SaveGameData = Cast<UGameSaveData>(UGameplayStatics::CreateSaveGameObject(UGameSaveData::StaticClass()));
 
     if (!SaveGameData)
     {
-        return;
+        return false;
     }
 
     // 플레이어 상태 저장
@@ -84,16 +85,20 @@ void UGameManager::SaveGame()
 		FString SlotName = TEXT("SaveSlot");
 	#endif
 
-	if (UGameplayStatics::SaveGameToSlot(SaveGameData, SlotName, 0))
-	{
-		UE_LOG(LogTemp, Log, TEXT("Game Saved Successfully! Slot: %s"), *SlotName);
-	}
-	else
-	{
-		UE_LOG(LogTemp, Warning, TEXT("Failed to save game! Slot: %s"), *SlotName);
-	}
+    bool bSaveSuccess = UGameplayStatics::SaveGameToSlot(SaveGameData, SlotName, 0);
+    if (bSaveSuccess)
+    {
+        UE_LOG(LogTemp, Log, TEXT("Game Saved Successfully! Slot: %s"), *SlotName);
+    }
+    else
+    {
+        UE_LOG(LogTemp, Warning, TEXT("Failed to save game! Slot: %s"), *SlotName);
+    }
+
+    return bSaveSuccess; // 저장 성공 여부 반환
 }
 
+// 저장한 게임을 불러오는 메소드
 void UGameManager::LoadGame()
 {
     // 슬롯 이름 설정
@@ -126,6 +131,19 @@ void UGameManager::LoadGame()
     EquippedGunItemData = LoadedGame->GetEquippedGunItemData();
     EquippedSwordClass = LoadedGame->GetEquippedSwordClass();
     EquippedSwordItemData = LoadedGame->GetEquippedSwordItemData();
+}
+
+// 저장한 게임을 삭제하는 메소드
+void UGameManager::DeleteGame()
+{
+    // 슬롯 이름 설정
+    #if WITH_EDITOR
+        FString SlotName = TEXT("EditorSaveSlot");
+    #else
+        FString SlotName = TEXT("SaveSlot");
+    #endif
+
+    UGameplayStatics::DeleteGameInSlot(SlotName, 0);
 }
 
 int32 UGameManager::GetInitialHealth() const
@@ -315,12 +333,52 @@ void UGameManager::SetCurrentMissionData(const FMissionData& NewMissionData)
 	CurrentMissionData = NewMissionData;
 }
 
-FName UGameManager::GetCurrentMissionName() const
+FName UGameManager::GetCurrentMissionLevel() const
 {
-	return CurrentMissionName;
+	return CurrentMissionLevel;
 }
 
-void UGameManager::SetCurrentMissionName(const FName& NewMissionName)
+void UGameManager::SetCurrentMissionLevel(const FName& NewMissionLevel)
 {
-	CurrentMissionName = NewMissionName;
+	CurrentMissionLevel = NewMissionLevel;
+}
+
+bool UGameManager::GetPrevMissionSuccess() const
+{
+    return PrevMissionSuccess;
+}
+
+void UGameManager::SetPrevMissionSuccess(bool NewPrevMissionSuccess)
+{
+    PrevMissionSuccess = NewPrevMissionSuccess;
+}
+
+int32 UGameManager::GetPrevMissionEnergy() const
+{
+    return PrevMissionEnergy;
+}
+
+void UGameManager::SetPrevMissionEnergy(int32 NewEnergy)
+{
+    PrevMissionEnergy = NewEnergy;
+}
+
+int32 UGameManager::GetPrevMissionEXP() const
+{
+    return PrevMissionEXP;
+}
+
+void UGameManager::SetPrevMissionEXP(int32 NewEXP)
+{
+    PrevMissionEXP = NewEXP;
+}
+
+int32 UGameManager::GetPrevEnemyKillCount() const
+{
+    return PrevEnemyKillCount;
+}
+
+void UGameManager::SetPrevEnemyKillCount(int32 NewEnemyKillCount)
+{
+    PrevEnemyKillCount = NewEnemyKillCount;
 }

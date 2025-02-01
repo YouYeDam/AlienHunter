@@ -61,7 +61,7 @@ void APlayerCharacter::SetupPlayerInputComponent(class UInputComponent* PlayerIn
 	PlayerInputComponent->BindAxis(TEXT("LookRight"), this, &APawn::AddControllerYawInput);
 
 	// 액션 입력
-	PlayerInputComponent->BindAction(TEXT("Jump"), EInputEvent::IE_Pressed, this, &ACharacter::Jump);
+	PlayerInputComponent->BindAction(TEXT("Jump"), EInputEvent::IE_Pressed, this, &APlayerCharacter::Jump);
 	PlayerInputComponent->BindAction(TEXT("Shoot"), EInputEvent::IE_Pressed, this, &APlayerCharacter::Shoot);
 	PlayerInputComponent->BindAction(TEXT("Swing"), EInputEvent::IE_Pressed, this, &APlayerCharacter::Swing);
 	PlayerInputComponent->BindAction(TEXT("SwapGun"), EInputEvent::IE_Pressed, this, &APlayerCharacter::SwapGun);
@@ -70,6 +70,21 @@ void APlayerCharacter::SetupPlayerInputComponent(class UInputComponent* PlayerIn
 	PlayerInputComponent->BindAction(TEXT("Reload"), EInputEvent::IE_Pressed, this, &APlayerCharacter::Reload);
 	PlayerInputComponent->BindAction(TEXT("Shoot"), EInputEvent::IE_Released, this, &APlayerCharacter::StopShoot);
 }
+
+void APlayerCharacter::Jump()
+{
+    // 땅에 있을 때만 점프 사운드 실행
+    if (GetCharacterMovement() && GetCharacterMovement()->IsMovingOnGround())
+    {
+        if (JumpSound)
+        {
+            UGameplayStatics::PlaySoundAtLocation(this, JumpSound, GetActorLocation());
+        }
+    }
+
+    Super::Jump();
+}
+
 
 void APlayerCharacter::MoveForward(float AxisValue)
 {

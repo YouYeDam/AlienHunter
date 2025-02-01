@@ -5,6 +5,7 @@
 #include "CoreMinimal.h"
 #include "Blueprint/UserWidget.h"
 #include "GameMenuGameMode.h"
+#include "PopupWidget.h"
 #include "GameMenuWidget.generated.h"
 
 
@@ -29,11 +30,26 @@ public:
     UFUNCTION()
     void OnSaveGameClicked();
 
+    UFUNCTION()
+    void OnQuitGameClicked();
+    
+	UFUNCTION()
+	void OnConfirmQuitGame();
+
+	UFUNCTION()
+	void OnPopupClose();
+
 protected:
     virtual void NativeConstruct() override;
 
 private:
     AGameMenuGameMode* GameMode;
+
+	UPROPERTY(EditAnywhere)
+	TSubclassOf<UUserWidget> PopupWidgetClass;
+
+    UPROPERTY()
+    UPopupWidget* PopupWidget;
 
     UPROPERTY(meta = (BindWidget))
     class UButton* MissionMenuButton;
@@ -49,4 +65,7 @@ private:
 
     UPROPERTY(meta = (BindWidget))
     class UButton* SaveGameButton;
+
+    UPROPERTY(meta = (BindWidget))
+    class UButton* QuitGameButton;
 };

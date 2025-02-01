@@ -126,7 +126,6 @@ void AGun::StartShoot()
 				}
 			}
 
-			UE_LOG(LogTemp, Warning, TEXT("Applied Damage: %.2f"), AppliedDamage);
 			// 데미지 이벤트 생성 및 데미지 적용
 			FPointDamageEvent DamageEvent(AppliedDamage, Hit, ShotDirection, nullptr);
 			AController* OwnerController = GetOwnerController();

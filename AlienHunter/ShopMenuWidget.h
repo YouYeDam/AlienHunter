@@ -37,6 +37,9 @@ public:
 	void OnConfirmPurchase();
 
 	UFUNCTION()
+	void OnConfirmEquip();
+
+	UFUNCTION()
 	void OnPopupClose();
 
     void ShowCurrentEnergy();
@@ -97,22 +100,22 @@ private:
     class UImage* ItemImage;
 
     UPROPERTY(meta = (BindWidget))
-    class UTextBlock* ItemName;
+    class UTextBlock* ItemNameText;
 
     UPROPERTY(meta = (BindWidget))
-    class UTextBlock* ItemType;
+    class UTextBlock* ItemTypeText;
 
     UPROPERTY(meta = (BindWidget))
-    class UTextBlock* ItemPrice;
+    class UTextBlock* ItemPriceText;
 
     UPROPERTY(meta = (BindWidget))
-    class UTextBlock* ItemDamage;
+    class UTextBlock* ItemDamageText;
 
     UPROPERTY(meta = (BindWidget))
-    class UTextBlock* ItemDescription;
+    class UTextBlock* ItemDescriptionText;
 
     UPROPERTY(meta = (BindWidget))
-    class UTextBlock* EnergyAmount;
+    class UTextBlock* EnergyAmountText;
 
     // 슬롯 템플릿 클래스
     UPROPERTY(EditAnywhere)

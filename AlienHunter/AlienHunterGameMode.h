@@ -32,4 +32,6 @@ private:
 
 	UPROPERTY()
     UHUDWidget* HUDWidget;
+
+	int32 KillEnemyCount;
 };

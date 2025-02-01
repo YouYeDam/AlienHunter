@@ -69,17 +69,32 @@ private:
 	FMissionData CurrentMissionData;
 
 	UPROPERTY()
-	FName CurrentMissionName;
+	FName CurrentMissionLevel;
+
+	UPROPERTY()
+	bool PrevMissionSuccess;
+
+	UPROPERTY()
+	int32 PrevMissionEnergy;
+
+	UPROPERTY()
+	int32 PrevMissionEXP;
+
+	UPROPERTY()
+	int32 PrevEnemyKillCount;
 
 public:
 	virtual void Init() override;
 	virtual void Shutdown() override;
 
 	UFUNCTION(BlueprintCallable)
-	void SaveGame();
+	bool SaveGame();
 
 	UFUNCTION(BlueprintCallable)
 	void LoadGame();
+
+	UFUNCTION(BlueprintCallable)
+	void DeleteGame();
 
 	UFUNCTION(BlueprintCallable)
 	int32 GetInitialHealth() const;
@@ -138,8 +153,32 @@ public:
 	FMissionData GetCurrentMissionData() const;
 	void SetCurrentMissionData(const FMissionData& NewMissionData);
 
-	FName GetCurrentMissionName() const;
-	void SetCurrentMissionName(const FName& NewMissionName);
+	FName GetCurrentMissionLevel() const;
+	void SetCurrentMissionLevel(const FName& NewMissionLevel);
+
+	UFUNCTION()
+	bool GetPrevMissionSuccess() const;
+
+	UFUNCTION()
+	void SetPrevMissionSuccess(bool NewMissionSuccess);
+
+	UFUNCTION()
+	int32 GetPrevMissionEnergy() const;
+
+	UFUNCTION()
+	void SetPrevMissionEnergy(int32 NewEnergy);
+
+	UFUNCTION()
+	int32 GetPrevMissionEXP() const;
+
+	UFUNCTION()
+	void SetPrevMissionEXP(int32 NewEXP);
+
+	UFUNCTION()
+	int32 GetPrevEnemyKillCount() const;
+
+	UFUNCTION()
+	void SetPrevEnemyKillCount(int32 NewEnemyKillCount);
 
 private:
 	void Levelup();
