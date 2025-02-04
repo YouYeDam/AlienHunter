@@ -10,6 +10,7 @@
 #include "InventoryMenuWidget.h"
 #include "Gun.h"
 #include "Sword.h"
+#include "MainPlayerController.h"
 
 // 게임 시작 시 기본 보유한 아이템 초기화
 void UGameManager::Init()
@@ -78,6 +79,10 @@ bool UGameManager::SaveGame()
     SaveGameData->SetEquippedSwordClass(EquippedSwordClass);
     SaveGameData->SetEquippedSwordItemData(EquippedSwordItemData);
 
+
+    // 퍽 상태 저장
+    SaveGameData->SetChosenPerks(ChosenPerks);
+
     // 게임 저장
 	#if WITH_EDITOR
 		FString SlotName = TEXT("EditorSaveSlot");
@@ -99,7 +104,7 @@ bool UGameManager::SaveGame()
 }
 
 // 저장한 게임을 불러오는 메소드
-void UGameManager::LoadGame()
+bool UGameManager::LoadGame()
 {
     // 슬롯 이름 설정
     #if WITH_EDITOR
@@ -113,7 +118,7 @@ void UGameManager::LoadGame()
 
     if (!LoadedGame)
     {
-        return;
+        return false;
     }
 
     // 플레이어 상태 복원
@@ -131,6 +136,11 @@ void UGameManager::LoadGame()
     EquippedGunItemData = LoadedGame->GetEquippedGunItemData();
     EquippedSwordClass = LoadedGame->GetEquippedSwordClass();
     EquippedSwordItemData = LoadedGame->GetEquippedSwordItemData();
+
+    // 퍽 상태 복원
+    ChosenPerks = LoadedGame->GetChosenPerks();
+
+    return true;
 }
 
 // 저장한 게임을 삭제하는 메소드
@@ -197,6 +207,16 @@ void UGameManager::SetKillEnemyCount(int32 NewKillEnemyCount)
 	KillEnemyCount = NewKillEnemyCount;
 }
 
+int32 UGameManager::GetCompleteMissionCount() const
+{
+    return CompleteMissionCount;
+}
+
+void UGameManager::SetCompleteMissionCount(int32 NewCompleteMissionCount)
+{
+    CompleteMissionCount = NewCompleteMissionCount;
+}
+
 int32 UGameManager::GetEXPRequirementForLevelup() const
 {
 	return EXPRequirementForLevelup;
@@ -220,13 +240,19 @@ void UGameManager::Levelup()
 // 임무 완료 시 보상을 처리하는 메소드
 void UGameManager::GainMissionReward()
 {
-	Energy += CurrentMissionData.MissionEnergyReward;
-	EXP += CurrentMissionData.MissionEXPReward;
+    // 현재 플레이어 컨트롤러 가져오기
+    AMainPlayerController* PlayerController = Cast<AMainPlayerController>(UGameplayStatics::GetPlayerController(GetWorld(), 0));
+    float BonusMultiplier = (PlayerController) ? PlayerController->GetBonusLootMultiplier() : 1.0f;
 
-	if (EXP >= EXPRequirementForLevelup)
-	{
-		Levelup();
-	}
+    // 보너스 배율 적용
+    Energy += CurrentMissionData.MissionEnergyReward * BonusMultiplier;
+    EXP += CurrentMissionData.MissionEXPReward * BonusMultiplier;
+
+    // 경험치가 레벨업 요구량을 초과하면 레벨업
+    if (EXP >= EXPRequirementForLevelup)
+    {
+        Levelup();
+    }
 }
 
 // 구매한 총기류 아이템을 추가하는 메소드
@@ -240,6 +266,11 @@ void UGameManager::AddPurchasedGunItem(const FGunItemData& Item)
 	}
 }
 
+const TArray<FGunItemData>& UGameManager::GetPurchasedGunItems() const
+{
+	return PurchasedGunItems;
+}
+
 // 구매한 도검류 아이템을 추가하는 메소드
 void UGameManager::AddPurchasedSwordItem(const FSwordItemData& Item)
 {
@@ -249,6 +280,26 @@ void UGameManager::AddPurchasedSwordItem(const FSwordItemData& Item)
 	{
 		InventoryMenuWidgetRef->UpdateSwordItemDataArray();
 	}
+}
+
+const TArray<FSwordItemData>& UGameManager::GetPurchasedSwordItems() const
+{
+	return PurchasedSwordItems;
+}
+
+void UGameManager::AddChosenPerks(const FPerkData& Perk)
+{
+    ChosenPerks.Add(Perk);
+}
+
+const TArray<FPerkData>& UGameManager::GetChosenPerks() const
+{
+    return ChosenPerks;
+}
+
+void UGameManager::ClearShosenPerks()
+{
+    ChosenPerks.Empty();
 }
 
 // 인벤토리 메뉴 위젯의 참조를 설정하는 메소드
@@ -261,16 +312,6 @@ void UGameManager::SetInventoryMenuWidget(UInventoryMenuWidget* InventoryWidget)
 		InventoryMenuWidgetRef->UpdateGunDetails(EquippedGunItemData);
         InventoryMenuWidgetRef->UpdateSwordDetails(EquippedSwordItemData);
 	}
-}
-
-const TArray<FGunItemData>& UGameManager::GetPurchasedGunItems() const
-{
-	return PurchasedGunItems;
-}
-
-const TArray<FSwordItemData>& UGameManager::GetPurchasedSwordItems() const
-{
-	return PurchasedSwordItems;
 }
 
 void UGameManager::SetEquippedGun(TSubclassOf<AActor> NewGun)
@@ -371,6 +412,26 @@ int32 UGameManager::GetPrevMissionEXP() const
 void UGameManager::SetPrevMissionEXP(int32 NewEXP)
 {
     PrevMissionEXP = NewEXP;
+}
+
+int32 UGameManager::GetPrevCombatEnergy() const
+{
+    return PrevCombatEnergy;
+}
+
+void UGameManager::SetPrevCombatEnergy(int32 NewEnergy)
+{
+    PrevCombatEnergy = NewEnergy;
+}
+
+int32 UGameManager::GetPrevCombatEXP() const
+{
+    return PrevCombatEXP;
+}
+
+void UGameManager::SetPrevCombatEXP(int32 NewEXP)
+{
+    PrevCombatEXP = NewEXP;
 }
 
 int32 UGameManager::GetPrevEnemyKillCount() const

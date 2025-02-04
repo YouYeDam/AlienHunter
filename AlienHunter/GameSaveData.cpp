@@ -124,3 +124,13 @@ void UGameSaveData::SetEquippedSwordItemData(const FSwordItemData& NewSwordData)
 {
     EquippedSwordItemData = NewSwordData;
 }
+
+TArray<FPerkData> UGameSaveData::GetChosenPerks() const
+{
+    return ChosenPerks;
+}
+
+void UGameSaveData::SetChosenPerks(const TArray<FPerkData>& NewPerks)
+{
+    ChosenPerks = NewPerks;
+}

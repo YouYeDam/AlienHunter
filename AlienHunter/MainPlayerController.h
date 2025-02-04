@@ -25,6 +25,8 @@ private:
 
 	FTimerHandle GameEndTimer; // 게임 종료 후 레벨 로드 타이머
 
+	float BonusLootMultiplier = 1.0f; // 보너스 보상 배율
+
 	UPROPERTY(EditAnywhere)
 	TSubclassOf<class UUserWidget> WinScreenClass;
 	
@@ -41,6 +43,9 @@ private:
 	
 public:
 	virtual void GameHasEnded(class AActor* EndGameFocus = nullptr, bool bIsWinner = false) override;
+
+	float GetBonusLootMultiplier() const;
+	void SetBonusLootMultiplier(float Multiplier);
 
 	UHUDWidget* GetHUDWidget() const;
 };

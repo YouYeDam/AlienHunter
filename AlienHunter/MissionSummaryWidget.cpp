@@ -39,10 +39,12 @@ void UMissionSummaryWidget::ShowResult()
         if (GameManager->GetPrevMissionSuccess())
         {
             MissionResultText->SetText(FText::FromString("Mission Complete!"));
+            MissionResultText->SetColorAndOpacity(FSlateColor(FLinearColor::Yellow));
         }
         else
         {
             MissionResultText->SetText(FText::FromString("Mission Failed!"));
+            MissionResultText->SetColorAndOpacity(FSlateColor(FLinearColor::Red));
         }
     }
 
@@ -54,33 +56,30 @@ void UMissionSummaryWidget::ShowResult()
 
     if (MissionRewardText)
     {
-        FMissionData PrevMissionData = GameManager->GetCurrentMissionData();
         FText FormattedText = FText::Format(
-            NSLOCTEXT("MissionSummary", "MissionRewardText", "에너지 : {0}   EXP : {1}"),
-            FText::AsNumber(PrevMissionData.MissionEnergyReward),
-            FText::AsNumber(PrevMissionData.MissionEXPReward)
+            NSLOCTEXT("MissionSummary", "MissionRewardText", "임무 보상 : {0} 에너지 & {1} 경험치"),
+            FText::AsNumber(GameManager->GetPrevMissionEnergy()),
+            FText::AsNumber(GameManager->GetPrevMissionEXP())
         );
         MissionRewardText->SetText(FormattedText);
     }
 
     if (GainedEnergyText)
     {
-        FMissionData PrevMissionData = GameManager->GetCurrentMissionData();
         FText FormattedText = FText::Format(
-            NSLOCTEXT("MissionSummary", "GainedEnergyText", "획득한 에너지: {0} + {1}"),
-            FText::AsNumber(PrevMissionData.MissionEnergyReward),
-            FText::AsNumber(GameManager->GetPrevMissionEnergy())
+            NSLOCTEXT("MissionSummary", "GainedEnergyText", "획득한 총 에너지: {0} + {1}"),
+            FText::AsNumber(GameManager->GetPrevMissionEnergy()),
+            FText::AsNumber(GameManager->GetPrevCombatEnergy())
         );
         GainedEnergyText->SetText(FormattedText);
     }
 
     if (GainedEXPText)
     {
-        FMissionData PrevMissionData = GameManager->GetCurrentMissionData();
         FText FormattedText = FText::Format(
-            NSLOCTEXT("MissionSummary", "GainedEXPText", "획득한 경험치: {0} + {1}"),
-            FText::AsNumber(PrevMissionData.MissionEXPReward),
-            FText::AsNumber(GameManager->GetPrevMissionEXP())
+            NSLOCTEXT("MissionSummary", "GainedEXPText", "획득한 총 경험치: {0} + {1}"),
+            FText::AsNumber(GameManager->GetPrevMissionEXP()),
+            FText::AsNumber(GameManager->GetPrevCombatEXP())
         );
         GainedEXPText->SetText(FormattedText);
     }

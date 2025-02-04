@@ -5,6 +5,7 @@
 #include "Kismet/GameplayStatics.h"
 #include "Components/Button.h"
 #include "Components/TextBlock.h"
+#include "Components/Image.h"
 #include "Blueprint/UserWidget.h"
 
 void UInventorySlotWidget::NativeConstruct()
@@ -24,10 +25,14 @@ void UInventorySlotWidget::InitializeGunSlot(UInventoryMenuWidget* InInventoryMe
     ItemData = InGunItemData;
     GunItemData = InGunItemData;
 
-    UTextBlock* ItemNameText = Cast<UTextBlock>(GetWidgetFromName(TEXT("ItemName")));
     if (ItemNameText)
     {
         ItemNameText->SetText(FText::FromString(GunItemData.ItemName));
+    }
+
+    if (ItemImage && ItemData.ItemImage)
+    {
+        ItemImage->SetBrushFromTexture(ItemData.ItemImage);
     }
 }
 
@@ -38,10 +43,14 @@ void UInventorySlotWidget::InitializeSwordSlot(UInventoryMenuWidget* InInventory
     ItemData = InSwordItemData;
     SwordItemData = InSwordItemData;
 
-    UTextBlock* ItemNameText = Cast<UTextBlock>(GetWidgetFromName(TEXT("ItemName")));
     if (ItemNameText)
     {
         ItemNameText->SetText(FText::FromString(SwordItemData.ItemName));
+    }
+
+    if (ItemImage && ItemData.ItemImage)
+    {
+        ItemImage->SetBrushFromTexture(ItemData.ItemImage);
     }
 }
 

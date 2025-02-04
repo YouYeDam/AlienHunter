@@ -237,6 +237,18 @@ AController* AGun::GetOwnerController() const
 	return OwnerPawn->GetController();
 }
 
+// 총기의 탄약 개수를 배율로 증가시키는 메소드
+void AGun::IncreaseSpareAmmoCount(float Multiplier)
+{
+	SpareAmmoCount *= Multiplier;
+}
+
+// 총기의 탄약 개수를 개수로 증가시키는 메소드
+void AGun::IncreaseSpareAmmoCount(int32 Count)
+{
+	SpareAmmoCount += Count;
+}
+
 int32 AGun::GetAmmoCount() const
 {
 	return AmmoCount;

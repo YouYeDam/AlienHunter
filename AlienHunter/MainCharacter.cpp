@@ -38,7 +38,29 @@ float AMainCharacter::TakeDamage(float DamageAmount, struct FDamageEvent const& 
 	float TakedDamageAmount = Super::TakeDamage(DamageAmount, DamageEvent, EventInstigator, DamageCauser); // 데미지 양 계산
 	TakedDamageAmount = FMath::Min(CurrentHP, TakedDamageAmount); // 남아있는 체력보다 피격 데미지가 커지지 않도록(음수값 방지)
 
-	CurrentHP -= TakedDamageAmount;
+    float RemainingDamage = TakedDamageAmount; // 임시 변수로 남은 데미지 추적
+
+    // 쉴드가 있는 경우, 먼저 차감
+    if (CurrentShield > 0)
+    {
+        if (CurrentShield >= RemainingDamage) 
+        {
+            CurrentShield -= RemainingDamage;
+            RemainingDamage = 0; // 쉴드가 모든 데미지를 흡수함
+        }
+        else 
+        {
+            RemainingDamage -= CurrentShield; // 쉴드가 일부 데미지만 막음
+            CurrentShield = 0;
+        }
+    }
+
+    // 남은 데미지를 체력에서 차감
+    CurrentHP -= RemainingDamage;
+    if (CurrentHP < 0)
+    {
+        CurrentHP = 0; // 체력이 음수가 되는 것 방지
+    }
 
 	 // 피격을 받고 죽은 경우에 대해 처리
 	if (IsDead() && !IsAlreadyDead) {

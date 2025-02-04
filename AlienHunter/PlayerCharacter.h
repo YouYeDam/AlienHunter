@@ -8,6 +8,7 @@
 
 class AGun;
 class ASword;
+class APerkEffector;
 
 UCLASS()
 class ALIENHUNTER_API APlayerCharacter : public AMainCharacter
@@ -18,20 +19,26 @@ protected:
 	virtual void BeginPlay() override;
 
 private:
-	void MoveForward(float AxisValue);
-	void MoveRight(float AxisValue);
-
 	UPROPERTY(EditDefaultsOnly)
 	TSubclassOf<AGun> GunClass; // 총기 클래스
 
 	UPROPERTY(EditDefaultsOnly)
 	TSubclassOf<ASword> SwordClass; // 도검 클래스
 
+	UPROPERTY(EditDefaultsOnly)
+	TSubclassOf<APerkEffector> PerkEffectorClass; // 퍽 이펙터 클래스
+
 	UPROPERTY()
 	AGun* Gun; // 총기 액터
 
 	UPROPERTY()
 	ASword* Sword; // 도검 액터
+
+	UPROPERTY()
+	APerkEffector* PerkEffector; // 퍽 이펙터 액터
+
+	UPROPERTY(EditAnywhere)
+	USoundBase* JumpSound;
 
 	int32 GainedEnergy = 0; // 게임 중 얻은 에너지
 	int32 GainedEXP = 0; // 게임 중 얻은 경험치
@@ -47,16 +54,16 @@ private:
 	UPROPERTY(BlueprintReadOnly, Meta = (AllowPrivateAccess = "true"))
 	bool bIsAttacking = false;
 
+	bool CanAttack = true; // 공격 가능 상태인지
+	bool CanMove = true; // 이동 가능 상태인지
+
 	UFUNCTION(BlueprintPure)
 	float GetHealthPercent() const;
 
 	void InitializePlayerStats();
 
-	bool CanAttack = true; // 공격 가능 상태인지
-	bool CanMove = true; // 이동 가능 상태인지
-
-	UPROPERTY(EditAnywhere)
-	USoundBase* JumpSound;
+	void MoveForward(float AxisValue);
+	void MoveRight(float AxisValue);
 
 public:
 	UFUNCTION(BlueprintPure)
@@ -84,6 +91,12 @@ public:
 	
 	int32 GetGainedEXP() const;
 	void SetGainedEXP(int32 NewEXP);
+
+	float GetMaxHP() const;
+	void SetMaxHP(float NewHP, bool bMakeFullHP);
+
+	float GetPlayerShield() const;
+	void SetPlayerShield(float NewShield);
 
 	AGun* GetEquippedGun() const;
 };

@@ -23,7 +23,6 @@ void UMissionSlotWidget::InitializeSlot(UMissionMenuWidget* InMissionMenuWidget,
     MissionMenuWidgetRef = InMissionMenuWidget;
     MissionData = InMissionData;
 
-    UTextBlock* MissionNameText = Cast<UTextBlock>(GetWidgetFromName(TEXT("MissionName")));
     if (MissionNameText)
     {
         MissionNameText->SetText(FText::FromString(MissionData.MissionName));

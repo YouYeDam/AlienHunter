@@ -26,6 +26,9 @@ protected:
 	UPROPERTY(VisibleAnywhere)
 	float CurrentHP;
 
+	UPROPERTY(VisibleAnywhere)
+	float CurrentShield = 0; // 쉴드 게이지
+
 	UPROPERTY()
 	UGameManager* GameManager;
 	
@@ -35,7 +38,7 @@ private:
 	bool IsControlledByPlayer; // 플레이어가 컨트롤하고 있는지
 
 	UPROPERTY(EditAnywhere)
-	USoundBase* DeathSound; // 죽음 사운드
+	USoundBase* DeathSound;
 
 	bool IsAlreadyDead = false; // 이미 죽었는지
 

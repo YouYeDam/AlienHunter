@@ -1,10 +1,11 @@
-// Fill out your copyright notice in the Description page of Project Settings.
+
 
 
 #include "ShopSlotWidget.h"
 #include "Kismet/GameplayStatics.h"
 #include "Components/Button.h"
 #include "Components/TextBlock.h"
+#include "Components/Image.h"
 #include "Blueprint/UserWidget.h"
 
 void UShopSlotWidget::NativeConstruct()
@@ -17,19 +18,6 @@ void UShopSlotWidget::NativeConstruct()
     }
 }
 
-// 슬롯을 설정하는 메소드
-void UShopSlotWidget::InitializeSlot(UShopMenuWidget* InShopMenuWidget, const FBaseItemData& InItemData)
-{
-    ShopMenuWidgetRef = InShopMenuWidget;
-    ItemData = InItemData;
-
-    UTextBlock* ItemNameText = Cast<UTextBlock>(GetWidgetFromName(TEXT("ItemName")));
-    if (ItemNameText)
-    {
-        ItemNameText->SetText(FText::FromString(ItemData.ItemName));
-    }
-}
-
 // 총기류 슬롯을 설정하는 메소드
 void UShopSlotWidget::InitializeGunSlot(UShopMenuWidget* InShopMenuWidget, const FGunItemData& InGunItemData)
 {
@@ -37,10 +25,14 @@ void UShopSlotWidget::InitializeGunSlot(UShopMenuWidget* InShopMenuWidget, const
     ItemData = InGunItemData;
     GunItemData = InGunItemData;
 
-    UTextBlock* ItemNameText = Cast<UTextBlock>(GetWidgetFromName(TEXT("ItemName")));
     if (ItemNameText)
     {
         ItemNameText->SetText(FText::FromString(ItemData.ItemName));
+    }
+
+    if (ItemImage && ItemData.ItemImage)
+    {
+        ItemImage->SetBrushFromTexture(ItemData.ItemImage);
     }
 }
 
@@ -51,10 +43,14 @@ void UShopSlotWidget::InitializeSwordSlot(UShopMenuWidget* InShopMenuWidget, con
     ItemData = InSwordItemData;
     SwordItemData = InSwordItemData;
 
-    UTextBlock* ItemNameText = Cast<UTextBlock>(GetWidgetFromName(TEXT("ItemName")));
     if (ItemNameText)
     {
         ItemNameText->SetText(FText::FromString(ItemData.ItemName));
+    }
+
+    if (ItemImage && ItemData.ItemImage)
+    {
+        ItemImage->SetBrushFromTexture(ItemData.ItemImage);
     }
 }
 
@@ -77,5 +73,3 @@ void UShopSlotWidget::OnSlotClicked()
         ShopMenuWidgetRef->UpdateItemDetails(ItemData);
     }
 }
-
-

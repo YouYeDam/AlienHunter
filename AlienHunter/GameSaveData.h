@@ -4,6 +4,7 @@
 #include "GameFramework/SaveGame.h"
 #include "GunItemData.h"
 #include "SwordItemData.h"
+#include "PerkData.h"
 #include "GameSaveData.generated.h"
 
 UCLASS()
@@ -50,6 +51,10 @@ private:
 	UPROPERTY(VisibleAnywhere, Category = "Inventory")
 	FSwordItemData EquippedSwordItemData;
 
+	// 퍽 상태
+	UPROPERTY(VisibleAnywhere, Category = "Perk")
+	TArray<FPerkData> ChosenPerks;
+
 public:
 	// 플레이어 상태
 	int32 GetHealth() const;
@@ -88,4 +93,8 @@ public:
 
 	FSwordItemData GetEquippedSwordItemData() const;
 	void SetEquippedSwordItemData(const FSwordItemData& NewSwordData);
+
+	// 퍽 상태
+	TArray<FPerkData> GetChosenPerks() const;
+	void SetChosenPerks(const TArray<FPerkData>& NewPerks);
 };

@@ -8,6 +8,7 @@
 #include "GunItemData.h"
 #include "SwordItemData.h"
 #include "MissionData.h"
+#include "PerkData.h"
 #include "GameManager.generated.h"
 
 class UInventoryMenuWidget;
@@ -38,6 +39,9 @@ private:
 	UPROPERTY(EditAnywhere)
 	int32 KillEnemyCount = 0;
 
+	UPROPERTY(EditAnywhere)
+	int32 CompleteMissionCount = 0;
+
     UPROPERTY(EditAnywhere)
     UDataTable* GunItemDataTable;
 
@@ -49,6 +53,9 @@ private:
 
 	UPROPERTY()
 	TArray<FSwordItemData> PurchasedSwordItems;
+
+	UPROPERTY()
+	TArray<FPerkData> ChosenPerks;
 
 	UPROPERTY()
 	UInventoryMenuWidget* InventoryMenuWidgetRef; // 인벤토리 메뉴 위젯 참조
@@ -81,6 +88,12 @@ private:
 	int32 PrevMissionEXP;
 
 	UPROPERTY()
+	int32 PrevCombatEnergy;
+
+	UPROPERTY()
+	int32 PrevCombatEXP;
+
+	UPROPERTY()
 	int32 PrevEnemyKillCount;
 
 public:
@@ -91,7 +104,7 @@ public:
 	bool SaveGame();
 
 	UFUNCTION(BlueprintCallable)
-	void LoadGame();
+	bool LoadGame();
 
 	UFUNCTION(BlueprintCallable)
 	void DeleteGame();
@@ -124,17 +137,25 @@ public:
 	void SetKillEnemyCount(int32 NewKillEnemyCount);
 
 	UFUNCTION(BlueprintCallable)
+	int32 GetCompleteMissionCount() const;
+
+	UFUNCTION(BlueprintCallable)
+	void SetCompleteMissionCount(int32 NewCompleteMissionCount);
+	
+	UFUNCTION(BlueprintCallable)
 	int32 GetEXPRequirementForLevelup() const;
 
 	void GainMissionReward();
 
 	void AddPurchasedGunItem(const FGunItemData& Item);
-
-	void AddPurchasedSwordItem(const FSwordItemData& Item);
-
 	const TArray<FGunItemData>& GetPurchasedGunItems() const;
 
+	void AddPurchasedSwordItem(const FSwordItemData& Item);
 	const TArray<FSwordItemData>& GetPurchasedSwordItems() const;
+
+	void AddChosenPerks(const FPerkData& Perk);
+	const TArray<FPerkData>& GetChosenPerks() const;
+	void ClearShosenPerks();
 
 	void SetInventoryMenuWidget(UInventoryMenuWidget* InventoryWidget);
 
@@ -173,6 +194,18 @@ public:
 
 	UFUNCTION()
 	void SetPrevMissionEXP(int32 NewEXP);
+
+	UFUNCTION()
+	int32 GetPrevCombatEnergy() const;
+
+	UFUNCTION()
+	void SetPrevCombatEnergy(int32 NewEnergy);
+
+	UFUNCTION()
+	int32 GetPrevCombatEXP() const;
+
+	UFUNCTION()
+	void SetPrevCombatEXP(int32 NewEXP);
 
 	UFUNCTION()
 	int32 GetPrevEnemyKillCount() const;

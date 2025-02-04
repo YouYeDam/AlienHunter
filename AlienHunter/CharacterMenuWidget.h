@@ -17,6 +17,9 @@ public:
     UFUNCTION()
     void OnMoveToGameMenuClicked();
 
+    UFUNCTION()
+    void OnMoveToPerkMenuClicked();
+
 	void ShowPlayerStat();
     
 protected:
@@ -28,6 +31,9 @@ private:
 
     UPROPERTY(meta = (BindWidget))
     class UButton* GameMenuButton;
+
+    UPROPERTY(meta = (BindWidget))
+    class UButton* PerkMenuButton;
 
     UPROPERTY(meta = (BindWidget))
     class UTextBlock* LevelText;
@@ -44,4 +50,6 @@ private:
     UPROPERTY(meta = (BindWidget))
     class UTextBlock* KillEnemyCountText;
 
+    UPROPERTY(meta = (BindWidget))
+    class UTextBlock* CompleteMissionCountText;
 };

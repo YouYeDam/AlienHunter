@@ -76,19 +76,31 @@ void AMainPlayerController::GameHasEnded(class AActor* EndGameFocus, bool bIsWin
             GameManager->SetEnergy(CurrentEnergy + Energy);
             GameManager->SetEXP(CurrentEXP + EXP);
 
-            // 현재 미션 에너지와 경험치를 저장
-            GameManager->SetPrevMissionEnergy(Energy);
-            GameManager->SetPrevMissionEXP(EXP);
+            // 현재 미션에서 적을 처치하고 얻은 에너지와 경험치를 저장
+            GameManager->SetPrevCombatEnergy(Energy);
+            GameManager->SetPrevCombatEXP(EXP);
 
             // 미션 성공한 경우, 미션 보상 지급 처리
             if (bIsWinner) 
             {
-                GameManager->GainMissionReward();
                 GameManager->SetPrevMissionSuccess(true);
+                GameManager->GainMissionReward();
+
+                int32 PrevMissionEnergy = GameManager->GetCurrentMissionData().MissionEnergyReward * BonusLootMultiplier;
+                int32 PrevMissionEXP = GameManager->GetCurrentMissionData().MissionEXPReward * BonusLootMultiplier;
+
+                GameManager->SetPrevMissionEnergy(PrevMissionEnergy);
+                GameManager->SetPrevMissionEXP(PrevMissionEXP);
+
+                // 완수한 임무의 수 반영
+                GameManager->SetCompleteMissionCount(GameManager->GetCompleteMissionCount() + 1);
             }
             else
             {
                 GameManager->SetPrevMissionSuccess(false);
+
+                GameManager->SetPrevMissionEnergy(0);
+                GameManager->SetPrevMissionEXP(0);
             }
 
             // 미션 종료 시 자동 저장되도록
@@ -100,7 +112,19 @@ void AMainPlayerController::GameHasEnded(class AActor* EndGameFocus, bool bIsWin
     GetWorldTimerManager().SetTimer(GameEndTimer, this, &AMainPlayerController::LoadLevelAfterDelay, GameEndDelay, false);
 }
 
+float AMainPlayerController::GetBonusLootMultiplier() const
+{
+    return BonusLootMultiplier;
+}
+
+void AMainPlayerController::SetBonusLootMultiplier(float Multiplier)
+{
+    BonusLootMultiplier = Multiplier;
+}
+
 UHUDWidget* AMainPlayerController::GetHUDWidget() const
 {
     return HUDWidget;
 }
+
+

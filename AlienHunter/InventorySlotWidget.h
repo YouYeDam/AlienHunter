@@ -30,9 +30,18 @@ private:
     UPROPERTY(meta = (BindWidget))
     class UButton* SlotButton;
 
+    UPROPERTY(meta = (BindWidget))
+    class UTextBlock* ItemNameText;
+    
+    UPROPERTY(meta = (BindWidget))
+    class UImage* ItemImage;
+    
     UInventoryMenuWidget* InventoryMenuWidgetRef; // 인벤토리 메뉴 위젯 참조
 
+    UPROPERTY()
     FBaseItemData ItemData;
+
     FGunItemData GunItemData;
+
     FSwordItemData SwordItemData;
 };

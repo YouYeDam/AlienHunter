@@ -1,0 +1,5 @@
+﻿ID, PerkName,PerkDescription,PerkValue,PerkRequiredLevel,PerkType
+1,"강화된 신체","체력을 증가시켜 더욱 강인한 신체를 가집니다.",1.2,5,ReinforcedBody
+2,"넉넉한 탄약","탄약이 늘어나 더 오래 전투를 지속할 수 있습니다.",2,1,PlentifulAmmo
+3,"추가 전리품","미션 완료에 대한 성과를 인정받아 추가로 보상을 받습니다.",1.2,1,BonusLoot
+4,"자동 보호막","일정 시간마다 보호막을 생성하는 기능을 탑재합니다.",1.2,1,AutoShield

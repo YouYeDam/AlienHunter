@@ -86,6 +86,9 @@ public:
 	int32 GetAmmoCount() const;
 	int32 GetSpareAmmoCount() const;
 
+	void IncreaseSpareAmmoCount(float Multiplier);
+	void IncreaseSpareAmmoCount(int32 Count);
+
 // 연발 사격 가능용 변수
 private: 
     UPROPERTY(EditAnywhere)
@@ -100,5 +103,4 @@ public:
 	void StartBarrage();
 	void StopBarrage();
 	bool GetBarrage() const;
-
 };

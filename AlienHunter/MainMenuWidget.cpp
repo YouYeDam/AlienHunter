@@ -33,8 +33,26 @@ void UMainMenuWidget::OnLoadGameClicked()
     UGameManager* GameManager = Cast<UGameManager>(UGameplayStatics::GetGameInstance(GetWorld()));
     if (GameManager)
     {
-        GameManager->LoadGame();
-        GameStart();
+        if (GameManager->LoadGame())
+        {
+            GameStart();
+        }
+        else
+        {
+            if (PopupWidgetClass)
+            {
+                PopupWidget = CreateWidget<UPopupWidget>(this, PopupWidgetClass);
+                if (PopupWidget)
+                {
+                    FText FormattedText = NSLOCTEXT("MainMenu", "NonExistingSaveGame", "저장된 게임 파일이 존재하지 않습니다.\n 새 게임을 시작해주세요.");
+
+                    PopupWidget->AddToViewport();
+                    PopupWidget->InitializePopup(FormattedText, false);
+
+                    PopupWidget->CancelClicked.AddDynamic(this, &UMainMenuWidget::OnPopupClose);
+                }
+            }
+        }
     }
 }
 

@@ -5,6 +5,7 @@
 #include "ShopMenuWidget.h"
 #include "InventoryMenuWidget.h"
 #include "CharacterMenuWidget.h"
+#include "PerkMenuWidget.h"
 #include "Blueprint/UserWidget.h"
 
 // 게임 메뉴 진입 시 플레이어 인풋 활성화 및 마우스 커서 활성화 메소드
@@ -133,6 +134,30 @@ void AGameMenuGameMode::ShowCharacterMenu()
             if (CharacterMenuWidget)
             {
                 CharacterMenuWidget->ShowPlayerStat();
+            }
+        }
+    }
+}
+
+void AGameMenuGameMode::ShowPerkMenu()
+{
+    if (CurrentWidget)
+    {
+        CurrentWidget->RemoveFromParent();
+        CurrentWidget = nullptr;
+    }
+
+    if (PerkMenuClass)
+    {
+        CurrentWidget = CreateWidget<UUserWidget>(GetWorld(), PerkMenuClass);
+        if (CurrentWidget)
+        {
+            CurrentWidget->AddToViewport();
+
+            UPerkMenuWidget* PerkMenuWidget = Cast<UPerkMenuWidget>(CurrentWidget);
+            if (PerkMenuWidget)
+            {
+                PerkMenuWidget->UpdatePerkSlots();
             }
         }
     }

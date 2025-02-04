@@ -5,6 +5,8 @@
 #include "Gun.h"
 #include "Sword.h"
 #include "InteractableActor.h"
+#include "PerkData.h"
+#include "PerkEffector.h"
 #include "Kismet/GameplayStatics.h"
 #include "Components/CapsuleComponent.h"
 #include "GameFramework/CharacterMovementComponent.h"
@@ -46,6 +48,21 @@ void APlayerCharacter::BeginPlay()
 		Sword->SetOwner(this);
 		Sword->SetMeshVisibility(false);
 	}
+
+    // 퍽 적용
+    if (GameManager)
+    {
+        const TArray<FPerkData>& PlayerPerks = GameManager->GetChosenPerks(); // 게임 매니저에서 퍽 데이터 가져옴
+
+        if (PlayerPerks.Num() > 0)
+        {
+            PerkEffector = GetWorld()->SpawnActor<APerkEffector>(PerkEffectorClass);
+            if (PerkEffector)
+            {
+                PerkEffector->ApplyPerks(this, PlayerPerks);
+            }
+        }
+    }
 }
 
 void APlayerCharacter::SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent)
@@ -269,8 +286,32 @@ void APlayerCharacter::SetGainedEXP(int32 NewEXP)
     GainedEXP = NewEXP;
 }
 
+float APlayerCharacter::GetMaxHP() const
+{
+	return MaxHP;
+}
+
+void APlayerCharacter::SetMaxHP(float NewHP, bool bMakeFullHP)
+{
+	MaxHP = NewHP;
+
+    if (bMakeFullHP)
+    {
+        CurrentHP = MaxHP;
+    }
+}
+
+float APlayerCharacter::GetPlayerShield() const
+{
+    return CurrentShield;
+}
+
+void APlayerCharacter::SetPlayerShield(float NewShield)
+{
+    CurrentShield = NewShield;
+}
+
 AGun* APlayerCharacter::GetEquippedGun() const
 {
 	return Gun;
 }
-

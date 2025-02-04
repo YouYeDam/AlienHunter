@@ -50,6 +50,10 @@ public:
 
     void SetSelectedSwordItem(const FSwordItemData& SwordItem);
 
+    void CreateGunInventorySlots();
+
+    void CreateSwordInventorySlots();
+    
 protected:
     virtual void NativeConstruct() override;
 
@@ -80,6 +84,9 @@ private:
 
 	UPROPERTY(EditAnywhere)
 	TSubclassOf<UUserWidget> PopupWidgetClass;
+    
+    UPROPERTY()
+    UPopupWidget* PopupWidget;
     
     UPROPERTY(meta = (BindWidget))
     class UButton* GameMenuButton;
@@ -121,14 +128,7 @@ private:
     UPROPERTY(EditAnywhere)
     TSubclassOf<class UUserWidget> ShopSlotClass;
 
-    UPROPERTY()
-    UPopupWidget* PopupWidget;
-
     void InitializeItemData();
-
-    void CreateGunInventorySlots();
-
-    void CreateSwordInventorySlots();
 
     bool CheckItemAlreadyPurchased() const;
 };

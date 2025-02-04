@@ -18,6 +18,11 @@ void UCharacterMenuWidget::NativeConstruct()
     {
         GameMenuButton->OnClicked.AddDynamic(this, &UCharacterMenuWidget::OnMoveToGameMenuClicked);
     }
+
+    if (PerkMenuButton)
+    {
+        PerkMenuButton->OnClicked.AddDynamic(this, &UCharacterMenuWidget::OnMoveToPerkMenuClicked);
+    }
 }
 
 // 게임 메뉴로 이동하는 메소드
@@ -27,6 +32,16 @@ void UCharacterMenuWidget::OnMoveToGameMenuClicked()
     if (GameMode)
     {
         GameMode->ShowGameMenu();
+    }
+}
+
+// 퍽 메뉴로 이동하는 메소드
+void UCharacterMenuWidget::OnMoveToPerkMenuClicked()
+{
+    AGameMenuGameMode* GameMode = Cast<AGameMenuGameMode>(UGameplayStatics::GetGameMode(GetWorld()));
+    if (GameMode)
+    {
+        GameMode->ShowPerkMenu();
     }
 }
 
@@ -80,6 +95,15 @@ void UCharacterMenuWidget::ShowPlayerStat()
                 FText::AsNumber(GameManager->GetKillEnemyCount())
             );
             KillEnemyCountText->SetText(FormattedText);
+        }
+
+        if (CompleteMissionCountText)
+        {
+            FText FormattedText = FText::Format(
+                NSLOCTEXT("CharacterWidget", "CompleteMissionCountText", "완수한 임무의 수: {0}"),
+                FText::AsNumber(GameManager->GetCompleteMissionCount())
+            );
+            CompleteMissionCountText->SetText(FormattedText);
         }
     }
 }
