@@ -24,6 +24,7 @@ void UHUDWidget::NativeTick(const FGeometry& MyGeometry, float InDeltaTime)
     UpdateGainedEXPText();
 
     UpdateAmmoText();
+    UpdateHealKitText();
 }
 
 // 획득한 에너지 텍스트를 갱신하는 메소드
@@ -64,6 +65,18 @@ void UHUDWidget::UpdateAmmoText()
                 FText::AsNumber(EquippedGun->GetSpareAmmoCount())
             ));
         }
+    }
+}
+
+// 플레이어의 회복 키트 현황을 갱신하드 메소드
+void UHUDWidget::UpdateHealKitText()
+{
+    if (PlayerCharacter && HealKit)
+    {
+        HealKit->SetText(FText::Format(
+            NSLOCTEXT("HUD", "HealKitText", "회복 키트: {0}"),
+            FText::AsNumber(PlayerCharacter->GetHealKitCount())
+        ));
     }
 }
 

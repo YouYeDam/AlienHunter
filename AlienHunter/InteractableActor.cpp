@@ -42,7 +42,6 @@ void AInteractableActor::OnSphereBeginOverlap(UPrimitiveComponent* OverlappedCom
     if (OtherActor && OtherActor->ActorHasTag("Player"))
     {
         bCanInteract = true; // 상호작용 가능 상태
-        SetHighlight(true);  // 하이라이트 활성화
     }
 }
 
@@ -51,7 +50,6 @@ void AInteractableActor::OnSphereEndOverlap(UPrimitiveComponent* OverlappedComp,
     if (OtherActor && OtherActor->ActorHasTag("Player"))
     {
         bCanInteract = false; // 상호작용 불가 상태
-        SetHighlight(false);  // 하이라이트 비활성화
     }
 }
 
@@ -60,7 +58,6 @@ void AInteractableActor::Interact(AActor* InteractingActor)
     if (bCanInteract) // 플레이어가 범위 내에 있을 때만
     {
         Collect(InteractingActor);
-		SetHighlight(false); // 상호작용 후 하이라이트 비활성화
     }	
 }
 
@@ -74,13 +71,4 @@ void AInteractableActor::Collect(AActor* Collector)
 
     // 아이템 파괴
     Destroy();
-}
-
-void AInteractableActor::SetHighlight(bool bEnable)
-{
-    if (Mesh)
-    {
-        Mesh->SetRenderCustomDepth(bEnable);
-        Mesh->SetCustomDepthStencilValue(1);
-    }
 }

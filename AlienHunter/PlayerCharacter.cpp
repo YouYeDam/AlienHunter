@@ -86,6 +86,7 @@ void APlayerCharacter::SetupPlayerInputComponent(class UInputComponent* PlayerIn
 	PlayerInputComponent->BindAction(TEXT("Interact"), EInputEvent::IE_Pressed, this, &APlayerCharacter::Interact);
 	PlayerInputComponent->BindAction(TEXT("Reload"), EInputEvent::IE_Pressed, this, &APlayerCharacter::Reload);
 	PlayerInputComponent->BindAction(TEXT("Shoot"), EInputEvent::IE_Released, this, &APlayerCharacter::StopShoot);
+    PlayerInputComponent->BindAction(TEXT("UseHealKit"), EInputEvent::IE_Pressed, this, &APlayerCharacter::UseHealKit);
 }
 
 void APlayerCharacter::Jump()
@@ -145,6 +146,18 @@ bool APlayerCharacter::SwitchUsingSword() const
 bool APlayerCharacter::IsAttacking() const
 {
     return bIsAttacking;
+}
+
+void APlayerCharacter::Heal(int32 HealAmount)
+{
+    if (CurrentHP + HealAmount > MaxHP)
+    {
+        CurrentHP = MaxHP;
+    }
+    else
+    {
+        CurrentHP += HealAmount;
+    }
 }
 
 // 캐릭터의 사격 메소드
@@ -251,6 +264,18 @@ void APlayerCharacter::StopShoot()
     }
 }
 
+void APlayerCharacter::UseHealKit()
+{
+    if (HealKitCount <= 0)
+    {
+        return;
+    }
+
+    int32 HealAmount = MaxHP * 0.3;
+    Heal(HealAmount);
+    HealKitCount--;
+}
+
 // 플레이어의 초기 스탯을 설정하는 메소드
 void APlayerCharacter::InitializePlayerStats()
 {
@@ -264,6 +289,12 @@ void APlayerCharacter::InitializePlayerStats()
 float APlayerCharacter::GetHealthPercent() const
 {
     return CurrentHP / MaxHP;
+}
+
+// 프로그레스바 UI 표시를 위한 쉴드 비율 계산
+float APlayerCharacter::GetShieldPercent() const
+{
+    return CurrentShield / MaxHP;
 }
 
 int32 APlayerCharacter::GetGainedEnergy() const
@@ -309,6 +340,16 @@ float APlayerCharacter::GetPlayerShield() const
 void APlayerCharacter::SetPlayerShield(float NewShield)
 {
     CurrentShield = NewShield;
+}
+
+int32 APlayerCharacter::GetHealKitCount() const
+{
+    return HealKitCount;
+}
+
+void APlayerCharacter::SetHealKitCount(int32 NewHealKitCount)
+{
+    HealKitCount = NewHealKitCount;
 }
 
 AGun* APlayerCharacter::GetEquippedGun() const

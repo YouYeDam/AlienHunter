@@ -32,7 +32,11 @@ private:
 	UPROPERTY(meta = (BindWidget))
     class UTextBlock* Ammo;
 
+	UPROPERTY(meta = (BindWidget))
+    class UTextBlock* HealKit;
+
 	void UpdateGainedEnergyText();
 	void UpdateGainedEXPText();
 	void UpdateAmmoText();
+	void UpdateHealKitText();
 };

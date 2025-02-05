@@ -45,7 +45,4 @@ private:
 	bool bCanInteract = false; // 현재 상호작용 가능한 상태
 
 	float InteractableRadius = 200; // 상호작용 범위 한계
-
-	// 하이라이트 효과를 위한 메소드
-    void SetHighlight(bool bEnable);
 };
