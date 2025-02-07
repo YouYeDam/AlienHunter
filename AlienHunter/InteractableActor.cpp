@@ -1,8 +1,7 @@
-// Fill out your copyright notice in the Description page of Project Settings.
+
 
 
 #include "InteractableActor.h"
-#include "CollectObjectGameMode.h"
 #include "Components/SphereComponent.h"
 #include "GameFramework/Character.h"
 #include "Kismet/GameplayStatics.h"
@@ -53,6 +52,7 @@ void AInteractableActor::OnSphereEndOverlap(UPrimitiveComponent* OverlappedComp,
     }
 }
 
+// 상호작용 시 아이템 수집을 호출하는 메소드
 void AInteractableActor::Interact(AActor* InteractingActor)
 {
     if (bCanInteract) // 플레이어가 범위 내에 있을 때만
@@ -61,14 +61,8 @@ void AInteractableActor::Interact(AActor* InteractingActor)
     }	
 }
 
+// 아이템 수집 시 실행하는 메소드(인터페이스용 -> 자식에서 구현)
 void AInteractableActor::Collect(AActor* Collector)
 {
-    // 게임모드에 수집 이벤트 전달
-    if (ACollectObjectGameMode* GameMode = Cast<ACollectObjectGameMode>(UGameplayStatics::GetGameMode(GetWorld())))
-    {
-        GameMode->ItemCollected();
-    }
-
-    // 아이템 파괴
-    Destroy();
+    // No Action.
 }

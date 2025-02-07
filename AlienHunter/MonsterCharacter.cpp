@@ -11,7 +11,7 @@ void AMonsterCharacter::BeginPlay()
 // 헤드샷 사운드를 출력하는 메소드
 void AMonsterCharacter::PlayHeadshotSound()
 {
-    if (HeadshotSound)
+    if (HeadshotSound && !IsDead())
     {
         UGameplayStatics::PlaySoundAtLocation(GetWorld(), HeadshotSound, GetActorLocation());
     }

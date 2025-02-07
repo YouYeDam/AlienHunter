@@ -67,6 +67,8 @@ void AGun::InitializeWeaponData()
         GunRange = GunData->GunRange;
         GunRecoil = GunData->GunRecoil;
 		Barrage = GunData->Barrage;
+
+		MagazineSize = SpareAmmoCount;
     }
 }
 
@@ -166,7 +168,7 @@ void AGun::StopBarrage()
 // 탄약을 재장전하는 메소드
 void AGun::ReloadAmmo()
 {
-    if (SpareAmmoCount <= 0 || AmmoCount >= MaxAmmoCount) // 탄창이 없거나 이미 최대 탄약이면 리로드 불가
+    if (SpareAmmoCount <= 0 || AmmoCount >= MaxAmmoCount) // 탄창이 없거나 이미 최대 탄약이면 장전 불가
     {
         return;
     }
@@ -237,16 +239,28 @@ AController* AGun::GetOwnerController() const
 	return OwnerPawn->GetController();
 }
 
-// 총기의 탄약 개수를 배율로 증가시키는 메소드
-void AGun::IncreaseSpareAmmoCount(float Multiplier)
-{
-	SpareAmmoCount *= Multiplier;
-}
-
-// 총기의 탄약 개수를 개수로 증가시키는 메소드
+// 총기의 남은 탄약 개수를 증가시키는 메소드
 void AGun::IncreaseSpareAmmoCount(int32 Count)
 {
-	SpareAmmoCount += Count;
+    // 필요한 탄약량 계산
+    int32 NeededAmmo = MaxAmmoCount - AmmoCount;
+    int32 AmmoToAdd = FMath::Min(Count, NeededAmmo);
+
+    // 탄창을 우선적으로 채움
+    AmmoCount += AmmoToAdd;
+    Count -= AmmoToAdd;
+
+    // 남은 탄약이 있다면 SpareAmmoCount에 추가
+    if (Count > 0)
+    {
+        SpareAmmoCount = FMath::Min(SpareAmmoCount + Count, MagazineSize);
+    }
+}
+
+// 탄창 크기를 증가시키는 메소드
+void AGun::SetMagazineSize(int32 NewSize)
+{
+	MagazineSize = NewSize;
 }
 
 int32 AGun::GetAmmoCount() const
@@ -257,6 +271,11 @@ int32 AGun::GetAmmoCount() const
 int32 AGun::GetSpareAmmoCount() const
 {
 	return SpareAmmoCount;
+}
+
+int32 AGun::GetMagazineSize() const
+{
+	return MagazineSize;
 }
 
 bool AGun::GetBarrage() const

@@ -63,12 +63,16 @@ private:
     UPROPERTY(EditAnywhere)
     int32 SpareAmmoCount; // 여분 탄약 개수
 
+	UPROPERTY(EditAnywhere)
+	int32 MagazineSize; // 탄창 크기
+
     UPROPERTY(EditAnywhere)
     float GunRecoil; // 반동 정도
 
     UPROPERTY(EditAnywhere)
     bool Barrage; // 연발 가능 여부
 
+	UPROPERTY(EditAnywhere)
 	int32 MaxAmmoCount; // 최대 탄약 개수
 
 	bool GunTrace(FHitResult& Hit, FVector& ShotDirection);
@@ -85,9 +89,12 @@ public:
 
 	int32 GetAmmoCount() const;
 	int32 GetSpareAmmoCount() const;
+	
 
-	void IncreaseSpareAmmoCount(float Multiplier);
 	void IncreaseSpareAmmoCount(int32 Count);
+
+	int32 GetMagazineSize() const;
+	void SetMagazineSize(int32 NewSize);
 
 // 연발 사격 가능용 변수
 private: 

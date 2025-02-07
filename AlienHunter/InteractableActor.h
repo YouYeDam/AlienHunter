@@ -1,4 +1,4 @@
-// Fill out your copyright notice in the Description page of Project Settings.
+
 
 #pragma once
 
@@ -20,7 +20,7 @@ public:
 	UFUNCTION(BlueprintCallable)
 	virtual void Interact(AActor* InteractingActor);
 
-	void Collect(AActor* Collector);
+	virtual void Collect(AActor* Collector);
 
 	// 콜리전 이벤트 처리
 	UFUNCTION()

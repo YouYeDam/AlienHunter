@@ -45,6 +45,7 @@ private:
 
 
 	int32 HealKitCount = 2; // 회복 키트 개수
+	const int MaxHealKitCount = 5; // 회복 키트 최대 소지 개수
 
 	bool IsControlledByPlayer; // 플레이어가 컨트롤하고 있는지
 
@@ -108,7 +109,7 @@ public:
 	void SetPlayerShield(float NewShield);
 
 	int32 GetHealKitCount() const;
-	void SetHealKitCount(int32 NewHealKitCount);
+	void IncreaseHealKitCount(int32 HealKitAmount);
 
 	AGun* GetEquippedGun() const;
 };

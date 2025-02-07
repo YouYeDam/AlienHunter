@@ -66,7 +66,10 @@ void APerkEffector::ApplyPlentifulAmmo(APlayerCharacter* PlayerCharacter, float 
         return;
     }
     
-    EquippedGun->IncreaseSpareAmmoCount(Value);
+    EquippedGun->SetMagazineSize(EquippedGun->GetMagazineSize() * Value);
+
+    int32 AmmoCount = EquippedGun->GetMagazineSize() * Value;
+    EquippedGun->IncreaseSpareAmmoCount(AmmoCount);
 }
 
 // 추가 전리품 퍽을 적용하는 메소드

@@ -236,14 +236,11 @@ void APlayerCharacter::Interact()
 
     for (AActor* Actor : OverlappingActors)
     {
-        // MissionObject 태그가 있는 액터만 상호작용 처리
-        if (Actor && Actor->ActorHasTag(FName("Mission Object")))
+        // AInteractableActor 클래스인지 확인
+        if (AInteractableActor* InteractableActor = Cast<AInteractableActor>(Actor))
         {
-            if (AInteractableActor* InteractableActor = Cast<AInteractableActor>(Actor))
-            {
-                InteractableActor->Interact(this);
-                break; // 첫 번째 상호작용 가능한 액터에만 반응
-            }
+            InteractableActor->Interact(this);
+            break; // 첫 번째 상호작용 가능한 액터에만 반응
         }
     }
 }
@@ -347,9 +344,9 @@ int32 APlayerCharacter::GetHealKitCount() const
     return HealKitCount;
 }
 
-void APlayerCharacter::SetHealKitCount(int32 NewHealKitCount)
+void APlayerCharacter::IncreaseHealKitCount(int32 HealKitAmount)
 {
-    HealKitCount = NewHealKitCount;
+    HealKitCount = FMath::Min(HealKitCount + HealKitAmount, MaxHealKitCount);
 }
 
 AGun* APlayerCharacter::GetEquippedGun() const
