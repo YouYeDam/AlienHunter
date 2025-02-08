@@ -49,6 +49,9 @@ void APlayerCharacter::BeginPlay()
 		Sword->SetMeshVisibility(false);
 	}
 
+    // FollowCamera 가져오기
+    FollowCamera = FindComponentByClass<UCameraComponent>();
+
     // 퍽 적용
     if (GameManager)
     {
@@ -87,6 +90,8 @@ void APlayerCharacter::SetupPlayerInputComponent(class UInputComponent* PlayerIn
 	PlayerInputComponent->BindAction(TEXT("Reload"), EInputEvent::IE_Pressed, this, &APlayerCharacter::Reload);
 	PlayerInputComponent->BindAction(TEXT("Shoot"), EInputEvent::IE_Released, this, &APlayerCharacter::StopShoot);
     PlayerInputComponent->BindAction(TEXT("UseHealKit"), EInputEvent::IE_Pressed, this, &APlayerCharacter::UseHealKit);
+    PlayerInputComponent->BindAction(TEXT("Zoom"), EInputEvent::IE_Pressed, this, &APlayerCharacter::ZoomIn);
+    PlayerInputComponent->BindAction(TEXT("Zoom"), EInputEvent::IE_Released, this, &APlayerCharacter::ZoomOut);
 }
 
 void APlayerCharacter::Jump()
@@ -163,7 +168,7 @@ void APlayerCharacter::Heal(int32 HealAmount)
 // 캐릭터의 사격 메소드
 void APlayerCharacter::Shoot()
 {
-    if (Gun && Gun->GetBarrage() && IsUsingGun) // 연발 가능 여부 체크
+    if (Gun && IsUsingGun && Gun->GetBarrage()) // 연발 가능 여부 체크
     {
         Gun->StartBarrage();
     }
@@ -220,6 +225,10 @@ void APlayerCharacter::SwapGun()
 // 플레이어의 현재 무기를 도검류로 바꾸는 메소드
 void APlayerCharacter::SwapSword()
 {
+    if (IsZooming)
+    {
+        return;
+    }
 	IsUsingGun = false;
 	IsUsingSword = true;
 
@@ -245,6 +254,7 @@ void APlayerCharacter::Interact()
     }
 }
 
+// 탄약을 재장전하는 메소드
 void APlayerCharacter::Reload()
 {
     if (Gun && IsUsingGun)
@@ -253,14 +263,18 @@ void APlayerCharacter::Reload()
     }
 }
 
+// 총기 발사를 멈추는 메소드
 void APlayerCharacter::StopShoot()
 {
-    if (Gun && Gun->GetBarrage())
+    if (!Gun || !IsUsingGun || !Gun->GetBarrage())
     {
-        Gun->StopBarrage();
+        return;
     }
+
+    Gun->StopBarrage();
 }
 
+// 회복 키트를 사용하는 메소드
 void APlayerCharacter::UseHealKit()
 {
     if (HealKitCount <= 0)
@@ -271,6 +285,42 @@ void APlayerCharacter::UseHealKit()
     int32 HealAmount = MaxHP * 0.3;
     Heal(HealAmount);
     HealKitCount--;
+}
+
+// 총기 줌 인을 하는 메소드
+void APlayerCharacter::ZoomIn()
+{
+    if (!Gun || !IsUsingGun || !Gun->GetZoom())
+    {
+        return;
+    }
+
+    if (!IsZooming)
+    {
+        IsZooming = true;
+        if (FollowCamera)
+        {
+            FollowCamera->SetFieldOfView(10.0f);
+        }
+    }
+}
+
+// 총기 줌 아웃을 하는 메소드
+void APlayerCharacter::ZoomOut()
+{
+    if (!Gun || !IsUsingGun || !Gun->GetZoom())
+    {
+        return;
+    }
+
+    if (IsZooming)
+    {
+        IsZooming = false;
+        if (FollowCamera)
+        {
+            FollowCamera->SetFieldOfView(90.0f);
+        }
+    }
 }
 
 // 플레이어의 초기 스탯을 설정하는 메소드

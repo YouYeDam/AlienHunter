@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "MainCharacter.h"
+#include "Camera/CameraComponent.h"
 #include "PlayerCharacter.generated.h"
 
 class AGun;
@@ -19,6 +20,9 @@ protected:
 	virtual void BeginPlay() override;
 
 private:
+	UPROPERTY(VisibleAnywhere)
+	UCameraComponent* FollowCamera;
+
 	UPROPERTY(EditDefaultsOnly)
 	TSubclassOf<AGun> GunClass; // 총기 클래스
 
@@ -43,7 +47,6 @@ private:
 	int32 GainedEnergy = 0; // 게임 중 얻은 에너지
 	int32 GainedEXP = 0; // 게임 중 얻은 경험치
 
-
 	int32 HealKitCount = 2; // 회복 키트 개수
 	const int MaxHealKitCount = 5; // 회복 키트 최대 소지 개수
 
@@ -60,6 +63,8 @@ private:
 
 	bool CanAttack = true; // 공격 가능 상태인지
 	bool CanMove = true; // 이동 가능 상태인지
+
+	bool IsZooming = false;
 
 	UFUNCTION(BlueprintPure)
 	float GetHealthPercent() const;
@@ -86,6 +91,7 @@ public:
 
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 
+	// 플레이어의 입력에 동작
 	virtual void Jump() override;
 	void Shoot();
 	void Swing();
@@ -95,6 +101,8 @@ public:
 	void Reload();
 	void StopShoot();
 	void UseHealKit();
+	void ZoomIn();
+	void ZoomOut();
 
 	int32 GetGainedEnergy() const;
 	void SetGainedEnergy(int32 NewEnergy);

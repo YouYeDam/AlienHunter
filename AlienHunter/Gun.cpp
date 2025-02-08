@@ -39,7 +39,7 @@ void AGun::BeginPlay()
 void AGun::OnConstruction(const FTransform& Transform)
 {
     Super::OnConstruction(Transform);
-
+	
     if (bIsPlayerWeapon && GunDataTable)
     {
         InitializeWeaponData();
@@ -67,6 +67,7 @@ void AGun::InitializeWeaponData()
         GunRange = GunData->GunRange;
         GunRecoil = GunData->GunRecoil;
 		Barrage = GunData->Barrage;
+		Zoom = GunData->Zoom;
 
 		MagazineSize = SpareAmmoCount;
     }
@@ -116,15 +117,17 @@ void AGun::StartShoot()
 			float AppliedDamage = Damage;
 
 			// 헤드샷 판정
-			if (Hit.BoneName.ToString().Contains(TEXT("Head")) || Hit.BoneName.ToString().Contains(TEXT("Skull")))
+			AMonsterCharacter* Monster = Cast<AMonsterCharacter>(HitActor);
+			if (Monster)
 			{
-				AppliedDamage *= 2.0f; // 헤드샷 데미지 2배 적용
-
-				// 헤드샷 소리 출력
-				AMonsterCharacter* Monster = Cast<AMonsterCharacter>(HitActor);
-				if (Monster)
+				USphereComponent* HeadshotHitbox = Monster->GetHeadshotHitbox();
+				if (HeadshotHitbox && Hit.Component == HeadshotHitbox) 
 				{
-					Monster->PlayHeadshotSound(); // 헤드샷 소리 출력
+					AppliedDamage *= 2.0f; // 헤드샷 데미지 2배 적용
+					
+					// 헤드샷 이펙트 출력
+					FRotator ImpactRotation = ShotDirection.Rotation();
+					Monster->PlayHeadShotEffect(Hit.ImpactPoint, ImpactRotation);
 				}
 			}
 
@@ -281,4 +284,9 @@ int32 AGun::GetMagazineSize() const
 bool AGun::GetBarrage() const
 {
 	return Barrage;
+}
+
+bool AGun::GetZoom() const
+{
+	return Zoom;
 }

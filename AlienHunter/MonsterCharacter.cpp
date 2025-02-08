@@ -8,12 +8,12 @@ void AMonsterCharacter::BeginPlay()
     CurrentHP = MaxHP; // 현재 체력을 최대 체력으로 설정
 }
 
-// 헤드샷 사운드를 출력하는 메소드
-void AMonsterCharacter::PlayHeadshotSound()
+// 헤드샷 이펙트를 출력하는 메소드
+void AMonsterCharacter::PlayHeadShotEffect(const FVector& HitLocation, const FRotator& ShotDirection)
 {
-    if (HeadshotSound && !IsDead())
+    if (HeadShotEffect && !IsDead())
     {
-        UGameplayStatics::PlaySoundAtLocation(GetWorld(), HeadshotSound, GetActorLocation());
+        UGameplayStatics::SpawnEmitterAtLocation(GetWorld(), HeadShotEffect, HitLocation, ShotDirection);
     }
 }
 
@@ -25,4 +25,9 @@ int32 AMonsterCharacter::GetEnergy() const
 int32 AMonsterCharacter::GetEXP() const
 {
     return EXP;
+}
+
+USphereComponent* AMonsterCharacter::GetHeadshotHitbox() const
+{
+    return FindComponentByClass<USphereComponent>();
 }

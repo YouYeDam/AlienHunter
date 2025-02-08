@@ -33,6 +33,10 @@ public:
     UPROPERTY(EditAnywhere, BlueprintReadWrite)
     bool Barrage;
 
+    // 줌 가능 여부
+    UPROPERTY(EditAnywhere, BlueprintReadWrite)
+    bool Zoom;
+
 	FGunItemData()
         : FBaseItemData()
         , AmmoCount(0)
@@ -40,5 +44,6 @@ public:
         , GunRange(0)
         , GunRecoil(0)
         , Barrage(false)
+        , Zoom(false)
     {}
 };

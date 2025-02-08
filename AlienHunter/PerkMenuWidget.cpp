@@ -8,6 +8,7 @@
 #include "Blueprint/UserWidget.h"
 #include "Kismet/GameplayStatics.h"
 #include "PopupWidget.h"
+#include "TooltipWidget.h"
 #include "PerkSlotWidget.h"
 #include "GameMenuGameMode.h"
 
@@ -210,5 +211,37 @@ void UPerkMenuWidget::UpdatePerkSlots()
                 PerkSlot->UpdateSlotColor();
             }
         }
+    }
+}
+
+// 퍽에 마우스 오버 시 툴팁을 보여주는 메소드
+void UPerkMenuWidget::ShowTooltip(const FText& Title, const FText& Description, FVector2D MousePosition)
+{
+    if (!TooltipWidgetClass)
+    {
+        return;
+    }
+
+    if (!PerkTooltipWidget)
+    {
+        PerkTooltipWidget = CreateWidget<UTooltipWidget>(GetWorld(), TooltipWidgetClass);
+        if (PerkTooltipWidget)
+        {
+            PerkTooltipWidget->AddToViewport();
+        }
+    }
+
+    PerkTooltipWidget->SetTooltipData(Title, Description);
+
+    PerkTooltipWidget->SetPositionInViewport(MousePosition + FVector2D(5.0f, 5.0f));
+}
+
+// 퍽에 마우스 오버 시 툴팁을 감추는 메소드
+void UPerkMenuWidget::HideTooltip()
+{
+    if (PerkTooltipWidget)
+    {
+        PerkTooltipWidget->RemoveFromParent();
+        PerkTooltipWidget = nullptr;
     }
 }

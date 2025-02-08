@@ -3,6 +3,7 @@
 
 #include "CoreMinimal.h"
 #include "MainCharacter.h"
+#include "Components/SphereComponent.h"
 #include "MonsterCharacter.generated.h"
 
 UCLASS()
@@ -21,10 +22,13 @@ protected:
 
 private:
     UPROPERTY(EditAnywhere)
-    USoundBase* HeadshotSound;
+    UParticleSystem* HeadShotEffect; // 헤드샷 이펙트
 
 public:
 	int32 GetEnergy() const;
 	int32 GetEXP() const;
-	void PlayHeadshotSound();
+	
+	void PlayHeadShotEffect(const FVector& HitLocation, const FRotator& ShotDirection);
+
+	USphereComponent* GetHeadshotHitbox() const;
 };

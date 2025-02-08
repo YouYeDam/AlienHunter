@@ -73,6 +73,9 @@ private:
     bool Barrage; // 연발 가능 여부
 
 	UPROPERTY(EditAnywhere)
+    bool Zoom; // 줌 가능 여부
+	
+	UPROPERTY(EditAnywhere)
 	int32 MaxAmmoCount; // 최대 탄약 개수
 
 	bool GunTrace(FHitResult& Hit, FVector& ShotDirection);
@@ -90,11 +93,17 @@ public:
 	int32 GetAmmoCount() const;
 	int32 GetSpareAmmoCount() const;
 	
-
 	void IncreaseSpareAmmoCount(int32 Count);
 
 	int32 GetMagazineSize() const;
 	void SetMagazineSize(int32 NewSize);
+
+	void StartBarrage();
+	void StopBarrage();
+
+	bool GetBarrage() const;
+
+	bool GetZoom() const;
 
 // 연발 사격 가능용 변수
 private: 
@@ -105,9 +114,4 @@ private:
 	float FireRate = 0.1f; // 연발 사격 속도 (초)
 
 	FTimerHandle FireTimerHandle; // 연발 사격 타이머 핸들
-
-public:
-	void StartBarrage();
-	void StopBarrage();
-	bool GetBarrage() const;
 };

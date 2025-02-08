@@ -7,6 +7,7 @@
 #include "PerkData.h"
 #include "GameManager.h"
 #include "PopupWidget.h"
+#include "TooltipWidget.h"
 #include "PerkMenuWidget.generated.h"
 
 
@@ -29,7 +30,10 @@ public:
 	void OnPopupClose();
 
     void UpdatePerkSlots();
-    
+
+    void ShowTooltip(const FText& Title, const FText& Description, FVector2D MousePosition);
+    void HideTooltip();
+
 protected:
     virtual void NativeConstruct() override;
 
@@ -48,6 +52,12 @@ private:
 
     UPROPERTY()
     UPopupWidget* PopupWidget;
+
+    UPROPERTY(EditAnywhere)
+    TSubclassOf<UUserWidget> TooltipWidgetClass;
+
+    UPROPERTY()
+    UTooltipWidget* PerkTooltipWidget;
 
     UPROPERTY(meta = (BindWidget))
     class UButton* CharacterMenuButton;

@@ -39,4 +39,10 @@ private:
 
     UPROPERTY()
     FPerkData PerkData;
+
+    UFUNCTION()
+    void OnHovered();
+
+    UFUNCTION()
+    void OnUnhovered();
 };

@@ -19,6 +19,8 @@ void AMainCharacter::BeginPlay()
 	GameMode = Cast<AAlienHunterGameMode>(UGameplayStatics::GetGameMode(GetWorld()));
 
 	IsControlledByPlayer = IsPlayerControlled();
+
+    GameManager = Cast<UGameManager>(UGameplayStatics::GetGameInstance(GetWorld()));
 }
 
 void AMainCharacter::Tick(float DeltaTime)
@@ -62,38 +64,52 @@ float AMainCharacter::TakeDamage(float DamageAmount, struct FDamageEvent const& 
         CurrentHP = 0; // 체력이 음수가 되는 것 방지
     }
 
-	 // 피격을 받고 죽은 경우에 대해 처리
-	if (IsDead() && !IsAlreadyDead) {
-		IsAlreadyDead = true; // 죽음이 중복되서 처리되는 경우 방지
-		
-		if (DeathSound)
-        {
-            UGameplayStatics::PlaySoundAtLocation(GetWorld(), DeathSound, GetActorLocation());
-        }
-
-		if (GameMode != nullptr) {
-			GameMode->PawnKilled(this); // 게임 모드를 통해 폰의 죽음 처리
-		}
-		
-		DetachFromControllerPendingDestroy(); // 컨트롤러 해제
-		
-		GetCapsuleComponent()->SetCollisionEnabled(ECollisionEnabled::NoCollision); // 캡슐 컴포넌트 해제
-
-		UBoxComponent* BoxComp = FindComponentByClass<UBoxComponent>(); // 박스 컴포넌트 설정(모든 캐릭터가 가지고 있지는 않으므로)
-        if (BoxComp)
-        {
-            BoxComp->SetCollisionEnabled(ECollisionEnabled::NoCollision); // 박스 컴포넌트 해제
-        }
-
-		GameManager = Cast<UGameManager>(UGameplayStatics::GetGameInstance(GetWorld()));
-
-		// 죽은 캐릭터가 적일 경우, 게임 매니저의 총 적 처치 수 증가
-		if (GameManager && !IsControlledByPlayer)
-		{
-			int32 CurrentKillEnemyCount = GameManager->GetKillEnemyCount();
-			GameManager->SetKillEnemyCount(CurrentKillEnemyCount++);
-		}
-	}
+    // 사망 체크 및 처리
+    if (IsDead())
+    {
+        HandleDeath();
+    }
 
 	return TakedDamageAmount;
+}
+
+void AMainCharacter::HandleDeath()
+{
+    if (IsAlreadyDead) return;
+
+    IsAlreadyDead = true; // 중복 처리 방지
+
+    if (DeathSound)
+    {
+        UGameplayStatics::PlaySoundAtLocation(GetWorld(), DeathSound, GetActorLocation());
+    }
+
+    if (GameMode)
+    {
+        GameMode->PawnKilled(this);
+    }
+
+    DetachFromControllerPendingDestroy(); // 컨트롤러 해제
+
+    GetCapsuleComponent()->SetCollisionEnabled(ECollisionEnabled::NoCollision); // 충돌 해제
+
+    // 박스 컴포넌트가 존재하는 경우 충돌 해제
+    UBoxComponent* BoxComp = FindComponentByClass<UBoxComponent>();
+    if (BoxComp)
+    {
+        BoxComp->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+    }
+
+    // 게임 매니저에서 적 처치 수 증가
+    if (GameManager && !IsControlledByPlayer)
+    {
+        int32 KillCount = GameManager->GetKillEnemyCount();
+        GameManager->SetKillEnemyCount(KillCount + 1);
+    }
+
+    // 몬스터일 경우 10초 뒤 자동 제거
+    if (!IsControlledByPlayer)
+    {
+        SetLifeSpan(10.0f);
+    }
 }

@@ -16,6 +16,8 @@ void UPerkSlotWidget::NativeConstruct()
     if (SlotButton)
     {
         SlotButton->OnClicked.AddDynamic(this, &UPerkSlotWidget::OnSlotClicked);
+        SlotButton->OnHovered.AddDynamic(this, &UPerkSlotWidget::OnHovered);
+        SlotButton->OnUnhovered.AddDynamic(this, &UPerkSlotWidget::OnUnhovered);
     }
 
     UpdateSlotColor();
@@ -86,4 +88,29 @@ void UPerkSlotWidget::UpdateSlotColor()
     // 버튼 색상 변경
     FLinearColor NewColor = bIsSelected ? FLinearColor::Yellow : FLinearColor::White;
     SlotButton->SetBackgroundColor(NewColor);
+}
+
+// 마우스 호버 시 실행되는 메소드
+void UPerkSlotWidget::OnHovered()
+{
+    if (PerkMenuWidgetRef)
+    {
+        FVector2D MousePos;
+        GetOwningPlayer()->GetMousePosition(MousePos.X, MousePos.Y);
+
+        PerkMenuWidgetRef->ShowTooltip(
+            FText::FromString(PerkData.PerkName),
+            FText::FromString(PerkData.PerkDescription),
+            MousePos
+        );
+    }
+}
+
+// 마우스 언호버 시 실행되는 메소드
+void UPerkSlotWidget::OnUnhovered()
+{
+    if (PerkMenuWidgetRef)
+    {
+        PerkMenuWidgetRef->HideTooltip();
+    }
 }
