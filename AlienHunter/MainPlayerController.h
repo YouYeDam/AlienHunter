@@ -1,4 +1,4 @@
-// Fill out your copyright notice in the Description page of Project Settings.
+
 
 #pragma once
 
@@ -6,6 +6,7 @@
 #include "GameFramework/PlayerController.h"
 #include "GameManager.h"
 #include "HUDWidget.h"
+#include "PauseMenuWidget.h"
 #include "MainPlayerController.generated.h"
 
 UCLASS()
@@ -15,7 +16,8 @@ class ALIENHUNTER_API AMainPlayerController : public APlayerController
 
 protected:
 	virtual void BeginPlay() override;
-
+	virtual void SetupInputComponent() override;
+	
 private:
 	UPROPERTY()
 	UGameManager* GameManager;
@@ -27,6 +29,8 @@ private:
 
 	float BonusLootMultiplier = 1.0f; // 보너스 보상 배율
 
+	bool bIsPaused = false; // 게임이 멈춤 상태인지
+
 	UPROPERTY(EditAnywhere)
 	TSubclassOf<class UUserWidget> WinScreenClass;
 	
@@ -34,15 +38,23 @@ private:
 	TSubclassOf<class UUserWidget> LoseScreenClass;
 
 	UPROPERTY(EditAnywhere)
-	TSubclassOf<class UHUDWidget> HUDClass;
+	TSubclassOf<class UUserWidget> HUDClass;
 	
-	UPROPERTY(EditAnywhere)
+	UPROPERTY()
 	UHUDWidget *HUDWidget;
+
+	UPROPERTY(EditAnywhere)
+    TSubclassOf<class UUserWidget> PauseMenuClass;
+
+    UPROPERTY()
+    UPauseMenuWidget* PauseMenuWidget;
 
 	void LoadLevelAfterDelay();
 	
 public:
 	virtual void GameHasEnded(class AActor* EndGameFocus = nullptr, bool bIsWinner = false) override;
+
+	void TogglePauseMenu();
 
 	float GetBonusLootMultiplier() const;
 	void SetBonusLootMultiplier(float Multiplier);

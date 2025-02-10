@@ -21,9 +21,11 @@ public:
 
 	void UpdateHUDReference();
 	
-protected:
+	int32 GetKillEnemyCount() const;
+
 	virtual void EndGame(bool bIsPlayerWinner);
 	
+protected:
     void UpdateHUDMissionProgress();
 
 private:
@@ -34,4 +36,6 @@ private:
     UHUDWidget* HUDWidget;
 
 	int32 KillEnemyCount;
+
+	bool bIsGameEnded = false;
 };

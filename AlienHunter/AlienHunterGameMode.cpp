@@ -8,6 +8,7 @@
 #include "GameManager.h"
 #include "MainPlayerController.h"
 #include "GameFramework/Controller.h"
+#include "PlayerCharacter.h"
 #include "Kismet/GameplayStatics.h"
 
 void AAlienHunterGameMode::BeginPlay()
@@ -15,10 +16,10 @@ void AAlienHunterGameMode::BeginPlay()
     Super::BeginPlay();
 }
 
+// HUD를 가져오고 초기 업데이트하는 메소드
 void AAlienHunterGameMode::UpdateHUDReference()
 {
-    APlayerController* PlayerController = GetWorld()->GetFirstPlayerController();
-    if (AMainPlayerController* MainPlayerController = Cast<AMainPlayerController>(PlayerController))
+    if (AMainPlayerController* MainPlayerController = Cast<AMainPlayerController>(GetWorld()->GetFirstPlayerController()))
     {
         HUDWidget = MainPlayerController->GetHUDWidget();
     }
@@ -27,14 +28,17 @@ void AAlienHunterGameMode::UpdateHUDReference()
     UpdateHUDMissionProgress();
 }
 
+
 // 폰 처치 시 기본 처리 메소드
 void AAlienHunterGameMode::PawnKilled(APawn* PawnKilled)
 {
-    APlayerController* PlayerController = Cast<APlayerController>(PawnKilled->GetController());
+    APlayerCharacter* PlayerCharacter = Cast<APlayerCharacter>(GetWorld()->GetFirstPlayerController()->GetPawn());
 
-    if (PlayerController != nullptr)
+    if (PawnKilled == PlayerCharacter)
     {
-        return; // 플레이어가 죽은 경우 아래의 처리가 필요하지 않음.
+        // 플레이어가 죽었으면 게임 종료
+        EndGame(false);
+        return;
     }
 
     AMonsterCharacter* KilledCharacter = Cast<AMonsterCharacter>(PawnKilled);
@@ -42,8 +46,6 @@ void AAlienHunterGameMode::PawnKilled(APawn* PawnKilled)
     {
         int32 Energy = KilledCharacter->GetEnergy();
         int32 EXP = KilledCharacter->GetEXP();
-        
-        APlayerCharacter* PlayerCharacter = Cast<APlayerCharacter>(GetWorld()->GetFirstPlayerController()->GetPawn());
         
         // 플레이어가 경험치와 에너지 획득
         if (PlayerCharacter)
@@ -65,18 +67,15 @@ void AAlienHunterGameMode::PawnKilled(APawn* PawnKilled)
 // 게임 종료 시 모든 컨트롤러에 게임 결과를 전달하는 메소드
 void AAlienHunterGameMode::EndGame(bool bIsPlayerWinner)
 {
+    if (bIsGameEnded)
+    {
+        return;
+    }
+    
     for (AController* Controller : TActorRange<AController>(GetWorld()))
     {
         bool bIsWinner = Controller->IsPlayerController() == bIsPlayerWinner;
         Controller->GameHasEnded(Controller->GetPawn(), bIsWinner);
-    }
-
-    // 처치한 적의 수 반영
-    if (GameManager) 
-    {
-        int32 CurrentKillEnemyCount = GameManager->GetKillEnemyCount();
-        GameManager->SetKillEnemyCount(CurrentKillEnemyCount + KillEnemyCount);
-        GameManager->SetPrevEnemyKillCount(KillEnemyCount);
     }
 }
 
@@ -87,4 +86,9 @@ void AAlienHunterGameMode::UpdateHUDMissionProgress()
     {
         HUDWidget->UpdateMissionProgressText();
     }
+}
+
+int32 AAlienHunterGameMode::GetKillEnemyCount() const
+{
+    return KillEnemyCount;
 }

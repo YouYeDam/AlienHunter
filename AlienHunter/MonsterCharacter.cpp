@@ -13,6 +13,7 @@ void AMonsterCharacter::PlayHeadShotEffect(const FVector& HitLocation, const FRo
 {
     if (HeadShotEffect && !IsDead())
     {
+        UE_LOG(LogTemp, Warning, TEXT("헤드샷"));
         UGameplayStatics::SpawnEmitterAtLocation(GetWorld(), HeadShotEffect, HitLocation, ShotDirection);
     }
 }

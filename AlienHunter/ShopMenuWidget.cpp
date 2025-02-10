@@ -1,4 +1,4 @@
-// Fill out your copyright notice in the Description page of Project Settings.
+
 
 
 #include "ShopMenuWidget.h"
@@ -234,14 +234,6 @@ void UShopMenuWidget::OnConfirmPurchase()
 
         ShowCurrentEnergy();
 	}
-
-    if (PopupWidget)
-    {
-        PopupWidget->ConfirmClicked.RemoveDynamic(this, &UShopMenuWidget::OnConfirmPurchase);
-        PopupWidget->CancelClicked.RemoveDynamic(this, &UShopMenuWidget::OnPopupClose);
-        PopupWidget->RemoveFromParent();
-        PopupWidget = nullptr;
-    }
 
     // 구매한 아이템을 바로 장착할 것인지 확인
     if (PopupWidgetClass)

@@ -3,12 +3,11 @@
 
 #include "MainPlayerController.h"
 #include "Blueprint/UserWidget.h"
-#include "HUDWidget.h"
 #include "Components/TextBlock.h"
 #include "TimerManager.h"
 #include "Kismet/GameplayStatics.h"
 #include "PlayerCharacter.h"
-#include "EnemyKillGameMode.h"
+#include "AlienHunterGameMode.h"
 
 void AMainPlayerController::BeginPlay()
 {
@@ -27,6 +26,14 @@ void AMainPlayerController::BeginPlay()
     }
 }
 
+void AMainPlayerController::SetupInputComponent()
+{
+    Super::SetupInputComponent();
+
+    InputComponent->BindAction("Pause", IE_Pressed, this, &AMainPlayerController::TogglePauseMenu);
+}
+
+
 // 미션 결과창 레벨을 로드하는 메소드
 void AMainPlayerController::LoadLevelAfterDelay()
 {
@@ -43,6 +50,12 @@ void AMainPlayerController::GameHasEnded(class AActor* EndGameFocus, bool bIsWin
         HUDWidget->RemoveFromParent();
     }
     
+    // 일시 중지 중이라면 일시정지 상태 해제
+    if (bIsPaused)
+    {
+        TogglePauseMenu();
+    }
+
     // 승리 또는 패배 화면 표시
     if (bIsWinner) {
         UUserWidget* WinScreen = CreateWidget(this, WinScreenClass);
@@ -80,6 +93,16 @@ void AMainPlayerController::GameHasEnded(class AActor* EndGameFocus, bool bIsWin
             GameManager->SetPrevCombatEnergy(Energy);
             GameManager->SetPrevCombatEXP(EXP);
 
+            // 처치한 적의 수 반영
+            AAlienHunterGameMode* GameMode = Cast<AAlienHunterGameMode>(UGameplayStatics::GetGameMode(GetWorld()));
+            if (GameMode)
+            {
+                int32 CurrentKillEnemyCount = GameManager->GetKillEnemyCount();
+                int32 KillEnemyCount = GameMode->GetKillEnemyCount();
+                GameManager->SetKillEnemyCount(CurrentKillEnemyCount + KillEnemyCount);
+                GameManager->SetPrevEnemyKillCount(KillEnemyCount);
+            }
+
             // 미션 성공한 경우, 미션 보상 지급 처리
             if (bIsWinner) 
             {
@@ -112,6 +135,60 @@ void AMainPlayerController::GameHasEnded(class AActor* EndGameFocus, bool bIsWin
     GetWorldTimerManager().SetTimer(GameEndTimer, this, &AMainPlayerController::LoadLevelAfterDelay, GameEndDelay, false);
 }
 
+// 일시정지 메뉴를 껐다 켰다하는 메소드
+void AMainPlayerController::TogglePauseMenu()
+{
+    if (bIsPaused)
+    {
+        // 게임 재개
+        if (PauseMenuWidget)
+        {
+            PauseMenuWidget->RemoveFromParent();
+            PauseMenuWidget = nullptr;
+        }
+
+        bShowMouseCursor = false;
+        SetInputMode(FInputModeGameOnly());
+
+        // 게임 속도 정상화
+        UGameplayStatics::SetGlobalTimeDilation(GetWorld(), 1.0f);
+
+        // 모든 입력 활성화
+        APlayerCharacter* PlayerCharacter = Cast<APlayerCharacter>(GetPawn());
+        if (PlayerCharacter)
+        {
+            PlayerCharacter->EnableInput(this);
+        }
+    }
+    else
+    {
+        // 게임 일시 정지
+        if (!PauseMenuWidget)
+        {
+            PauseMenuWidget = CreateWidget<UPauseMenuWidget>(this, PauseMenuClass);
+            if (PauseMenuWidget)
+            {
+                PauseMenuWidget->AddToViewport();
+            }
+        }
+
+        bShowMouseCursor = true;
+        SetInputMode(FInputModeGameAndUI());
+
+        // 게임 속도 0으로 만들기
+        UGameplayStatics::SetGlobalTimeDilation(GetWorld(), 0.0f);
+
+        // 모든 입력 차단
+        APlayerCharacter* PlayerCharacter = Cast<APlayerCharacter>(GetPawn());
+        if (PlayerCharacter)
+        {
+            PlayerCharacter->DisableInput(this);
+        }
+    }
+
+    bIsPaused = !bIsPaused;
+}
+
 float AMainPlayerController::GetBonusLootMultiplier() const
 {
     return BonusLootMultiplier;
@@ -126,5 +203,4 @@ UHUDWidget* AMainPlayerController::GetHUDWidget() const
 {
     return HUDWidget;
 }
-
 

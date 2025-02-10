@@ -25,12 +25,6 @@ void AEnemyKillGameMode::PawnKilled(APawn* PawnKilled)
 {
     Super::PawnKilled(PawnKilled);
 
-    APlayerController* PlayerController = Cast<APlayerController>(PawnKilled->GetController());
-    if (PlayerController != nullptr) 
-    {
-        PlayerController->GameHasEnded(nullptr, false); // 플레이어 사망 시 게임 패배 전달
-    }
-
     AShooterAIController* ShooterController = Cast<AShooterAIController>(PawnKilled->GetController());
     AMeleeAIController* MeleeController = Cast<AMeleeAIController>(PawnKilled->GetController());
 

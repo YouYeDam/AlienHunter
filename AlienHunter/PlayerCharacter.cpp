@@ -10,6 +10,7 @@
 #include "Kismet/GameplayStatics.h"
 #include "Components/CapsuleComponent.h"
 #include "GameFramework/CharacterMovementComponent.h"
+#include "MainPlayerController.h"
 
 void APlayerCharacter::BeginPlay()
 {
