@@ -68,7 +68,6 @@ void UMissionMenuWidget::CreateMissionSlots()
         if (MissionSlot)
         {
             MissionSlot->InitializeSlot(this, Mission);
-
             MissionScrollBox->AddChild(MissionSlot);
         }
     }

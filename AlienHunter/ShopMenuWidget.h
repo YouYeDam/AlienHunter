@@ -124,9 +124,8 @@ private:
     UPROPERTY(meta = (BindWidget))
     class UTextBlock* EnergyAmountText;
 
-    // 슬롯 템플릿 클래스
     UPROPERTY(EditAnywhere)
-    TSubclassOf<class UUserWidget> ShopSlotClass;
+    TSubclassOf<class UUserWidget> ShopSlotClass; // 슬롯 템플릿 클래스
 
     void InitializeItemData();
 

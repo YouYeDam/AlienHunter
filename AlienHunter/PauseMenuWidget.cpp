@@ -3,6 +3,7 @@
 
 #include "PauseMenuWidget.h"
 #include "MainPlayerController.h"
+#include "PauseMenuManager.h"
 #include "Kismet/GameplayStatics.h"
 #include "PopupWidget.h"
 #include "AlienHunterGameMode.h"
@@ -36,7 +37,16 @@ void UPauseMenuWidget::NativeConstruct()
 // 도움말 메뉴를 여는 메소드
 void UPauseMenuWidget::OnMoveToHelpMenuClicked()
 {
-    
+    AMainPlayerController* PlayerController = Cast<AMainPlayerController>(GetOwningPlayer());
+
+    if (PlayerController)
+    {
+        APauseMenuManager* PauseMenuManager = PlayerController->GetPauseMenuManager();
+        if (PauseMenuManager)
+        {
+            PauseMenuManager->ShowHelpMenu();
+        }
+    }
 }
 
 // 사운드 설정창을 여는 메소드

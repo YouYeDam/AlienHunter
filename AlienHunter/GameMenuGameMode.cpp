@@ -139,6 +139,7 @@ void AGameMenuGameMode::ShowCharacterMenu()
     }
 }
 
+// 퍽 메뉴로 이동하는 메소드
 void AGameMenuGameMode::ShowPerkMenu()
 {
     if (CurrentWidget)

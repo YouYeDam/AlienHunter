@@ -8,6 +8,7 @@
 #include "Kismet/GameplayStatics.h"
 #include "PlayerCharacter.h"
 #include "AlienHunterGameMode.h"
+#include "PauseMenuManager.h"
 
 void AMainPlayerController::BeginPlay()
 {
@@ -23,6 +24,12 @@ void AMainPlayerController::BeginPlay()
     if (AAlienHunterGameMode* GameMode = Cast<AAlienHunterGameMode>(UGameplayStatics::GetGameMode(GetWorld())))
     {
         GameMode->UpdateHUDReference();
+    }
+
+    // 일시정지 메뉴 매니저 생성하기
+    if (PauseMenuManagerClass)
+    {
+        PauseMenuManager = GetWorld()->SpawnActor<APauseMenuManager>(PauseMenuManagerClass);
     }
 }
 
@@ -138,22 +145,18 @@ void AMainPlayerController::GameHasEnded(class AActor* EndGameFocus, bool bIsWin
 // 일시정지 메뉴를 껐다 켰다하는 메소드
 void AMainPlayerController::TogglePauseMenu()
 {
+    if (!PauseMenuManager)
+    {
+        return;
+    }
+
     if (bIsPaused)
     {
-        // 게임 재개
-        if (PauseMenuWidget)
-        {
-            PauseMenuWidget->RemoveFromParent();
-            PauseMenuWidget = nullptr;
-        }
-
+        PauseMenuManager->CloseAllMenu(); // 모든 메뉴 닫기
         bShowMouseCursor = false;
         SetInputMode(FInputModeGameOnly());
-
-        // 게임 속도 정상화
         UGameplayStatics::SetGlobalTimeDilation(GetWorld(), 1.0f);
 
-        // 모든 입력 활성화
         APlayerCharacter* PlayerCharacter = Cast<APlayerCharacter>(GetPawn());
         if (PlayerCharacter)
         {
@@ -162,23 +165,11 @@ void AMainPlayerController::TogglePauseMenu()
     }
     else
     {
-        // 게임 일시 정지
-        if (!PauseMenuWidget)
-        {
-            PauseMenuWidget = CreateWidget<UPauseMenuWidget>(this, PauseMenuClass);
-            if (PauseMenuWidget)
-            {
-                PauseMenuWidget->AddToViewport();
-            }
-        }
-
+        PauseMenuManager->ShowPauseMenu(); // 퍼즈 메뉴 열기
         bShowMouseCursor = true;
         SetInputMode(FInputModeGameAndUI());
-
-        // 게임 속도 0으로 만들기
         UGameplayStatics::SetGlobalTimeDilation(GetWorld(), 0.0f);
 
-        // 모든 입력 차단
         APlayerCharacter* PlayerCharacter = Cast<APlayerCharacter>(GetPawn());
         if (PlayerCharacter)
         {
@@ -202,5 +193,10 @@ void AMainPlayerController::SetBonusLootMultiplier(float Multiplier)
 UHUDWidget* AMainPlayerController::GetHUDWidget() const
 {
     return HUDWidget;
+}
+
+APauseMenuManager* AMainPlayerController::GetPauseMenuManager() const
+{
+    return PauseMenuManager;
 }
 

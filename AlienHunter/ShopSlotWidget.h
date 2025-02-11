@@ -37,7 +37,6 @@ private:
     
     UShopMenuWidget* ShopMenuWidgetRef;  // 상점 메뉴 위젯 참조
 
-    UPROPERTY()
     FBaseItemData ItemData;
 
     FGunItemData GunItemData;

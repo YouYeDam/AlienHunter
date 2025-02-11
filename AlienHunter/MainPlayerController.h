@@ -9,6 +9,8 @@
 #include "PauseMenuWidget.h"
 #include "MainPlayerController.generated.h"
 
+class APauseMenuManager;
+
 UCLASS()
 class ALIENHUNTER_API AMainPlayerController : public APlayerController
 {
@@ -43,6 +45,13 @@ private:
 	UPROPERTY()
 	UHUDWidget *HUDWidget;
 
+	UPROPERTY()
+    APauseMenuManager* PauseMenuManager; // 일시 정지 메뉴 전체를 관리하는 매니저
+
+    UPROPERTY(EditAnywhere)
+    TSubclassOf<APauseMenuManager> PauseMenuManagerClass;
+
+
 	UPROPERTY(EditAnywhere)
     TSubclassOf<class UUserWidget> PauseMenuClass;
 
@@ -60,4 +69,5 @@ public:
 	void SetBonusLootMultiplier(float Multiplier);
 
 	UHUDWidget* GetHUDWidget() const;
+	APauseMenuManager* GetPauseMenuManager() const;
 };

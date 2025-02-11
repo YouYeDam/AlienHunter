@@ -1,0 +1,4 @@
+﻿ID,HelpInfoName,HelpInfoNameDescription,HelpInfoType
+1,"WASD","이동","Move"
+2,"마우스 좌클릭","사격","Combat"
+3,"E","미션 오브젝트와 상호작용","Interact"
