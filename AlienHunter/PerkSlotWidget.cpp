@@ -5,6 +5,7 @@
 #include "Kismet/GameplayStatics.h"
 #include "Components/Button.h"
 #include "Components/TextBlock.h"
+#include "Components/Image.h"
 #include "Blueprint/UserWidget.h"
 
 void UPerkSlotWidget::NativeConstruct()
@@ -33,12 +34,23 @@ void UPerkSlotWidget::InitializeSlot(UPerkMenuWidget* InPerkMenuWidget, const FP
     {
         PerkNameText->SetText(FText::FromString(PerkData.PerkName));
     }
+
+    if (PerkImage && PerkData.PerkImage)
+    {
+        PerkImage->SetBrushFromTexture(PerkData.PerkImage);
+    }
 }
 
 // 슬롯 클릭 시 게임 매니저에 퍽을 추가하는 메소드
 void UPerkSlotWidget::OnSlotClicked()
 {
     if (!GameManager)
+    {
+        return;
+    }
+
+    // 플레이어 레벨보다 퍽 요구 레벨이 높으면 선택 불가능
+    if (GameManager->GetPlayerLevel() < PerkData.PerkRequiredLevel)
     {
         return;
     }
@@ -101,6 +113,7 @@ void UPerkSlotWidget::OnHovered()
         PerkMenuWidgetRef->ShowTooltip(
             FText::FromString(PerkData.PerkName),
             FText::FromString(PerkData.PerkDescription),
+            PerkData.PerkImage,
             MousePos
         );
     }

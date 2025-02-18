@@ -31,6 +31,9 @@ public:
     UPROPERTY(EditDefaultsOnly, Category = "UI")
     TSubclassOf<class UUserWidget> PerkMenuClass;
 
+    UPROPERTY(EditDefaultsOnly, Category = "UI")
+    TSubclassOf<class UUserWidget> SoundMenuClass;
+
     // 현재 활성화된 위젯
     UPROPERTY()
     class UUserWidget* CurrentWidget;
@@ -50,4 +53,6 @@ public:
     void ShowCharacterMenu();
 
     void ShowPerkMenu();
+
+    void ShowSoundMenu();
 };

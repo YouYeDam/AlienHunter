@@ -49,10 +49,19 @@ void UPauseMenuWidget::OnMoveToHelpMenuClicked()
     }
 }
 
-// 사운드 설정창을 여는 메소드
+// 사운드 설정 메뉴를 여는 메소드
 void UPauseMenuWidget::OnSountSettingClicked()
 {
-    
+    AMainPlayerController* PlayerController = Cast<AMainPlayerController>(GetOwningPlayer());
+
+    if (PlayerController)
+    {
+        APauseMenuManager* PauseMenuManager = PlayerController->GetPauseMenuManager();
+        if (PauseMenuManager)
+        {
+            PauseMenuManager->ShowSoundMenu();
+        }
+    }
 }
 
 // 임무 포기 버튼 클릭 시 실행되는 메소드

@@ -37,6 +37,11 @@ void UGameMenuWidget::NativeConstruct()
         SaveGameButton->OnClicked.AddDynamic(this, &UGameMenuWidget::OnSaveGameClicked);
     }
 
+    if (SoundMenuButton)
+    {
+        SoundMenuButton->OnClicked.AddDynamic(this, &UGameMenuWidget::OnMoveToSoundMenuClicked);
+    }
+
     if (QuitGameButton)
     {
         QuitGameButton->OnClicked.AddDynamic(this, &UGameMenuWidget::OnQuitGameClicked);
@@ -108,6 +113,15 @@ void UGameMenuWidget::OnSaveGameClicked()
                 PopupWidget->ConfirmClicked.AddDynamic(this, &UGameMenuWidget::OnPopupClose);
             }
         }
+    }
+}
+
+// 사운드 메뉴로 이동하는 메소드
+void UGameMenuWidget::OnMoveToSoundMenuClicked()
+{
+    if (GameMode)
+    {
+        GameMode->ShowSoundMenu();
     }
 }
 

@@ -215,7 +215,7 @@ void UPerkMenuWidget::UpdatePerkSlots()
 }
 
 // 퍽에 마우스 오버 시 툴팁을 보여주는 메소드
-void UPerkMenuWidget::ShowTooltip(const FText& Title, const FText& Description, FVector2D MousePosition)
+void UPerkMenuWidget::ShowTooltip(const FText& Title, const FText& Description, UTexture2D* Image, FVector2D MousePosition)
 {
     if (!TooltipWidgetClass)
     {
@@ -231,7 +231,7 @@ void UPerkMenuWidget::ShowTooltip(const FText& Title, const FText& Description, 
         }
     }
 
-    PerkTooltipWidget->SetTooltipData(Title, Description);
+    PerkTooltipWidget->SetTooltipData(Title, Description, Image);
 
     PerkTooltipWidget->SetPositionInViewport(MousePosition + FVector2D(5.0f, 5.0f));
 }

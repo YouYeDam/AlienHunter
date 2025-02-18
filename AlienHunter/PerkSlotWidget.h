@@ -35,6 +35,9 @@ private:
     UPROPERTY(meta = (BindWidget))
     class UTextBlock* PerkNameText;
 
+    UPROPERTY(meta = (BindWidget))
+    class UImage* PerkImage;
+
     UPerkMenuWidget* PerkMenuWidgetRef;  // 퍽 메뉴 위젯 참조
 
     UPROPERTY()

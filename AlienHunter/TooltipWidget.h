@@ -14,7 +14,7 @@ class ALIENHUNTER_API UTooltipWidget : public UUserWidget
 	
 public:
     UFUNCTION(BlueprintCallable)
-    void SetTooltipData(const FText& NewTitle, const FText& NewDescription);
+    void SetTooltipData(const FText& NewTitle, const FText& NewDescription, UTexture2D* NewImage);
 
 protected:
     virtual void NativeConstruct() override;
@@ -25,4 +25,7 @@ private:
 
     UPROPERTY(meta = (BindWidget))
     class UTextBlock* TooltipDescriptionText;
+
+    UPROPERTY(meta = (BindWidget))
+    class UImage* TooltipImage;
 };

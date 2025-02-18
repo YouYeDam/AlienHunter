@@ -79,9 +79,14 @@ bool UGameManager::SaveGame()
     SaveGameData->SetEquippedSwordClass(EquippedSwordClass);
     SaveGameData->SetEquippedSwordItemData(EquippedSwordItemData);
 
-
     // 퍽 상태 저장
     SaveGameData->SetChosenPerks(ChosenPerks);
+
+    // 사운드 설정 저장
+    SaveGameData->SetMasterVolume(MasterVolume);
+    SaveGameData->SetSFXVolume(SFXVolume);
+    SaveGameData->SetBGMVolume(BGMVolume);
+    SaveGameData->SetUIVolume(UIVolume);
 
     // 게임 저장
 	#if WITH_EDITOR
@@ -139,6 +144,12 @@ bool UGameManager::LoadGame()
 
     // 퍽 상태 복원
     ChosenPerks = LoadedGame->GetChosenPerks();
+
+    // 사운드 설정 상태 복원
+    MasterVolume = LoadedGame->GetMasterVolume();
+    SFXVolume = LoadedGame->GetSFXVolume();
+    BGMVolume = LoadedGame->GetBGMVolume();
+    UIVolume = LoadedGame->GetUIVolume();
 
     return true;
 }
@@ -442,4 +453,44 @@ int32 UGameManager::GetPrevEnemyKillCount() const
 void UGameManager::SetPrevEnemyKillCount(int32 NewEnemyKillCount)
 {
     PrevEnemyKillCount = NewEnemyKillCount;
+}
+
+float UGameManager::GetMasterVolume() const
+{
+    return MasterVolume;
+}
+
+void UGameManager::SetMasterVolume(float Value)
+{
+    MasterVolume = Value;
+}
+
+float UGameManager::GetSFXVolume() const
+{
+    return SFXVolume;
+}
+
+void UGameManager::SetSFXVolume(float Value)
+{
+    SFXVolume = Value;
+}
+
+float UGameManager::GetBGMVolume() const
+{
+    return BGMVolume;
+}
+
+void UGameManager::SetBGMVolume(float Value)
+{
+    BGMVolume = Value;
+}
+
+float UGameManager::GetUIVolume() const
+{
+    return UIVolume;
+}
+
+void UGameManager::SetUIVolume(float Value)
+{
+    UIVolume = Value;
 }

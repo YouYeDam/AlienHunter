@@ -96,6 +96,19 @@ private:
 	UPROPERTY()
 	int32 PrevEnemyKillCount;
 
+	// 사운드 설정
+	UPROPERTY()
+    float MasterVolume = 1.0f;
+
+	UPROPERTY()
+    float SFXVolume = 1.0f;
+
+	UPROPERTY()
+    float BGMVolume = 1.0f;
+
+	UPROPERTY()
+    float UIVolume = 1.0f;
+	
 public:
 	virtual void Init() override;
 	virtual void Shutdown() override;
@@ -212,6 +225,19 @@ public:
 
 	UFUNCTION()
 	void SetPrevEnemyKillCount(int32 NewEnemyKillCount);
+
+	// 사운드 설정
+    float GetMasterVolume() const;
+    void SetMasterVolume(float Value);
+
+    float GetSFXVolume() const;
+    void SetSFXVolume(float Value);
+
+    float GetBGMVolume() const;
+    void SetBGMVolume(float Value);
+
+    float GetUIVolume() const;
+    void SetUIVolume(float Value);
 
 private:
 	void Levelup();

@@ -6,6 +6,7 @@
 #include "InventoryMenuWidget.h"
 #include "CharacterMenuWidget.h"
 #include "PerkMenuWidget.h"
+#include "SoundMenuWidget.h"
 #include "Blueprint/UserWidget.h"
 
 // 게임 메뉴 진입 시 플레이어 인풋 활성화 및 마우스 커서 활성화 메소드
@@ -159,6 +160,32 @@ void AGameMenuGameMode::ShowPerkMenu()
             if (PerkMenuWidget)
             {
                 PerkMenuWidget->UpdatePerkSlots();
+            }
+        }
+    }
+}
+
+// 사운드 메뉴로 이동하는 메소드
+void AGameMenuGameMode::ShowSoundMenu()
+{
+    if (CurrentWidget)
+    {
+        CurrentWidget->RemoveFromParent();
+        CurrentWidget = nullptr;
+    }
+
+    if (SoundMenuClass)
+    {
+        CurrentWidget = CreateWidget<UUserWidget>(GetWorld(), SoundMenuClass);
+        if (CurrentWidget)
+        {
+            CurrentWidget->AddToViewport();
+
+            USoundMenuWidget* SoundMenuWidget = Cast<USoundMenuWidget>(CurrentWidget);
+            if (SoundMenuWidget)
+            {
+                SoundMenuWidget->SetIsIngame(false);
+                SoundMenuWidget->InitializeVolumeSettings();
             }
         }
     }

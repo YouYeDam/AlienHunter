@@ -31,6 +31,9 @@ public:
     void OnSaveGameClicked();
 
     UFUNCTION()
+    void OnMoveToSoundMenuClicked();
+
+    UFUNCTION()
     void OnQuitGameClicked();
     
 	UFUNCTION()
@@ -65,6 +68,9 @@ private:
 
     UPROPERTY(meta = (BindWidget))
     class UButton* SaveGameButton;
+
+    UPROPERTY(meta = (BindWidget))
+    class UButton* SoundMenuButton;
 
     UPROPERTY(meta = (BindWidget))
     class UButton* QuitGameButton;

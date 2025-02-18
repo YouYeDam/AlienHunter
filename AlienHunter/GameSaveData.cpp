@@ -134,3 +134,43 @@ void UGameSaveData::SetChosenPerks(const TArray<FPerkData>& NewPerks)
 {
     ChosenPerks = NewPerks;
 }
+
+float UGameSaveData::GetMasterVolume() const
+{
+    return MasterVolume;
+}
+
+void UGameSaveData::SetMasterVolume(float Value)
+{
+    MasterVolume = Value;
+}
+
+float UGameSaveData::GetSFXVolume() const
+{
+    return SFXVolume;
+}
+
+void UGameSaveData::SetSFXVolume(float Value)
+{
+    SFXVolume = Value;
+}
+
+float UGameSaveData::GetBGMVolume() const
+{
+    return BGMVolume;
+}
+
+void UGameSaveData::SetBGMVolume(float Value)
+{
+    BGMVolume = Value;
+}
+
+float UGameSaveData::GetUIVolume() const
+{
+    return UIVolume;
+}
+
+void UGameSaveData::SetUIVolume(float Value)
+{
+    UIVolume = Value;
+}

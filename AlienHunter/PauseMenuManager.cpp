@@ -5,6 +5,7 @@
 #include "Blueprint/UserWidget.h"
 #include "Kismet/GameplayStatics.h"
 #include "HelpMenuWidget.h"
+#include "SoundMenuWidget.h"
 
 void APauseMenuManager::BeginPlay()
 {
@@ -54,6 +55,30 @@ void APauseMenuManager::ShowHelpMenu()
     }
 }
 
+// 사운드 메뉴로 이동하는 메소드
+void APauseMenuManager::ShowSoundMenu()
+{
+    if (CurrentWidget)
+    {
+        CurrentWidget->RemoveFromParent();
+    }
+
+    if (SoundMenuClass && PlayerController)
+    {
+        CurrentWidget = CreateWidget<UUserWidget>(PlayerController, SoundMenuClass);
+        if (CurrentWidget)
+        {
+            CurrentWidget->AddToViewport();
+            USoundMenuWidget* SoundMenuWidget = Cast<USoundMenuWidget>(CurrentWidget);
+            if (SoundMenuWidget)
+            {
+                SoundMenuWidget->SetIsIngame(true);
+            }
+        }
+    }
+}
+
+// 모든 메뉴를 닫는 메소드
 void APauseMenuManager::CloseAllMenu()
 {
     if (CurrentWidget)

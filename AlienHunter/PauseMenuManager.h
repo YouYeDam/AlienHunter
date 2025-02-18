@@ -21,6 +21,9 @@ private:
     UPROPERTY(EditAnywhere)
     TSubclassOf<UUserWidget> HelpMenuClass;
 
+    UPROPERTY(EditAnywhere)
+    TSubclassOf<UUserWidget> SoundMenuClass;
+
     UPROPERTY()
     UUserWidget* CurrentWidget; // 현재 활성화된 메뉴 위젯
 
@@ -30,6 +33,8 @@ public:
     void ShowPauseMenu();
 
     void ShowHelpMenu();
+
+    void ShowSoundMenu();
 
     void CloseAllMenu();
 };

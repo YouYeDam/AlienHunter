@@ -165,7 +165,7 @@ void AMainPlayerController::TogglePauseMenu()
     }
     else
     {
-        PauseMenuManager->ShowPauseMenu(); // 퍼즈 메뉴 열기
+        PauseMenuManager->ShowPauseMenu(); // 일시정지 메뉴 열기
         bShowMouseCursor = true;
         SetInputMode(FInputModeGameAndUI());
         UGameplayStatics::SetGlobalTimeDilation(GetWorld(), 0.0f);

@@ -44,11 +44,16 @@ public:
     UPROPERTY(EditAnywhere, Category = "Perk")
     EPerkType PerkType;
 
+    // 퍽 이미지
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Perk")
+	UTexture2D* PerkImage;
+
     FPerkData()
         : PerkName(TEXT(""))
         , PerkDescription(TEXT(""))
         , PerkValue(0.0f)
 		, PerkRequiredLevel(0)
 		, PerkType(EPerkType::None)
+        , PerkImage(nullptr)
     {}
 };

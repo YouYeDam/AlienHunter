@@ -1,4 +1,10 @@
 ﻿ID,HelpInfoName,HelpInfoNameDescription,HelpInfoType
 1,"WASD","이동","Move"
-2,"마우스 좌클릭","사격","Combat"
+2,"마우스 좌클릭(총기류)","사격","Combat"
 3,"E","미션 오브젝트와 상호작용","Interact"
+4,"스페이스 바","점프","Move"
+5,"마우스 좌클릭(도검류)","휘두르기","Combat"
+6,"R(총기류)","재장전","Combat"
+7,"E","보급 상자 획득","Interact"
+8,"F","회복 키트 사용","Interact"
+9,"마우스 우클릭(줌 가능 총기류)","줌","Combat"

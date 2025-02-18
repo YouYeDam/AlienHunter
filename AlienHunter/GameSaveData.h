@@ -55,6 +55,19 @@ private:
 	UPROPERTY(VisibleAnywhere, Category = "Perk")
 	TArray<FPerkData> ChosenPerks;
 
+	// 사운드 설정
+	UPROPERTY(VisibleAnywhere, Category = "Sound")
+	float MasterVolume;
+
+	UPROPERTY(VisibleAnywhere, Category = "Sound")
+	float SFXVolume;
+
+	UPROPERTY(VisibleAnywhere, Category = "Sound")
+	float BGMVolume;
+
+	UPROPERTY(VisibleAnywhere, Category = "Sound")
+	float UIVolume;
+
 public:
 	// 플레이어 상태
 	int32 GetHealth() const;
@@ -97,4 +110,17 @@ public:
 	// 퍽 상태
 	TArray<FPerkData> GetChosenPerks() const;
 	void SetChosenPerks(const TArray<FPerkData>& NewPerks);
+
+	// 사운드 설정
+    float GetMasterVolume() const;
+    void SetMasterVolume(float Value);
+
+    float GetSFXVolume() const;
+    void SetSFXVolume(float Value);
+
+    float GetBGMVolume() const;
+    void SetBGMVolume(float Value);
+
+    float GetUIVolume() const;
+    void SetUIVolume(float Value);
 };

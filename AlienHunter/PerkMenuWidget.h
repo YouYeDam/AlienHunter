@@ -31,7 +31,7 @@ public:
 
     void UpdatePerkSlots();
 
-    void ShowTooltip(const FText& Title, const FText& Description, FVector2D MousePosition);
+    void ShowTooltip(const FText& Title, const FText& Description, UTexture2D* Image, FVector2D MousePosition);
     void HideTooltip();
 
 protected:
