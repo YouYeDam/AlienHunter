@@ -6,6 +6,7 @@
 #include "Kismet/GameplayStatics.h"
 #include "GameFramework/Pawn.h"
 #include "AIController.h"
+#include "BaseAIController.h" 
 
 UBTService_PlayerLocationIfSeen::UBTService_PlayerLocationIfSeen()
 {
@@ -18,25 +19,29 @@ void UBTService_PlayerLocationIfSeen::TickNode(UBehaviorTreeComponent &OwnerComp
     Super::TickNode(OwnerComp, NodeMemory, DeltaSeconds);
 
     APawn* PlayerPawn = UGameplayStatics::GetPlayerPawn(GetWorld(), 0);
-
-    if (PlayerPawn == nullptr) {
+    if (PlayerPawn == nullptr) 
+    {
         return;
     }
 
-    if (OwnerComp.GetAIOwner() == nullptr) {
+    AAIController* AIController = OwnerComp.GetAIOwner();
+    if (AIController == nullptr) 
+    {
         return;
     }
 
-    // AI와 플레이어 사이의 거리 계산
-    float Distance = FVector::Dist(PlayerPawn->GetActorLocation(), OwnerComp.GetAIOwner()->GetPawn()->GetActorLocation());
+    float Distance = FVector::Dist(PlayerPawn->GetActorLocation(), AIController->GetPawn()->GetActorLocation());
 
-    // 플레이어가 지정된 거리 내에 있고, 시야에 들어오면 위치 업데이트
-    if (OwnerComp.GetAIOwner()->LineOfSightTo(PlayerPawn) && Distance <= DetectionRange) 
+    ABaseAIController* BaseAIController = Cast<ABaseAIController>(AIController);
+
+    if (AIController->LineOfSightTo(PlayerPawn) && Distance <= DetectionRange) 
     {
         OwnerComp.GetBlackboardComponent()->SetValueAsObject(GetSelectedBlackboardKey(), PlayerPawn);
-    }
-    else // 블랙보드에서 플레이어 위치 정보를 제거
-    {
-        OwnerComp.GetBlackboardComponent()->ClearValue(GetSelectedBlackboardKey());
+        
+        // 전투 상태 활성화
+        if (BaseAIController)
+        {
+            BaseAIController->SetInCombat(true);
+        }
     }
 }

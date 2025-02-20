@@ -41,7 +41,7 @@ private:
 	USoundBase* DeathSound;
 
 	bool IsAlreadyDead = false; // 이미 죽었는지
-
+	
 public:
 	UFUNCTION(BlueprintPure)
 	bool IsDead() const;

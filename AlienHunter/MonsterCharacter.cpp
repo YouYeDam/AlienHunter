@@ -1,5 +1,10 @@
 #include "MonsterCharacter.h"
+#include "BaseAIController.h"
 #include "Kismet/GameplayStatics.h"
+#include "GameFramework/CharacterMovementComponent.h"
+#include "NavigationSystem.h"
+#include "NavAreas/NavArea_Obstacle.h"
+#include "Components/CapsuleComponent.h"
 
 void AMonsterCharacter::BeginPlay()
 {
@@ -13,9 +18,22 @@ void AMonsterCharacter::PlayHeadShotEffect(const FVector& HitLocation, const FRo
 {
     if (HeadShotEffect && !IsDead())
     {
-        UE_LOG(LogTemp, Warning, TEXT("헤드샷"));
         UGameplayStatics::SpawnEmitterAtLocation(GetWorld(), HeadShotEffect, HitLocation, ShotDirection);
     }
+}
+
+// 몬스터 피격 시 전투 상태를 활성화하는 메소드
+float AMonsterCharacter::TakeDamage(float DamageAmount, struct FDamageEvent const& DamageEvent, class AController* EventInstigator, AActor* DamageCauser)
+{
+    float TakedDamageAmount = Super::TakeDamage(DamageAmount, DamageEvent, EventInstigator, DamageCauser);
+
+    ABaseAIController* AIController = Cast<ABaseAIController>(GetController());
+    if (AIController)
+    {
+        AIController->SetInCombat(true);
+    }
+
+    return TakedDamageAmount;
 }
 
 int32 AMonsterCharacter::GetEnergy() const
@@ -32,3 +50,4 @@ USphereComponent* AMonsterCharacter::GetHeadshotHitbox() const
 {
     return FindComponentByClass<USphereComponent>();
 }
+

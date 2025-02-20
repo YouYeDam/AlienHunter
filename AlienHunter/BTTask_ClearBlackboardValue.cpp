@@ -6,7 +6,7 @@
 
 UBTTask_ClearBlackboardValue::UBTTask_ClearBlackboardValue()
 {
-    NodeName = TEXT("Clear Blackboard Value");
+    NodeName = "Clear Blackboard Value";
 }
 
 // 블랙보드에서 지정된 키의 값을 제거하고 태스크를 성공으로 반환하는 메소드

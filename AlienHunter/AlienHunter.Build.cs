@@ -8,7 +8,8 @@ public class AlienHunter : ModuleRules
 	{
 		PCHUsage = PCHUsageMode.UseExplicitOrSharedPCHs;
 	
-		PublicDependencyModuleNames.AddRange(new string[] { "Core", "CoreUObject", "Engine", "InputCore", "EnhancedInput", "GameplayTasks", "UMG", "Slate", "SlateCore" });
+		PublicDependencyModuleNames.AddRange(new string[] { "Core", "CoreUObject", "Engine", "InputCore", "EnhancedInput", "GameplayTasks", "UMG", "Slate", "SlateCore", 
+		"NavigationSystem", "AIModule" });
 
 #if WITH_EDITOR
         PrivateDependencyModuleNames.AddRange(new string[] {

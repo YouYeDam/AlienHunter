@@ -117,24 +117,24 @@ void ASword::OnOverlapBegin(UPrimitiveComponent* OverlappedComp, AActor* OtherAc
 {
     if (IsSwinging && OtherActor && OtherActor != GetOwner())
     {
-        // 태그를 이용하여 같은 태그를 가진 대상이 피해를 입지 못하도록 설정
-        if (GetOwner()->ActorHasTag(TEXT("Enemy")) && OtherActor->ActorHasTag(TEXT("Player")))
-        {
-            FVector HitDirection = (OtherActor->GetActorLocation() - GetOwner()->GetActorLocation()).GetSafeNormal();
-            FPointDamageEvent DamageEvent(Damage, SweepResult, HitDirection, nullptr);
+        bool bIsOwnerEnemy = GetOwner()->ActorHasTag(TEXT("Enemy"));
+        bool bIsOwnerPlayer = GetOwner()->ActorHasTag(TEXT("Player"));
+        bool bIsTargetEnemy = OtherActor->ActorHasTag(TEXT("Enemy"));
+        bool bIsTargetPlayer = OtherActor->ActorHasTag(TEXT("Player"));
 
-            AController* OwnerController = GetInstigatorController();
-            OtherActor->TakeDamage(Damage, DamageEvent, OwnerController, this);
-        }
-        else if (GetOwner()->ActorHasTag(TEXT("Player")) && OtherActor->ActorHasTag(TEXT("Enemy")))
+        // 같은 태그를 가진 대상은 피해를 입지 않음
+        if ((bIsOwnerEnemy && bIsTargetEnemy) || (bIsOwnerPlayer && bIsTargetPlayer))
         {
-            FVector HitDirection = (OtherActor->GetActorLocation() - GetOwner()->GetActorLocation()).GetSafeNormal();
-            FPointDamageEvent DamageEvent(Damage, SweepResult, HitDirection, nullptr);
-
-            AController* OwnerController = GetInstigatorController();
-            OtherActor->TakeDamage(Damage, DamageEvent, OwnerController, this);
+            return;
         }
+
+        FVector HitDirection = (OtherActor->GetActorLocation() - GetOwner()->GetActorLocation()).GetSafeNormal();
+        FPointDamageEvent DamageEvent(Damage, SweepResult, HitDirection, nullptr);
+
+        AController* OwnerController = GetInstigatorController();
+        OtherActor->TakeDamage(Damage, DamageEvent, OwnerController, this);
     }
 }
+
 
 

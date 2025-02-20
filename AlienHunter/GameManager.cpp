@@ -96,14 +96,6 @@ bool UGameManager::SaveGame()
 	#endif
 
     bool bSaveSuccess = UGameplayStatics::SaveGameToSlot(SaveGameData, SlotName, 0);
-    if (bSaveSuccess)
-    {
-        UE_LOG(LogTemp, Log, TEXT("Game Saved Successfully! Slot: %s"), *SlotName);
-    }
-    else
-    {
-        UE_LOG(LogTemp, Warning, TEXT("Failed to save game! Slot: %s"), *SlotName);
-    }
 
     return bSaveSuccess; // 저장 성공 여부 반환
 }

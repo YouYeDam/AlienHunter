@@ -1,4 +1,4 @@
-// Fill out your copyright notice in the Description page of Project Settings.
+
 
 
 #include "SwordMonsterCharacter.h"
@@ -21,6 +21,11 @@ void ASwordMonsterCharacter::BeginPlay()
 
     // 몬스터는 무기 외형이 필요 없으므로 숨기기
     Sword->SetMeshVisibility(false);
+
+    // AI의 회피 기능 강화
+    GetCharacterMovement()->bUseRVOAvoidance = true;
+    GetCharacterMovement()->AvoidanceConsiderationRadius = 300.0f;
+    GetCharacterMovement()->AvoidanceWeight = 1.0f;
 }
 
 // 캐릭터가 공격 중인지를 체크하는 메소드
@@ -34,6 +39,32 @@ void ASwordMonsterCharacter::Swing()
 {
     // 공중에 있다면 공격 불가
     if (GetCharacterMovement()->IsFalling())
+    {
+        return;
+    }
+
+    APawn* PlayerPawn = UGameplayStatics::GetPlayerPawn(GetWorld(), 0);
+    if (!PlayerPawn)
+    {
+        return;
+    }
+
+    AMainCharacter* PlayerCharacter = Cast<AMainCharacter>(PlayerPawn);
+    if (!PlayerCharacter)
+    {
+        return;
+    }
+
+    // 플레이어가 죽었다면 공격하지 않음
+    if (PlayerCharacter->IsDead())
+    {
+        return;
+    }
+
+    // 플레이어가 공격 범위 밖이면 공격하지 않음
+    float Dist = FVector::Dist(PlayerCharacter->GetActorLocation(), GetActorLocation());
+    
+    if (Dist > AttackRange)
     {
         return;
     }
@@ -61,4 +92,9 @@ void ASwordMonsterCharacter::Swing()
             }, 0.7f, false); 
         }, 0.4f, false); //
     }
+}
+
+float ASwordMonsterCharacter::GetAttackRange() const
+{
+    return AttackRange;
 }

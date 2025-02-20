@@ -28,9 +28,13 @@ private:
 	bool CanAttack = true; // 공격 가능 상태인지
 	bool CanMove = true; // 이동 가능 상태인지
 
+	float AttackRange = 100.0f;
+
 public:
 	UFUNCTION(BlueprintPure)
 	bool IsAttacking() const;
 
 	void Swing();
+
+	float GetAttackRange() const;
 };

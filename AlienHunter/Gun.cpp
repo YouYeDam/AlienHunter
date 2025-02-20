@@ -113,6 +113,17 @@ void AGun::StartShoot()
 	if (IsSuccess) {
 		AActor* HitActor = Hit.GetActor();
 		if (HitActor != nullptr) {
+            bool bIsOwnerEnemy = GetOwner()->ActorHasTag(TEXT("Enemy"));
+            bool bIsOwnerPlayer = GetOwner()->ActorHasTag(TEXT("Player"));
+            bool bIsTargetEnemy = HitActor->ActorHasTag(TEXT("Enemy"));
+            bool bIsTargetPlayer = HitActor->ActorHasTag(TEXT("Player"));
+
+            // 같은 태그를 가진 대상은 피해를 입지 않음
+            if ((bIsOwnerEnemy && bIsTargetEnemy) || (bIsOwnerPlayer && bIsTargetPlayer))
+            {
+                return;
+            }
+
 			// 기본 데미지 값
 			float AppliedDamage = Damage;
 

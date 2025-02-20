@@ -62,8 +62,6 @@ void ALoadingScreenManager::BeginPlay()
     Streamable.RequestAsyncLoad(LevelPath, FStreamableDelegate::CreateLambda([this, LoadingScreen]()
     {
         // 로딩 완료 처리
-        UE_LOG(LogTemp, Warning, TEXT("로딩 완료"));
-
         bIsMissionReady = true;
         WaitForAnyKey();
 
