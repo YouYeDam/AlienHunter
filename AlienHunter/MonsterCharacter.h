@@ -4,7 +4,10 @@
 #include "CoreMinimal.h"
 #include "MainCharacter.h"
 #include "Components/SphereComponent.h"
+#include "Delegates/DelegateCombinations.h"
 #include "MonsterCharacter.generated.h"
+
+DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnMonsterDamaged); // 몬스터 피격 시 활용할 델리게이트 선언
 
 UCLASS()
 class ALIENHUNTER_API AMonsterCharacter : public AMainCharacter
@@ -33,4 +36,7 @@ public:
 	USphereComponent* GetHeadshotHitbox() const;
 
 	virtual float TakeDamage(float DamageAmount, struct FDamageEvent const& DamageEvent, class AController* EventInstigator, AActor* DamageCauser) override;
+
+    UPROPERTY()
+    FOnMonsterDamaged OnMonsterDamaged;
 };

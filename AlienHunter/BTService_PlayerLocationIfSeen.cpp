@@ -44,4 +44,8 @@ void UBTService_PlayerLocationIfSeen::TickNode(UBehaviorTreeComponent &OwnerComp
             BaseAIController->SetInCombat(true);
         }
     }
+    else
+    {
+        OwnerComp.GetBlackboardComponent()->ClearValue(GetSelectedBlackboardKey()); // 블랙보드에서 플레이어 위치 정보를 제거
+    }
 }

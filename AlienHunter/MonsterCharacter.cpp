@@ -33,6 +33,8 @@ float AMonsterCharacter::TakeDamage(float DamageAmount, struct FDamageEvent cons
         AIController->SetInCombat(true);
     }
 
+    OnMonsterDamaged.Broadcast(); 
+    
     return TakedDamageAmount;
 }
 

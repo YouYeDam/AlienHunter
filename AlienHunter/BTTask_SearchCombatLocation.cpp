@@ -31,14 +31,21 @@ EBTNodeResult::Type UBTTask_SearchCombatLocation::ExecuteTask(UBehaviorTreeCompo
 
     if (NavSys)
     {
-        UE_LOG(LogTemp, Warning, TEXT("찾는중"));
-        FNavLocation RandomPoint;
-        if (NavSys->GetRandomPointInNavigableRadius(CombatStartLocation, 500.0f, RandomPoint))
+        float Angle = FMath::RandRange(-35.0f, 35.0f); // 위쪽(상반원) 범위 내 랜덤 각도
+        float Distance = 350.0f;
+    
+        FVector Offset = FVector(FMath::Cos(FMath::DegreesToRadians(Angle)), 
+                                 FMath::Sin(FMath::DegreesToRadians(Angle)), 
+                                 0.0f) * Distance; // X-Y 평면에서 방향 조정
+        FVector TargetLocation = CombatStartLocation + Offset;
+    
+        FNavLocation NavLocation;
+        if (NavSys->ProjectPointToNavigation(TargetLocation, NavLocation))
         {
-            AIController->MoveToLocation(RandomPoint.Location);
+            AIController->MoveToLocation(NavLocation.Location);
             return EBTNodeResult::Succeeded;
         }
     }
-
-    return EBTNodeResult::Succeeded;
+    
+    return EBTNodeResult::Failed;
 }
