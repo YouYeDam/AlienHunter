@@ -125,3 +125,15 @@ void APerkEffector::ApplyAutoShield(APlayerCharacter* PlayerCharacter, float Val
 
     }, 10.0f, true); // 10초마다 반복 실행
 }
+
+// 전술적 돌입 퍽을 적용하는 메소드
+void APerkEffector::ApplyTacticalRush(APlayerCharacter* PlayerCharacter, float Value)
+{
+    
+}
+
+// 야전 수색자 퍽을 적용하는 메소드
+void APerkEffector::ApplyFieldScavenger(APlayerCharacter* PlayerCharacter, float Value)
+{
+    
+}

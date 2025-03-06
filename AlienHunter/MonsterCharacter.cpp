@@ -2,6 +2,7 @@
 #include "BaseAIController.h"
 #include "Kismet/GameplayStatics.h"
 #include "GameFramework/CharacterMovementComponent.h"
+#include "BehaviorTree/BlackboardComponent.h"
 #include "NavigationSystem.h"
 #include "NavAreas/NavArea_Obstacle.h"
 #include "Components/CapsuleComponent.h"
@@ -11,6 +12,13 @@ void AMonsterCharacter::BeginPlay()
     Super::BeginPlay();
     
     CurrentHP = MaxHP; // 현재 체력을 최대 체력으로 설정
+
+    // 블랙보드에 로밍 여부 설정
+    ABaseAIController* AIController = Cast<ABaseAIController>(GetController());
+    if (AIController && AIController->GetBlackboardComponent())
+    {
+        AIController->GetBlackboardComponent()->SetValueAsBool(TEXT("IsRoaming"), bIsRoaming);
+    }
 }
 
 // 헤드샷 이펙트를 출력하는 메소드
@@ -46,6 +54,11 @@ int32 AMonsterCharacter::GetEnergy() const
 int32 AMonsterCharacter::GetEXP() const
 {
     return EXP;
+}
+
+bool AMonsterCharacter::GetIsRoaming() const
+{
+    return bIsRoaming;
 }
 
 USphereComponent* AMonsterCharacter::GetHeadshotHitbox() const

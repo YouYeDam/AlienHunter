@@ -8,7 +8,7 @@
 #include "ShooterAIController.h"
 #include "MeleeAIController.h"
 
-// 게임 시작 시 모든 적의 개수 카운팅 (태그를 이용한 방법으로 전환하는 것 고려)
+// 게임 시작 시 모든 적의 개수 카운팅
 void AEnemyKillGameMode::BeginPlay()
 {
     Super::BeginPlay();
@@ -18,6 +18,7 @@ void AEnemyKillGameMode::BeginPlay()
     UGameplayStatics::GetAllActorsWithTag(GetWorld(), FName("Enemy"), EnemyActors);
 
     TotalEnemyCount = EnemyActors.Num();
+    TargetEnemyCount = FMath::CeilToInt(TotalEnemyCount * 0.6f);
 }
 
 // 적 처치 시 처리 메소드
@@ -50,4 +51,7 @@ int32 AEnemyKillGameMode::GetTotalEnemyCount() const
     return TotalEnemyCount;
 }
 
-
+int32 AEnemyKillGameMode::GetTargetEnemyCount() const
+{
+    return TargetEnemyCount;
+}

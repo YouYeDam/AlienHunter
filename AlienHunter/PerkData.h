@@ -15,6 +15,8 @@ enum class EPerkType : uint8
     PlentifulAmmo,    // 넉넉한 탄약
     BonusLoot,        // 추가 전리품
     AutoShield,       // 자동 보호막
+    TacticalRush,     // 전술적 돌입
+    FieldScavenger,   // 야전 수색자
 };
 
 // 퍽 데이터를 저장하는 구조체

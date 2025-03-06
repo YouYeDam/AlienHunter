@@ -27,9 +27,13 @@ private:
     UPROPERTY(EditAnywhere)
     UParticleSystem* HeadShotEffect; // 헤드샷 이펙트
 
+	UPROPERTY(EditAnywhere)
+	bool bIsRoaming = false; // 몬스터가 로밍을 하는지 여부
+
 public:
 	int32 GetEnergy() const;
 	int32 GetEXP() const;
+	bool GetIsRoaming() const;
 	
 	void PlayHeadShotEffect(const FVector& HitLocation, const FRotator& ShotDirection);
 

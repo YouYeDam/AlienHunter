@@ -3,3 +3,5 @@
 2,"넉넉한 탄약","탄창 크기를 늘려 탄약 걱정없이 전투를 할 수 있습니다.",1.5,1,PlentifulAmmo,/Game/Image/Icon/Perk/PlentifulAmmo.PlentifulAmmo
 3,"추가 전리품","미션 완료에 대한 성과를 인정받아 추가로 보상을 받습니다.",1.2,1,BonusLoot,/Game/Image/Icon/Perk/BonusLoot.BonusLoot
 4,"강화된 신체","체력을 증가시켜 더욱 강인한 신체를 가집니다.",1.2,5,ReinforcedBody,/Game/Image/Icon/Perk/ReinforcedBody.ReinforcedBody
+5,"전술적 돌입","적을 처치하면 일시적으로 이동속도와 도검류 공격력이 증가합니다.",1.2,5,TacticalRush,/Game/Image/Icon/Perk/TacticalRush.TacticalRush
+6,"야전 수색자","전장에서 남은 자원을 찾아 추가 보급을 획득합니다.",100,5,FieldScavenger,/Game/Image/Icon/Perk/FieldScavenger.FieldScavenger

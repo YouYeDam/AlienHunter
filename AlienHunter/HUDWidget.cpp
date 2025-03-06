@@ -95,12 +95,12 @@ void UHUDWidget::UpdateMissionProgressText()
         if (AEnemyKillGameMode* KillGameMode = Cast<AEnemyKillGameMode>(CurrentGameMode))
         {
             int32 DeadEnemies = KillGameMode->GetDeadEnemyCount();
-            int32 TotalEnemies = KillGameMode->GetTotalEnemyCount();
+            int32 TargetEnemies = KillGameMode->GetTargetEnemyCount();
 
             MissionProgress->SetText(FText::Format(
                 NSLOCTEXT("HUD", "KillProgressText", "처치 진행: {0} / {1}"),
                 FText::AsNumber(DeadEnemies),
-                FText::AsNumber(TotalEnemies)
+                FText::AsNumber(TargetEnemies)
             ));
         }
 

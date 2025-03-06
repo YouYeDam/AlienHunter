@@ -25,4 +25,8 @@ private:
     void ApplyBonusLoot(APlayerCharacter* PlayerCharacter, float Value);
 
     void ApplyAutoShield(APlayerCharacter* PlayerCharacter, float Value);
+
+    void ApplyTacticalRush(APlayerCharacter* PlayerCharacter, float Value);
+
+    void ApplyFieldScavenger(APlayerCharacter* PlayerCharacter, float Value);
 };

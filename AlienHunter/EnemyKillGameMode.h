@@ -18,8 +18,10 @@ public:
 	void PawnKilled(APawn* PawnKilled) override;	
 	int32 GetDeadEnemyCount() const;
 	int32 GetTotalEnemyCount() const;
+	int32 GetTargetEnemyCount() const;
 
 private:
 	int32 TotalEnemyCount = 0;
 	int32 DeadEnemyCount = 0;
+	int32 TargetEnemyCount = 0;
 };
