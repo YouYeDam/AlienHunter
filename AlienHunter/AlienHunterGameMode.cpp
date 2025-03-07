@@ -47,7 +47,7 @@ void AAlienHunterGameMode::PawnKilled(APawn* PawnKilled)
         int32 Energy = KilledCharacter->GetEnergy();
         int32 EXP = KilledCharacter->GetEXP();
         
-        // 플레이어가 경험치와 에너지 획득
+        // 플레이어가 경험치와 에너지 획득 및 플레이어가 적 처치 시 수행할 메소드 호출
         if (PlayerCharacter)
         {
             int32 PlayerEnergy = PlayerCharacter->GetGainedEnergy();
@@ -60,6 +60,9 @@ void AAlienHunterGameMode::PawnKilled(APawn* PawnKilled)
             
             // 플레이어의 적 처치 수 증가
             KillEnemyCount++;
+
+            // 적 처치 시 수행할 메소드 호출
+            PlayerCharacter->KillEnemy();
         }
     }
 }

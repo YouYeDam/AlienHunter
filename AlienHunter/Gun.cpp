@@ -2,17 +2,13 @@
 
 
 #include "Gun.h"
-#include "ShooterAIController.h"
 #include "MonsterCharacter.h"
-#include "Components/SkeletalMeshComponent.h"
 #include "Kismet/GameplayStatics.h"
 #include "Engine/DamageEvents.h"
 #include "GunItemData.h"
 
 AGun::AGun()
 {
-	PrimaryActorTick.bCanEverTick = false;
-
 	Root = CreateDefaultSubobject<USceneComponent>(TEXT("Root"));
 	SetRootComponent(Root);
 		
@@ -22,7 +18,7 @@ AGun::AGun()
     // 플레이어 무기일 경우 데이터 초기화
     if (bIsPlayerWeapon && GunDataTable)
     {
-        InitializeWeaponData();
+        InitializeWeaponData(); // 데이터 초기화 함수 호출
     }
 }
 
@@ -42,7 +38,7 @@ void AGun::OnConstruction(const FTransform& Transform)
 	
     if (bIsPlayerWeapon && GunDataTable)
     {
-        InitializeWeaponData();
+        InitializeWeaponData(); // 데이터 초기화 함수 호출
     }
 }
 

@@ -91,10 +91,8 @@ void UBTTask_Roam::OnMoveCompleted(FAIRequestID RequestID, EPathFollowingResult:
     {
         return;
     }
-    UE_LOG(LogTemp, Warning, TEXT("A"));
     if (Result == EPathFollowingResult::Success) 
     {
-        UE_LOG(LogTemp, Warning, TEXT("B"));
         FinishLatentTask(*BTComp, EBTNodeResult::Succeeded);
     }
     else 

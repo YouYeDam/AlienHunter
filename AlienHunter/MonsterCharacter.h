@@ -30,6 +30,8 @@ private:
 	UPROPERTY(EditAnywhere)
 	bool bIsRoaming = false; // 몬스터가 로밍을 하는지 여부
 
+	float LinkRange = 500.0f; // 링크 범위
+
 public:
 	int32 GetEnergy() const;
 	int32 GetEXP() const;
@@ -41,6 +43,8 @@ public:
 
 	virtual float TakeDamage(float DamageAmount, struct FDamageEvent const& DamageEvent, class AController* EventInstigator, AActor* DamageCauser) override;
 
+	void LinkNearbyMonsters();
+	
     UPROPERTY()
     FOnMonsterDamaged OnMonsterDamaged;
 };

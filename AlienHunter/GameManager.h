@@ -7,6 +7,7 @@
 #include "Engine/DataTable.h"
 #include "GunItemData.h"
 #include "SwordItemData.h"
+#include "GrenadeItemData.h"
 #include "MissionData.h"
 #include "PerkData.h"
 #include "GameManager.generated.h"
@@ -14,6 +15,7 @@
 class UInventoryMenuWidget;
 class AGun;
 class ASword;
+class AGrenade;
 
 UCLASS(Blueprintable)
 class ALIENHUNTER_API UGameManager : public UGameInstance
@@ -48,11 +50,17 @@ private:
     UPROPERTY(EditAnywhere)
     UDataTable* SwordItemDataTable;
 
+	UPROPERTY(EditAnywhere)
+    UDataTable* GrenadeItemDataTable;
+
 	UPROPERTY()
 	TArray<FGunItemData> PurchasedGunItems;
 
 	UPROPERTY()
 	TArray<FSwordItemData> PurchasedSwordItems;
+
+	UPROPERTY()
+	TArray<FGrenadeItemData> PurchasedGrenadeItems;
 
 	UPROPERTY()
 	TArray<FPerkData> ChosenPerks;
@@ -71,7 +79,13 @@ private:
 
 	UPROPERTY()
 	FSwordItemData EquippedSwordItemData;
-	
+
+	UPROPERTY()
+	TSubclassOf<class AActor> EquippedGrenadeClass;
+
+	UPROPERTY()
+	FGrenadeItemData EquippedGrenadeItemData;
+
 	UPROPERTY()
 	FMissionData CurrentMissionData;
 
@@ -166,6 +180,9 @@ public:
 	void AddPurchasedSwordItem(const FSwordItemData& Item);
 	const TArray<FSwordItemData>& GetPurchasedSwordItems() const;
 
+	void AddPurchasedGrenadeItem(const FGrenadeItemData& Item);
+	const TArray<FGrenadeItemData>& GetPurchasedGrenadeItems() const;
+
 	void AddChosenPerks(const FPerkData& Perk);
 	const TArray<FPerkData>& GetChosenPerks() const;
 	void ClearShosenPerks();
@@ -178,11 +195,17 @@ public:
 	TSubclassOf<AActor> GetEquippedSword() const;
 	void SetEquippedSword(TSubclassOf<AActor> NewSword);
 
+	TSubclassOf<AActor> GetEquippedGrenade() const;
+	void SetEquippedGrenade(TSubclassOf<AActor> NewGrenade);
+
 	FGunItemData GetEquippedGunItemData() const;
 	void SetEquippedGunItemData(const FGunItemData& NewGunItemData);
 
 	FSwordItemData GetEquippedSwordItemData() const;
 	void SetEquippedSwordItemData(const FSwordItemData& NewSwordItemData);
+
+	FGrenadeItemData GetEquippedGrenadeItemData() const;
+	void SetEquippedGrenadeItemData(const FGrenadeItemData& NewGrenadeItemData);
 
 	FMissionData GetCurrentMissionData() const;
 	void SetCurrentMissionData(const FMissionData& NewMissionData);

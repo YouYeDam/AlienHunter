@@ -10,6 +10,7 @@
 #include "InventoryMenuWidget.h"
 #include "Gun.h"
 #include "Sword.h"
+#include "Grenade.h"
 #include "MainPlayerController.h"
 
 // 게임 시작 시 기본 보유한 아이템 초기화
@@ -24,6 +25,7 @@ void UGameManager::Init()
 
     static const FString GunContextString(TEXT("GameManager Gun Item Initialization"));
 	static const FString SwordContextString(TEXT("GameManager Sword Item Initialization"));
+    static const FString GrenadeContextString(TEXT("GameManager Grenade Item Initialization"));
 
     // 플레이어 기본 총기류 장비 설정
     const int32 RifleGunID = 1; // RifleGun의 ID
@@ -43,9 +45,19 @@ void UGameManager::Init()
         EquippedSwordItemData = *SwordItemData;
     }
 
+    // 플레이어 기본 수류탄류 장비 설정
+    const int32 BombID = 1; // Bomb의 ID
+    FGrenadeItemData* GrenadeItemData = GrenadeItemDataTable->FindRow<FGrenadeItemData>(FName(*FString::FromInt(BombID)), GrenadeContextString);
+    if (GrenadeItemData)
+    {
+        EquippedGrenadeClass = GrenadeItemData->ItemBlueprint;
+        EquippedGrenadeItemData = *GrenadeItemData;
+    }
+
     // 기본 보유 장비를 구매 장비로 추가
     AddPurchasedGunItem(EquippedGunItemData);
     AddPurchasedSwordItem(EquippedSwordItemData);
+    AddPurchasedGrenadeItem(EquippedGrenadeItemData);
 }
 
 void UGameManager::Shutdown()
@@ -74,10 +86,16 @@ bool UGameManager::SaveGame()
     // 인벤토리 상태 저장
     SaveGameData->SetPurchasedGunItems(PurchasedGunItems);
     SaveGameData->SetPurchasedSwordItems(PurchasedSwordItems);
+    SaveGameData->SetPurchasedGrenadeItems(PurchasedGrenadeItems);
+
     SaveGameData->SetEquippedGunClass(EquippedGunClass);
     SaveGameData->SetEquippedGunItemData(EquippedGunItemData);
+
     SaveGameData->SetEquippedSwordClass(EquippedSwordClass);
     SaveGameData->SetEquippedSwordItemData(EquippedSwordItemData);
+
+    SaveGameData->SetEquippedGrenadeClass(EquippedGrenadeClass);
+    SaveGameData->SetEquippedGrenadeItemData(EquippedGrenadeItemData);
 
     // 퍽 상태 저장
     SaveGameData->SetChosenPerks(ChosenPerks);
@@ -129,10 +147,16 @@ bool UGameManager::LoadGame()
     // 인벤토리 상태 복원
     PurchasedGunItems = LoadedGame->GetPurchasedGunItems();
     PurchasedSwordItems = LoadedGame->GetPurchasedSwordItems();
+    PurchasedGrenadeItems = LoadedGame->GetPurchasedGrenadeItems();
+
     EquippedGunClass = LoadedGame->GetEquippedGunClass();
     EquippedGunItemData = LoadedGame->GetEquippedGunItemData();
+
     EquippedSwordClass = LoadedGame->GetEquippedSwordClass();
     EquippedSwordItemData = LoadedGame->GetEquippedSwordItemData();
+
+    EquippedGrenadeClass = LoadedGame->GetEquippedGrenadeClass();
+    EquippedGrenadeItemData = LoadedGame->GetEquippedGrenadeItemData();
 
     // 퍽 상태 복원
     ChosenPerks = LoadedGame->GetChosenPerks();
@@ -290,6 +314,22 @@ const TArray<FSwordItemData>& UGameManager::GetPurchasedSwordItems() const
 	return PurchasedSwordItems;
 }
 
+// 구매한 수류탄류 아이템을 추가하는 메소드
+void UGameManager::AddPurchasedGrenadeItem(const FGrenadeItemData& Item)
+{
+    PurchasedGrenadeItems.Add(Item);
+
+	if (InventoryMenuWidgetRef)
+	{
+		//InventoryMenuWidgetRef->UpdateGrenadeItemDataArray();
+	}
+}
+
+const TArray<FGrenadeItemData>& UGameManager::GetPurchasedGrenadeItems() const
+{
+    return PurchasedGrenadeItems;
+}
+
 void UGameManager::AddChosenPerks(const FPerkData& Perk)
 {
     ChosenPerks.Add(Perk);
@@ -337,6 +377,16 @@ TSubclassOf<AActor> UGameManager::GetEquippedSword() const
     return EquippedSwordClass;
 }
 
+void UGameManager::SetEquippedGrenade(TSubclassOf<AActor> NewGrenade)
+{
+    EquippedGrenadeClass = NewGrenade;
+}
+
+TSubclassOf<AActor> UGameManager::GetEquippedGrenade() const
+{
+    return EquippedGrenadeClass;
+}
+
 FGunItemData UGameManager::GetEquippedGunItemData() const
 {
 	return EquippedGunItemData;
@@ -364,6 +414,21 @@ void UGameManager::SetEquippedSwordItemData(const FSwordItemData& NewSwordItemDa
     if (InventoryMenuWidgetRef)
 	{
 		InventoryMenuWidgetRef->UpdateSwordDetails(EquippedSwordItemData);
+	}
+}
+
+FGrenadeItemData UGameManager::GetEquippedGrenadeItemData() const
+{
+    return EquippedGrenadeItemData;
+}
+
+void UGameManager::SetEquippedGrenadeItemData(const FGrenadeItemData& NewGrenadeItemData)
+{
+	EquippedGrenadeItemData = NewGrenadeItemData;
+
+    if (InventoryMenuWidgetRef)
+	{
+		//InventoryMenuWidgetRef->UpdateGrenadeDetails(EquippedGrenadeItemData);
 	}
 }
 

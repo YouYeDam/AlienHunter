@@ -4,6 +4,7 @@
 #include "PlayerCharacter.h"
 #include "Gun.h"
 #include "Sword.h"
+#include "Grenade.h"
 #include "InteractableActor.h"
 #include "PerkData.h"
 #include "PerkEffector.h"
@@ -27,6 +28,7 @@ void APlayerCharacter::BeginPlay()
 		{
 			GunClass = GameManager->GetEquippedGun();
 			SwordClass = GameManager->GetEquippedSword();
+            GrenadeClass = GameManager->GetEquippedGrenade();
 
 			InitializePlayerStats(); // 플레이어의 스탯 초기 설정
 		}
@@ -48,6 +50,14 @@ void APlayerCharacter::BeginPlay()
 		Sword->AttachToComponent(GetMesh(), FAttachmentTransformRules::KeepRelativeTransform, TEXT("WeaponSocket"));
 		Sword->SetOwner(this);
 		Sword->SetMeshVisibility(false);
+	}
+
+    Grenade = GetWorld()->SpawnActor<AGrenade>(GrenadeClass);
+	if (Grenade)
+	{
+		Grenade->AttachToComponent(GetMesh(), FAttachmentTransformRules::KeepRelativeTransform, TEXT("GrenadeSocket"));
+		Grenade->SetOwner(this);
+		Grenade->SetMeshVisibility(false);
 	}
 
     // FollowCamera 가져오기
@@ -87,6 +97,7 @@ void APlayerCharacter::SetupPlayerInputComponent(class UInputComponent* PlayerIn
 	PlayerInputComponent->BindAction(TEXT("Swing"), EInputEvent::IE_Pressed, this, &APlayerCharacter::Swing);
 	PlayerInputComponent->BindAction(TEXT("SwapGun"), EInputEvent::IE_Pressed, this, &APlayerCharacter::SwapGun);
 	PlayerInputComponent->BindAction(TEXT("SwapSword"), EInputEvent::IE_Pressed, this, &APlayerCharacter::SwapSword);
+    PlayerInputComponent->BindAction(TEXT("SwapGrenade"), EInputEvent::IE_Pressed, this, &APlayerCharacter::SwapGrenade);
 	PlayerInputComponent->BindAction(TEXT("Interact"), EInputEvent::IE_Pressed, this, &APlayerCharacter::Interact);
 	PlayerInputComponent->BindAction(TEXT("Reload"), EInputEvent::IE_Pressed, this, &APlayerCharacter::Reload);
 	PlayerInputComponent->BindAction(TEXT("Shoot"), EInputEvent::IE_Released, this, &APlayerCharacter::StopShoot);
@@ -112,7 +123,8 @@ void APlayerCharacter::Jump()
 
 void APlayerCharacter::MoveForward(float AxisValue)
 {
-	if (!CanMove) {
+	if (!CanMove) 
+    {
 		return;
 	}
 	AddMovementInput(GetActorForwardVector() * AxisValue);
@@ -120,7 +132,8 @@ void APlayerCharacter::MoveForward(float AxisValue)
 
 void APlayerCharacter::MoveRight(float AxisValue)
 {
-	if (!CanMove) {
+	if (!CanMove) 
+    {
 		return;
 	}
 	AddMovementInput(GetActorRightVector() * AxisValue);   
@@ -129,10 +142,12 @@ void APlayerCharacter::MoveRight(float AxisValue)
 // 플레이어의 현재 무기가 총기류인지를 체크하는 메소드
 bool APlayerCharacter::SwitchUsingGun() const
 {
-	if (IsUsingGun) {
+	if (IsUsingGun) 
+    {
 		return true;
 	}
-	else {
+	else 
+    {
 		return false;
 	}
 }
@@ -140,10 +155,25 @@ bool APlayerCharacter::SwitchUsingGun() const
 // 플레이어의 현재 무기가 도검류인지를 체크하는 메소드
 bool APlayerCharacter::SwitchUsingSword() const
 {
-	if (IsUsingSword) {
+	if (IsUsingSword) 
+    {
 		return true;
 	}
-	else {
+	else 
+    {
+		return false;
+	}
+}
+
+// 플레이어의 현재 무기가 도검류인지를 체크하는 메소드
+bool APlayerCharacter::SwitchUsingGrenade() const
+{
+	if (IsUsingGrenade) 
+    {
+		return true;
+	}
+	else 
+    {
 		return false;
 	}
 }
@@ -154,8 +184,18 @@ bool APlayerCharacter::IsAttacking() const
     return bIsAttacking;
 }
 
+bool APlayerCharacter::IsThrowing() const
+{
+    return bIsThrowing;
+}
+
 void APlayerCharacter::Heal(int32 HealAmount)
 {
+    if (HealSound)
+    {
+        UGameplayStatics::PlaySoundAtLocation(this, HealSound, GetActorLocation());
+    }
+
     if (CurrentHP + HealAmount > MaxHP)
     {
         CurrentHP = MaxHP;
@@ -216,25 +256,51 @@ void APlayerCharacter::Swing()
 // 플레이어의 현재 무기를 총기류로 바꾸는 메소드
 void APlayerCharacter::SwapGun()
 {
+    if (IsUsingGun)
+    {
+        return;
+    }
+
 	IsUsingGun = true;
 	IsUsingSword = false;
+    IsUsingGrenade = false;
 
 	Gun->SetMeshVisibility(true);
-	Sword->SetMeshVisibility(false);   
+	Sword->SetMeshVisibility(false);
+    Grenade->SetMeshVisibility(false);
 }
 
 // 플레이어의 현재 무기를 도검류로 바꾸는 메소드
 void APlayerCharacter::SwapSword()
 {
-    if (IsZooming)
+    if (IsZooming || IsUsingSword)
     {
         return;
     }
 	IsUsingGun = false;
 	IsUsingSword = true;
+    IsUsingGrenade = false;
 
 	Gun->SetMeshVisibility(false);
 	Sword->SetMeshVisibility(true);
+    Grenade->SetMeshVisibility(false);
+}
+
+// 플레이어의 현재 무기를 수류탄류로 바꾸는 메소드
+void APlayerCharacter::SwapGrenade()
+{
+    if (IsZooming || IsUsingGrenade)
+    {
+        return;
+    }
+
+	IsUsingGun = false;
+	IsUsingSword = false;
+    IsUsingGrenade = true;
+
+	Gun->SetMeshVisibility(false);
+	Sword->SetMeshVisibility(false);
+    Grenade->SetMeshVisibility(true);
 }
 
 // 상호작용 물체와 상호작용하는 메소드
@@ -324,6 +390,15 @@ void APlayerCharacter::ZoomOut()
     }
 }
 
+// 적 처치 시 발생하는 메소드
+void APlayerCharacter::KillEnemy()
+{
+    if (PerkEffector) 
+    {
+        PerkEffector->TriggerTacticalRush();
+    }
+}
+
 // 플레이어의 초기 스탯을 설정하는 메소드
 void APlayerCharacter::InitializePlayerStats()
 {
@@ -352,7 +427,7 @@ int32 APlayerCharacter::GetGainedEnergy() const
 
 void APlayerCharacter::SetGainedEnergy(int32 NewEnergy)
 {
-    GainedEnergy += NewEnergy;
+    GainedEnergy = NewEnergy;
 }
 
 int32 APlayerCharacter::GetGainedEXP() const
@@ -403,4 +478,9 @@ void APlayerCharacter::IncreaseHealKitCount(int32 HealKitAmount)
 AGun* APlayerCharacter::GetEquippedGun() const
 {
 	return Gun;
+}
+
+APerkEffector* APlayerCharacter::GetPerkEffector() const
+{
+    return PerkEffector;
 }

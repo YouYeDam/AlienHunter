@@ -4,6 +4,7 @@
 #include "GameFramework/SaveGame.h"
 #include "GunItemData.h"
 #include "SwordItemData.h"
+#include "GrenadeItemData.h"
 #include "PerkData.h"
 #include "GameSaveData.generated.h"
 
@@ -40,6 +41,9 @@ private:
 	TArray<FSwordItemData> PurchasedSwordItems;
 
 	UPROPERTY(VisibleAnywhere, Category = "Inventory")
+	TArray<FGrenadeItemData> PurchasedGrenadeItems;
+
+	UPROPERTY(VisibleAnywhere, Category = "Inventory")
 	TSubclassOf<class AActor> EquippedGunClass;
 
 	UPROPERTY(VisibleAnywhere, Category = "Inventory")
@@ -50,6 +54,12 @@ private:
 
 	UPROPERTY(VisibleAnywhere, Category = "Inventory")
 	FSwordItemData EquippedSwordItemData;
+
+	UPROPERTY(VisibleAnywhere, Category = "Inventory")
+	TSubclassOf<class AActor> EquippedGrenadeClass;
+
+	UPROPERTY(VisibleAnywhere, Category = "Inventory")
+	FGrenadeItemData EquippedGrenadeItemData;
 
 	// 퍽 상태
 	UPROPERTY(VisibleAnywhere, Category = "Perk")
@@ -95,6 +105,9 @@ public:
 	TArray<FSwordItemData> GetPurchasedSwordItems() const;
 	void SetPurchasedSwordItems(const TArray<FSwordItemData>& NewSwordItems);
 
+	TArray<FGrenadeItemData> GetPurchasedGrenadeItems() const;
+	void SetPurchasedGrenadeItems(const TArray<FGrenadeItemData>& NewGrenadeItems);
+
 	TSubclassOf<class AActor> GetEquippedGunClass() const;
 	void SetEquippedGunClass(TSubclassOf<class AActor> NewGunClass);
 
@@ -106,6 +119,12 @@ public:
 
 	FSwordItemData GetEquippedSwordItemData() const;
 	void SetEquippedSwordItemData(const FSwordItemData& NewSwordData);
+
+	TSubclassOf<class AActor> GetEquippedGrenadeClass() const;
+	void SetEquippedGrenadeClass(TSubclassOf<class AActor> NewGrenadeClass);
+
+	FGrenadeItemData GetEquippedGrenadeItemData() const;
+	void SetEquippedGrenadeItemData(const FGrenadeItemData& NewGrenadeData);
 
 	// 퍽 상태
 	TArray<FPerkData> GetChosenPerks() const;

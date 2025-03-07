@@ -26,12 +26,5 @@ EBTNodeResult::Type UBTTask_ReturnToStartLocation::ExecuteTask(UBehaviorTreeComp
     FVector StartLocation = BlackboardComp->GetValueAsVector(TEXT("StartLocation"));
     AIController->MoveToLocation(StartLocation);
 
-    // 전투 상태 비활성화
-    ABaseAIController* BaseAIController = Cast<ABaseAIController>(AIController);
-    if (BaseAIController)
-    {
-        //BaseAIController->SetInCombat(false);
-    }
-
     return EBTNodeResult::Succeeded;
 }

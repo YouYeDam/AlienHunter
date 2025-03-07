@@ -23,6 +23,9 @@ EBTNodeResult::Type UBTTask_CombatLocationWait::ExecuteTask(UBehaviorTreeCompone
 	MonsterCharacter = Cast<AMonsterCharacter>(AIController->GetPawn()); // AI가 조종하는 몬스터 가져오기
 	if (MonsterCharacter)
 	{
+        // 바인딩 중복 방지
+        MonsterCharacter->OnMonsterDamaged.RemoveDynamic(this, &UBTTask_CombatLocationWait::OnMonsterDamaged);
+
 		// 몬스터 피격 이벤트 구독
 		MonsterCharacter->OnMonsterDamaged.AddDynamic(this, &UBTTask_CombatLocationWait::OnMonsterDamaged);
 	}
@@ -44,7 +47,7 @@ void UBTTask_CombatLocationWait::OnMonsterDamaged()
             if (BTComp)
             {
                 FinishLatentTask(*BTComp, EBTNodeResult::Succeeded); // 현재 Task 강제 종료
-                BTComp->RestartLogic(); // Behavior Tree 즉시 업데이트 요청
+                BTComp->RestartLogic(); // 행동 트리 즉시 업데이트 요청
             }
         }
     }

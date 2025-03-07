@@ -5,6 +5,7 @@
 #include "Kismet/GameplayStatics.h"
 #include "PlayerCharacter.h"
 #include "Gun.h"
+#include "PerkEffector.h"
 
 void ASupplyBox::Collect(AActor* Collector)
 {
@@ -23,6 +24,12 @@ void ASupplyBox::Collect(AActor* Collector)
     {
         int32 AmmoCount = PlayerGun->GetMagazineSize() * AmmoValue;
         PlayerGun->IncreaseSpareAmmoCount(AmmoCount);
+    }
+
+    // 퍽 효과 실행
+    if (PlayerCharacter->GetPerkEffector())
+    {
+        PlayerCharacter->GetPerkEffector()->TriggerFieldScavenger();
     }
 
     // 아이템 파괴

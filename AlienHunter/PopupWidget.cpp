@@ -18,6 +18,14 @@ void UPopupWidget::InitializePopup(FText Message, bool HasCancelButton)
     if (PopupText)
     {
         PopupText->SetText(Message);
+
+        // 글자 수에 따라 폰트 크기 조절
+        int32 TextLength = Message.ToString().Len();
+        int32 FontSize = (TextLength <= 20) ? 38 : 32;
+
+        FSlateFontInfo FontInfo = PopupText->GetFont();
+        FontInfo.Size = FontSize;
+        PopupText->SetFont(FontInfo);
     }
 
     if (ConfirmButton)

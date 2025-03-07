@@ -9,6 +9,7 @@
 
 class AGun;
 class ASword;
+class AGrenade;
 class APerkEffector;
 
 UCLASS()
@@ -30,6 +31,9 @@ private:
 	TSubclassOf<ASword> SwordClass; // 도검 클래스
 
 	UPROPERTY(EditDefaultsOnly)
+	TSubclassOf<AGrenade> GrenadeClass; // 도검 클래스
+
+	UPROPERTY(EditDefaultsOnly)
 	TSubclassOf<APerkEffector> PerkEffectorClass; // 퍽 이펙터 클래스
 
 	UPROPERTY()
@@ -39,10 +43,16 @@ private:
 	ASword* Sword; // 도검 액터
 
 	UPROPERTY()
+	AGrenade* Grenade; // 도검 액터
+
+	UPROPERTY()
 	APerkEffector* PerkEffector; // 퍽 이펙터 액터
 
 	UPROPERTY(EditAnywhere)
 	USoundBase* JumpSound;
+
+	UPROPERTY(EditAnywhere)
+	USoundBase* HealSound;
 
 	int32 GainedEnergy = 0; // 게임 중 얻은 에너지
 	int32 GainedEXP = 0; // 게임 중 얻은 경험치
@@ -58,10 +68,17 @@ private:
 	UPROPERTY(EditDefaultsOnly, Meta = (AllowPrivateAccess = "true"))
 	bool IsUsingSword = false;
 
+	UPROPERTY(EditDefaultsOnly, Meta = (AllowPrivateAccess = "true"))
+	bool IsUsingGrenade = false;
+
 	UPROPERTY(BlueprintReadOnly, Meta = (AllowPrivateAccess = "true"))
 	bool bIsAttacking = false;
 
+	UPROPERTY(BlueprintReadOnly, Meta = (AllowPrivateAccess = "true"))
+	bool bIsThrowing = false;
+
 	bool CanAttack = true; // 공격 가능 상태인지
+	bool CanThrow = true; // 투척 가능 상태인지
 	bool CanMove = true; // 이동 가능 상태인지
 
 	bool IsZooming = false;
@@ -85,9 +102,17 @@ public:
 	bool SwitchUsingSword() const;
 	
 	UFUNCTION(BlueprintPure)
+	bool SwitchUsingGrenade() const;
+
+	UFUNCTION(BlueprintPure)
 	bool IsAttacking() const;
 
+	UFUNCTION(BlueprintPure)
+	bool IsThrowing() const;
+
 	void Heal(int32 HealAmount);
+
+	void KillEnemy();
 
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 
@@ -97,6 +122,7 @@ public:
 	void Swing();
 	void SwapGun();
 	void SwapSword();
+	void SwapGrenade();
 	void Interact();
 	void Reload();
 	void StopShoot();
@@ -120,4 +146,6 @@ public:
 	void IncreaseHealKitCount(int32 HealKitAmount);
 
 	AGun* GetEquippedGun() const;
+
+	APerkEffector* GetPerkEffector() const;
 };

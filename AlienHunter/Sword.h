@@ -40,7 +40,7 @@ private:
 	UStaticMeshComponent* Mesh;
 
 	UPROPERTY(EditAnywhere)
-	USoundBase* SwingSound;
+	USoundBase* SwingSound; // 휘두르기 사운드
 
     UPROPERTY(EditAnywhere)
     UDataTable* SwordDataTable; // 총기류 데이터 테이블

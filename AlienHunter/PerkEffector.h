@@ -18,15 +18,37 @@ public:
 private:
     FTimerHandle ShieldTimerHandle; // 보호막 생성을 위한 타이머
 
-    void ApplyReinforcedBody(APlayerCharacter* PlayerCharacter, float Value);
+    FTimerHandle TacticalRushTimerHandle; // 전술적 돌입을 위한 타이머
 
-    void ApplyPlentifulAmmo(APlayerCharacter* PlayerCharacter, float Value);
+    void ApplyReinforcedBody(float Value);
 
-    void ApplyBonusLoot(APlayerCharacter* PlayerCharacter, float Value);
+    void ApplyPlentifulAmmo(float Value);
 
-    void ApplyAutoShield(APlayerCharacter* PlayerCharacter, float Value);
+    void ApplyBonusLoot(float Value);
 
-    void ApplyTacticalRush(APlayerCharacter* PlayerCharacter, float Value);
+    void ApplyAutoShield(float Value);
 
-    void ApplyFieldScavenger(APlayerCharacter* PlayerCharacter, float Value);
+    void ApplyTacticalRush(float Value);
+
+    void ApplyFieldScavenger(float Value);
+
+public:
+    void TriggerTacticalRush();
+
+    void TriggerFieldScavenger();
+    
+private:
+    APlayerCharacter* PlayerCharacter;
+
+    // 전술적 돌입 퍽을 위한 변수
+    bool bCanApplyTacticalRush = false;
+    float TacticalRushValue = 0.0f;
+    float OriginalWalkSpeed = 0.0f;
+
+    // 야전 수색자 퍽을 위한 변수
+    bool bCanApplyFieldScavenger = false;
+    float FieldScavengerValue = 0.0f;
+
+
+    void ResetTacticalRush();
 };

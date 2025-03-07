@@ -5,8 +5,7 @@
 #include "EngineUtils.h"
 #include "GameFramework/Controller.h"
 #include "Kismet/GameplayStatics.h"
-#include "ShooterAIController.h"
-#include "MeleeAIController.h"
+#include "BaseAIController.h"
 
 // 게임 시작 시 모든 적의 개수 카운팅
 void AEnemyKillGameMode::BeginPlay()
@@ -26,16 +25,15 @@ void AEnemyKillGameMode::PawnKilled(APawn* PawnKilled)
 {
     Super::PawnKilled(PawnKilled);
 
-    AShooterAIController* ShooterController = Cast<AShooterAIController>(PawnKilled->GetController());
-    AMeleeAIController* MeleeController = Cast<AMeleeAIController>(PawnKilled->GetController());
+    ABaseAIController* AIController = Cast<ABaseAIController>(PawnKilled->GetController());
 
-    if (ShooterController != nullptr || MeleeController != nullptr) 
+    if (AIController) 
     {
         DeadEnemyCount++; // 적 사망 시 죽은 적의 수 카운팅
         UpdateHUDMissionProgress();
     }
 
-    if (DeadEnemyCount >= TotalEnemyCount) 
+    if (DeadEnemyCount >= TargetEnemyCount) 
     {
         EndGame(true); // 모든 적 처치 시 게임 승리
     }

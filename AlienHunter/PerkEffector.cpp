@@ -6,33 +6,46 @@
 #include "Gun.h"
 #include "Kismet/GameplayStatics.h"
 #include "MainPlayerController.h"
+#include "GameFramework/CharacterMovementComponent.h"
+#include "TimerManager.h"
+#include "Engine/World.h"
 
 // 선택된 퍽들을 적용하는 메소드
-void APerkEffector::ApplyPerks(APlayerCharacter* PlayerCharacter, const TArray<FPerkData>& Perks)
+void APerkEffector::ApplyPerks(APlayerCharacter* InPlayerCharacter, const TArray<FPerkData>& Perks)
 {
-    if (!PlayerCharacter || Perks.Num() == 0)
+    if (!InPlayerCharacter || Perks.Num() == 0)
     {
         return;
     }
+
+    PlayerCharacter = InPlayerCharacter;
 
     for (const FPerkData& Perk : Perks)
     {
         switch (Perk.PerkType)
         {
         case EPerkType::ReinforcedBody:
-            ApplyReinforcedBody(PlayerCharacter, Perk.PerkValue);
+            ApplyReinforcedBody(Perk.PerkValue);
             break;
 
         case EPerkType::PlentifulAmmo:
-            ApplyPlentifulAmmo(PlayerCharacter, Perk.PerkValue);
+            ApplyPlentifulAmmo(Perk.PerkValue);
             break;
 
         case EPerkType::BonusLoot:
-            ApplyBonusLoot(PlayerCharacter, Perk.PerkValue);
+            ApplyBonusLoot(Perk.PerkValue);
             break;
 
         case EPerkType::AutoShield:
-            ApplyAutoShield(PlayerCharacter, Perk.PerkValue);
+            ApplyAutoShield(Perk.PerkValue);
+            break;
+
+        case EPerkType::TacticalRush:
+            ApplyTacticalRush(Perk.PerkValue);
+            break;
+
+        case EPerkType::FieldScavenger:
+            ApplyFieldScavenger(Perk.PerkValue);
             break;
 
         default:
@@ -42,7 +55,7 @@ void APerkEffector::ApplyPerks(APlayerCharacter* PlayerCharacter, const TArray<F
 }
 
 // 강화된 신체 퍽을 적용하는 메소드
-void APerkEffector::ApplyReinforcedBody(APlayerCharacter* PlayerCharacter, float Value)
+void APerkEffector::ApplyReinforcedBody(float Value)
 {
     if (!PlayerCharacter)
     {
@@ -53,7 +66,7 @@ void APerkEffector::ApplyReinforcedBody(APlayerCharacter* PlayerCharacter, float
 }
 
 // 넉넉한 탄약 퍽을 적용하는 메소드
-void APerkEffector::ApplyPlentifulAmmo(APlayerCharacter* PlayerCharacter, float Value)
+void APerkEffector::ApplyPlentifulAmmo(float Value)
 {
     if (!PlayerCharacter)
     {
@@ -73,7 +86,7 @@ void APerkEffector::ApplyPlentifulAmmo(APlayerCharacter* PlayerCharacter, float 
 }
 
 // 추가 전리품 퍽을 적용하는 메소드
-void APerkEffector::ApplyBonusLoot(APlayerCharacter* PlayerCharacter, float Value)
+void APerkEffector::ApplyBonusLoot(float Value)
 {
     if (!PlayerCharacter)
     {
@@ -88,7 +101,7 @@ void APerkEffector::ApplyBonusLoot(APlayerCharacter* PlayerCharacter, float Valu
 }
 
 // 자동 보호막 퍽을 적용하는 메소드
-void APerkEffector::ApplyAutoShield(APlayerCharacter* PlayerCharacter, float Value)
+void APerkEffector::ApplyAutoShield(float Value)
 {
     if (!PlayerCharacter)
     {
@@ -110,7 +123,7 @@ void APerkEffector::ApplyAutoShield(APlayerCharacter* PlayerCharacter, float Val
     }
 
     // 일정 시간마다 보호막을 갱신하는 타이머 실행
-    GetWorld()->GetTimerManager().SetTimer(ShieldTimerHandle, [this, PlayerCharacter, ShieldAmount]()
+    GetWorld()->GetTimerManager().SetTimer(ShieldTimerHandle, [this, ShieldAmount]()
     {
         if (!PlayerCharacter)
         {
@@ -127,13 +140,72 @@ void APerkEffector::ApplyAutoShield(APlayerCharacter* PlayerCharacter, float Val
 }
 
 // 전술적 돌입 퍽을 적용하는 메소드
-void APerkEffector::ApplyTacticalRush(APlayerCharacter* PlayerCharacter, float Value)
+void APerkEffector::ApplyTacticalRush(float Value)
 {
-    
+    if (!PlayerCharacter)
+    {
+        return;
+    }
+
+    bCanApplyTacticalRush = true;
+    TacticalRushValue = Value;
 }
 
 // 야전 수색자 퍽을 적용하는 메소드
-void APerkEffector::ApplyFieldScavenger(APlayerCharacter* PlayerCharacter, float Value)
+void APerkEffector::ApplyFieldScavenger(float Value)
 {
-    
+    if (!PlayerCharacter)
+    {
+        return;
+    }
+
+    bCanApplyFieldScavenger = true;
+    FieldScavengerValue = Value;
+}
+
+// 전술적 돌입 퍽의 기능을 실제 실행하는 메소드
+void APerkEffector::TriggerTacticalRush()
+{
+    if (!bCanApplyTacticalRush || !PlayerCharacter)
+    {
+        return;
+    }
+
+    // 기존 타이머가 있으면 제거 (새로운 처치 발생 시 시간 갱신)
+    GetWorld()->GetTimerManager().ClearTimer(TacticalRushTimerHandle);
+
+    // 원래 이동 속도를 저장 (초기 실행 시만 저장)
+    if (OriginalWalkSpeed == 0.0f)
+    {
+        OriginalWalkSpeed = PlayerCharacter->GetCharacterMovement()->MaxWalkSpeed;
+    }
+
+    // 이동 속도 증가
+    float NewSpeed = OriginalWalkSpeed * TacticalRushValue;
+    PlayerCharacter->GetCharacterMovement()->MaxWalkSpeed = NewSpeed;
+
+    // 5초 후 원래 속도로 복귀하는 타이머 설정
+    GetWorld()->GetTimerManager().SetTimer(TacticalRushTimerHandle, this, &APerkEffector::ResetTacticalRush, 3.0f, false);
+}
+
+// 이동 속도를 원래대로 복구하는 메소드
+void APerkEffector::ResetTacticalRush()
+{
+    if (!PlayerCharacter)
+    {
+        return;
+    }
+
+    PlayerCharacter->GetCharacterMovement()->MaxWalkSpeed = OriginalWalkSpeed;
+}
+
+// 야전 수색자 퍽의 기능을 실제 실행하는 메소드
+void APerkEffector::TriggerFieldScavenger()
+{
+    if (!bCanApplyFieldScavenger || !PlayerCharacter)
+    {
+        return;
+    }
+
+    PlayerCharacter->SetGainedEnergy(PlayerCharacter->GetGainedEnergy() + FieldScavengerValue);
 }

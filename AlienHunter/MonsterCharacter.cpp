@@ -1,3 +1,6 @@
+
+
+
 #include "MonsterCharacter.h"
 #include "BaseAIController.h"
 #include "Kismet/GameplayStatics.h"
@@ -43,7 +46,45 @@ float AMonsterCharacter::TakeDamage(float DamageAmount, struct FDamageEvent cons
 
     OnMonsterDamaged.Broadcast(); 
     
+    // 주변 몬스터들에게 전투 상태 전파
+    LinkNearbyMonsters();
+
     return TakedDamageAmount;
+}
+
+// 몬스터 피격 시 주변 몬스터도 전투 상태에 돌입하는 링크 시스템을 활성화하는 메소드
+void AMonsterCharacter::LinkNearbyMonsters()
+{
+    if (!GetWorld())
+    {
+        return;
+    }
+
+    FVector CurrentLocation = GetActorLocation();
+
+    TArray<AActor*> FoundMonsters;
+    UGameplayStatics::GetAllActorsWithTag(GetWorld(), "Enemy", FoundMonsters);
+
+    for (AActor* Actor : FoundMonsters)
+    {
+        AMonsterCharacter* NearbyMonster = Cast<AMonsterCharacter>(Actor);
+        if (NearbyMonster && NearbyMonster != this) // 자기 자신 제외
+        {
+            float Distance = FVector::Dist(CurrentLocation, NearbyMonster->GetActorLocation());
+
+            if (Distance <= LinkRange) // 반경 내 몬스터만 적용
+            {
+                ABaseAIController* NearbyAIController = Cast<ABaseAIController>(NearbyMonster->GetController());
+                if (NearbyAIController)
+                {
+                    NearbyAIController->SetInCombat(true);
+                }
+
+                // 주변 몬스터도 OnMonsterDamaged 이벤트 발생
+                NearbyMonster->OnMonsterDamaged.Broadcast();
+            }
+        }
+    }
 }
 
 int32 AMonsterCharacter::GetEnergy() const

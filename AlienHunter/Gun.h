@@ -25,7 +25,7 @@ private:
 	USceneComponent* Root;
 	
 	UPROPERTY(VisibleAnywhere)
-	UStaticMeshComponent* Mesh; // Gun 액터의 메시
+	UStaticMeshComponent* Mesh;
 
 	UPROPERTY(EditAnywhere)
 	UParticleSystem* MuzzleFlash; // 총구 이펙트
@@ -52,7 +52,7 @@ private:
     bool bIsPlayerWeapon = false;
 
 	UPROPERTY(EditAnywhere)
-	float Damage = 10; // 사격 데미지
+	float Damage = 10;
 
 	UPROPERTY(EditAnywhere)
 	float GunRange = 5000; // 사격 최대 거리

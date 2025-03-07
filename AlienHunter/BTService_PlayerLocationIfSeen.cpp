@@ -7,6 +7,7 @@
 #include "GameFramework/Pawn.h"
 #include "AIController.h"
 #include "BaseAIController.h" 
+#include "MonsterCharacter.h"
 
 UBTService_PlayerLocationIfSeen::UBTService_PlayerLocationIfSeen()
 {
@@ -30,11 +31,25 @@ void UBTService_PlayerLocationIfSeen::TickNode(UBehaviorTreeComponent &OwnerComp
         return;
     }
 
-    float Distance = FVector::Dist(PlayerPawn->GetActorLocation(), AIController->GetPawn()->GetActorLocation());
-
     ABaseAIController* BaseAIController = Cast<ABaseAIController>(AIController);
+    APawn* AIPawn = AIController->GetPawn();
+    if (AIPawn == nullptr)
+    {
+        return;
+    }
 
-    if (AIController->LineOfSightTo(PlayerPawn) && Distance <= DetectionRange) 
+    // AI와 플레이어 사이 거리 계산
+    float Distance = FVector::Dist(PlayerPawn->GetActorLocation(), AIPawn->GetActorLocation());
+
+    // 240도 시야각 제한 적용
+    FVector ForwardVector = AIPawn->GetActorForwardVector(); // AI의 전방 벡터
+    FVector ToPlayerVector = (PlayerPawn->GetActorLocation() - AIPawn->GetActorLocation()).GetSafeNormal(); // AI -> 플레이어 방향 벡터
+    float DotProduct = FVector::DotProduct(ForwardVector, ToPlayerVector); // 내적 계산
+
+    float CosHalfFOV = FMath::Cos(FMath::DegreesToRadians(240.0f / 2.0f)); // Cos(120°) = -0.5
+
+    // LineOfSightTo() & 거리 체크 & 시야각 체크
+    if (AIController->LineOfSightTo(PlayerPawn) && Distance <= DetectionRange && DotProduct >= CosHalfFOV) 
     {
         OwnerComp.GetBlackboardComponent()->SetValueAsObject(GetSelectedBlackboardKey(), PlayerPawn);
         
@@ -42,6 +57,13 @@ void UBTService_PlayerLocationIfSeen::TickNode(UBehaviorTreeComponent &OwnerComp
         if (BaseAIController)
         {
             BaseAIController->SetInCombat(true);
+        }
+
+        // 주변 몬스터들에게 전투 상태 전파
+        AMonsterCharacter* Monster = Cast<AMonsterCharacter>(AIPawn);
+        if (Monster)
+        {
+            Monster->LinkNearbyMonsters();
         }
     }
     else

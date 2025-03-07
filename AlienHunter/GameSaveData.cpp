@@ -85,6 +85,16 @@ void UGameSaveData::SetPurchasedSwordItems(const TArray<FSwordItemData>& NewSwor
     PurchasedSwordItems = NewSwordItems;
 }
 
+TArray<FGrenadeItemData> UGameSaveData::GetPurchasedGrenadeItems() const
+{
+    return PurchasedGrenadeItems;
+}
+
+void UGameSaveData::SetPurchasedGrenadeItems(const TArray<FGrenadeItemData>& NewGrenadeItems)
+{
+    PurchasedGrenadeItems = NewGrenadeItems;
+}
+
 TSubclassOf<class AActor> UGameSaveData::GetEquippedGunClass() const 
 {
     return EquippedGunClass;
@@ -123,6 +133,26 @@ FSwordItemData UGameSaveData::GetEquippedSwordItemData() const
 void UGameSaveData::SetEquippedSwordItemData(const FSwordItemData& NewSwordData) 
 {
     EquippedSwordItemData = NewSwordData;
+}
+
+TSubclassOf<class AActor> UGameSaveData::GetEquippedGrenadeClass() const
+{
+    return EquippedGrenadeClass;
+}
+
+void UGameSaveData::SetEquippedGrenadeClass(TSubclassOf<class AActor> NewGrenadeClass)
+{
+    EquippedGrenadeClass = NewGrenadeClass;
+}
+
+FGrenadeItemData UGameSaveData::GetEquippedGrenadeItemData() const
+{
+    return EquippedGrenadeItemData;
+}
+
+void UGameSaveData::SetEquippedGrenadeItemData(const FGrenadeItemData& NewGrenadeData)
+{
+    EquippedGrenadeItemData = NewGrenadeData;
 }
 
 TArray<FPerkData> UGameSaveData::GetChosenPerks() const

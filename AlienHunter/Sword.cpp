@@ -1,3 +1,6 @@
+
+
+
 #include "Sword.h"
 #include "Components/BoxComponent.h"
 #include "Kismet/GameplayStatics.h"
@@ -60,7 +63,7 @@ void ASword::OnConstruction(const FTransform& Transform)
 
     if (bIsPlayerWeapon && SwordDataTable)
     {
-        InitializeWeaponData(); // 데이터 초기화
+        InitializeWeaponData(); // 데이터 초기화 함수 호출
     }
 }
 
