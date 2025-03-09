@@ -42,21 +42,43 @@ void UShopMenuWidget::NativeConstruct()
     {
         SwordTabButton->OnClicked.AddDynamic(this, &UShopMenuWidget::OnSwordTabClicked);
     }
+
+    if (GrenadeTabButton)
+    {
+        GrenadeTabButton->OnClicked.AddDynamic(this, &UShopMenuWidget::OnGrenadeTabClicked);
+    }
+}
+
+void UShopMenuWidget::OnGunTabClicked()
+{
+    CreateGunInventorySlots();
+}
+
+void UShopMenuWidget::OnSwordTabClicked()
+{
+    CreateSwordInventorySlots();
+}
+
+void UShopMenuWidget::OnGrenadeTabClicked()
+{
+    CreateGrenadeInventorySlots();
 }
 
 // 아이템 데이터를 초기화하는 함수
 void UShopMenuWidget::InitializeItemData()
 {
-    if (!GunItemDataTable || !SwordItemDataTable)
+    if (!GunItemDataTable || !SwordItemDataTable || !GrenadeItemDataTable)
     {
         return;
     }
 
     static const FString GunContextString(TEXT("Shop Menu Gun Item Initialization"));
     static const FString SwordContextString(TEXT("Shop Menu Sword Item Initialization"));
+    static const FString GrenadeContextString(TEXT("Shop Menu Grenade Item Initialization"));
 
     TArray<FGunItemData*> GunItems;
     TArray<FSwordItemData*> SwordItems;
+    TArray<FGrenadeItemData*> GrenadeItems;
 
     // 총기류 데이터 테이블에서 모든 행 가져오기
     GunItemDataTable->GetAllRows(GunContextString, GunItems);
@@ -75,6 +97,16 @@ void UShopMenuWidget::InitializeItemData()
         if (SwordItem)
         {
             SwordItemDataArray.Add(*SwordItem); // 도검류 배열에 추가
+        }
+    }
+
+    // 수류탄류 데이터 테이블에서 모든 행 가져오기
+    GrenadeItemDataTable->GetAllRows(GrenadeContextString, GrenadeItems);
+    for (FGrenadeItemData* GrenadeItem : GrenadeItems)
+    {
+        if (GrenadeItem)
+        {
+            GrenadeItemDataArray.Add(*GrenadeItem); // 수류탄류 배열에 추가
         }
     }
 }
@@ -119,6 +151,28 @@ void UShopMenuWidget::CreateSwordInventorySlots()
         {
             SwordSlot->InitializeSwordSlot(this, SwordItem);
             ShopScrollBox->AddChild(SwordSlot);
+        }
+    }
+}
+
+// 수류탄류 상점 슬롯을 생성하고 초기화하는 메소드
+void UShopMenuWidget::CreateGrenadeInventorySlots()
+{
+    if (!ShopSlotClass || !ShopScrollBox)
+    {
+        return;
+    }
+
+    ShopScrollBox->ClearChildren(); // 기존 슬롯 초기화
+
+    // 수류탄류 슬롯 생성
+    for (const FGrenadeItemData& GrenadeItem : GrenadeItemDataArray)
+    {
+        UShopSlotWidget* GrenadeSlot = CreateWidget<UShopSlotWidget>(this, ShopSlotClass);
+        if (GrenadeSlot)
+        {
+            GrenadeSlot->InitializeGrenadeSlot(this, GrenadeItem);
+            ShopScrollBox->AddChild(GrenadeSlot);
         }
     }
 }
@@ -205,16 +259,6 @@ void UShopMenuWidget::OnBuyItemClicked()
 	}
 }
 
-void UShopMenuWidget::OnGunTabClicked()
-{
-    CreateGunInventorySlots();
-}
-
-void UShopMenuWidget::OnSwordTabClicked()
-{
-    CreateSwordInventorySlots();
-}
-
 // 구매 버튼 클릭 후 확인 버튼 클릭 시 실행되는 메소드
 void UShopMenuWidget::OnConfirmPurchase()
 {
@@ -230,6 +274,10 @@ void UShopMenuWidget::OnConfirmPurchase()
         else if (SelectedItem.ItemType == TEXT("도검류")) 
         {
             GameManager->AddPurchasedSwordItem(SelectedSwordItem);
+        }
+        else if (SelectedItem.ItemType == TEXT("수류탄류")) 
+        {
+            GameManager->AddPurchasedGrenadeItem(SelectedGrenadeItem);
         }
 
         ShowCurrentEnergy();
@@ -272,7 +320,12 @@ void UShopMenuWidget::OnConfirmEquip()
         GameManager->SetEquippedSwordItemData(SelectedSwordItem);
         GameManager->SetEquippedSword(SelectedItem.ItemBlueprint);
     }
-    
+    else if (SelectedItem.ItemType == TEXT("수류탄류")) 
+    {
+        GameManager->SetEquippedGrenadeItemData(SelectedGrenadeItem);
+        GameManager->SetEquippedGrenade(SelectedItem.ItemBlueprint);
+    }
+
     if (PopupWidget)
     {
         PopupWidget->ConfirmClicked.RemoveDynamic(this, &UShopMenuWidget::OnConfirmEquip);
@@ -354,6 +407,15 @@ bool UShopMenuWidget::CheckItemAlreadyPurchased() const
         }
     }
 
+    // 수류탄류 아이템에서 중복 확인
+    for (const FGrenadeItemData& GrenadeItem : GameManager->GetPurchasedGrenadeItems())
+    {
+        if (GrenadeItem.ItemName == SelectedItem.ItemName)
+        {
+            return true;
+        }
+    }
+
     return false;
 }
 
@@ -362,6 +424,7 @@ void UShopMenuWidget::ResetSelectedItems()
 {
     SelectedGunItem = FGunItemData();
     SelectedSwordItem = FSwordItemData();
+    SelectedGrenadeItem = FGrenadeItemData();
 }
 
 void UShopMenuWidget::SetSelectedGunItem(const FGunItemData& GunItem)
@@ -372,4 +435,9 @@ void UShopMenuWidget::SetSelectedGunItem(const FGunItemData& GunItem)
 void UShopMenuWidget::SetSelectedSwordItem(const FSwordItemData& SwordItem)
 {
     SelectedSwordItem = SwordItem;
+}
+
+void UShopMenuWidget::SetSelectedGrenadeItem(const FGrenadeItemData& GrenadeItem)
+{
+    SelectedGrenadeItem = GrenadeItem;
 }

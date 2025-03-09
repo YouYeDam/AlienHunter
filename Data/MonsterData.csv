@@ -1,0 +1,7 @@
+﻿ID,MonsterName,MonsterType,MonsterMaxHP,MonsterEnergy,MonsterEXP,MonsterWeaponDamage,MonsterSpeed,MonsterBlueprint
+1,"멧돼지","근접류",70,10,5,5,500,"/Game/Character/Melee/BP_Boar.BP_Boar_C"
+2,"늑대","근접류",60,15,8,10,700,"/Game/Character/Melee/BP_Wolf.BP_Wolf_C"
+3,"곰","근접류",200,50,30,15,550,"/Game/Character/Melee/BP_Bear.BP_Bear_C"
+4,"그럭스","근접류",120,35,20,20,500,"/Game/Character/Melee/BP_Grux.BP_Grux_C"
+5,"레이스","원거리류",60,15,8,3,450,"/Game/Character/Range/BP_Wraith.BP_Wraith_C"
+6,"레이스 알파 ","원거리류",90,20,12,5,450,"/Game/Character/Range/BP_WraithAlpha.BP_WraithAlpha_C"

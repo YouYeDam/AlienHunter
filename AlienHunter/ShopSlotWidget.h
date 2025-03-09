@@ -7,6 +7,7 @@
 #include "BaseItemData.h"
 #include "GunItemData.h"
 #include "SwordItemData.h"
+#include "GrenadeItemData.h"
 #include "ShopMenuWidget.h"
 #include "ShopSlotWidget.generated.h"
 
@@ -24,6 +25,7 @@ public:
 
     void InitializeGunSlot(UShopMenuWidget* InShopMenuWidget, const FGunItemData& InGunItemData);
     void InitializeSwordSlot(UShopMenuWidget* InShopMenuWidget, const FSwordItemData& InSwordItemData);
+    void InitializeGrenadeSlot(UShopMenuWidget* InShopMenuWidget, const FGrenadeItemData& InGrenadeItemData);
 
 private:
     UPROPERTY(meta = (BindWidget))
@@ -42,4 +44,6 @@ private:
     FGunItemData GunItemData;
 
     FSwordItemData SwordItemData;
+
+    FGrenadeItemData GrenadeItemData;
 };

@@ -321,7 +321,7 @@ void UGameManager::AddPurchasedGrenadeItem(const FGrenadeItemData& Item)
 
 	if (InventoryMenuWidgetRef)
 	{
-		//InventoryMenuWidgetRef->UpdateGrenadeItemDataArray();
+		InventoryMenuWidgetRef->UpdateGrenadeItemDataArray();
 	}
 }
 
@@ -354,6 +354,7 @@ void UGameManager::SetInventoryMenuWidget(UInventoryMenuWidget* InventoryWidget)
 	{
 		InventoryMenuWidgetRef->UpdateGunDetails(EquippedGunItemData);
         InventoryMenuWidgetRef->UpdateSwordDetails(EquippedSwordItemData);
+        InventoryMenuWidgetRef->UpdateGrenadeDetails(EquippedGrenadeItemData);
 	}
 }
 
@@ -428,7 +429,7 @@ void UGameManager::SetEquippedGrenadeItemData(const FGrenadeItemData& NewGrenade
 
     if (InventoryMenuWidgetRef)
 	{
-		//InventoryMenuWidgetRef->UpdateGrenadeDetails(EquippedGrenadeItemData);
+		InventoryMenuWidgetRef->UpdateGrenadeDetails(EquippedGrenadeItemData);
 	}
 }
 

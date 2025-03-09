@@ -11,6 +11,7 @@ class AGun;
 class ASword;
 class AGrenade;
 class APerkEffector;
+class AGrenadeEffector;
 
 UCLASS()
 class ALIENHUNTER_API APlayerCharacter : public AMainCharacter
@@ -31,10 +32,13 @@ private:
 	TSubclassOf<ASword> SwordClass; // 도검 클래스
 
 	UPROPERTY(EditDefaultsOnly)
-	TSubclassOf<AGrenade> GrenadeClass; // 도검 클래스
+	TSubclassOf<AGrenade> GrenadeClass; // 수류탄 클래스
 
 	UPROPERTY(EditDefaultsOnly)
 	TSubclassOf<APerkEffector> PerkEffectorClass; // 퍽 이펙터 클래스
+
+	UPROPERTY(EditDefaultsOnly)
+	TSubclassOf<AGrenadeEffector> GrenadeEffectorClass; // 수류탄 이펙터 클래스
 
 	UPROPERTY()
 	AGun* Gun; // 총기 액터
@@ -43,10 +47,13 @@ private:
 	ASword* Sword; // 도검 액터
 
 	UPROPERTY()
-	AGrenade* Grenade; // 도검 액터
+	AGrenade* Grenade; // 수류탄 액터
 
 	UPROPERTY()
 	APerkEffector* PerkEffector; // 퍽 이펙터 액터
+
+	UPROPERTY()
+	AGrenadeEffector* GrenadeEffector; // 수류탄 이펙터 액터
 
 	UPROPERTY(EditAnywhere)
 	USoundBase* JumpSound;
@@ -77,11 +84,18 @@ private:
 	UPROPERTY(BlueprintReadOnly, Meta = (AllowPrivateAccess = "true"))
 	bool bIsThrowing = false;
 
+	UPROPERTY(BlueprintReadOnly, Meta = (AllowPrivateAccess = "true"))
+	bool bIsGrenadeReady = true;
+
 	bool CanAttack = true; // 공격 가능 상태인지
-	bool CanThrow = true; // 투척 가능 상태인지
+	bool CanCharge = true; // 투척 가능 상태인지
 	bool CanMove = true; // 이동 가능 상태인지
 
-	bool IsZooming = false;
+	bool IsZooming = false; // 줌을 하고 있는 상태인지
+
+	bool IsThrowingReady = false; // 수류탄 투척 준비 상태인지
+	float ThrowChargeTime = 0.0f; // 수류탄 투척 차징 시간
+	FTimerHandle ThrowChargeTimerHandle; // 수류탄 투척 차징 타이머
 
 	UFUNCTION(BlueprintPure)
 	float GetHealthPercent() const;
@@ -110,6 +124,9 @@ public:
 	UFUNCTION(BlueprintPure)
 	bool IsThrowing() const;
 
+	UFUNCTION(BlueprintPure)
+	bool IsGrenadeReady() const;
+
 	void Heal(int32 HealAmount);
 
 	void KillEnemy();
@@ -129,6 +146,8 @@ public:
 	void UseHealKit();
 	void ZoomIn();
 	void ZoomOut();
+	void ChargeThrowing();
+	void ReleaseThrowing();
 
 	int32 GetGainedEnergy() const;
 	void SetGainedEnergy(int32 NewEnergy);
@@ -146,6 +165,9 @@ public:
 	void IncreaseHealKitCount(int32 HealKitAmount);
 
 	AGun* GetEquippedGun() const;
+	AGrenade* GetEquippedGrenade() const;
 
 	APerkEffector* GetPerkEffector() const;
+
+	AGrenadeEffector* GetGrenadeEffector() const;
 };

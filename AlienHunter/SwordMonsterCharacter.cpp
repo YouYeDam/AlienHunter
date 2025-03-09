@@ -22,6 +22,9 @@ void ASwordMonsterCharacter::BeginPlay()
     // 몬스터는 무기 외형이 필요 없으므로 숨기기
     Sword->SetMeshVisibility(false);
 
+    // 몬스터 무기 데미지 설정
+    Sword->SetDamage(Damage);
+
     // AI의 회피 기능 강화
     GetCharacterMovement()->bUseRVOAvoidance = true;
     GetCharacterMovement()->AvoidanceConsiderationRadius = 300.0f;

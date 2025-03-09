@@ -21,11 +21,6 @@ public:
 protected:
 	virtual void BeginPlay() override;
 	virtual void OnConstruction(const FTransform& Transform) override;
-	
-#if WITH_EDITOR
-    // 에디터에서 속성 변경 시 호출되는 함수
-    virtual void PostEditChangeProperty(FPropertyChangedEvent& PropertyChangedEvent) override;
-#endif
 
 private:
 	UFUNCTION()
@@ -52,7 +47,7 @@ private:
     bool bIsPlayerWeapon = false;
 
 	UPROPERTY(EditAnywhere)
-	float Damage = 20;
+	float Damage = 0;
 
 public:
 	void SetMeshVisibility(bool bVisible);
@@ -60,4 +55,7 @@ public:
 	void EndSwing();   // 공격 종료
 
 	void InitializeWeaponData();
+
+	int32 GetDamage() const;
+	void SetDamage(int32 NewDamage);
 };

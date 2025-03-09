@@ -52,7 +52,7 @@ private:
     bool bIsPlayerWeapon = false;
 
 	UPROPERTY(EditAnywhere)
-	float Damage = 10;
+	float Damage = 0;
 
 	UPROPERTY(EditAnywhere)
 	float GunRange = 5000; // 사격 최대 거리
@@ -104,6 +104,9 @@ public:
 	bool GetBarrage() const;
 
 	bool GetZoom() const;
+
+	int32 GetDamage() const;
+	void SetDamage(int32 NewDamage);
 
 // 연발 사격 가능용 변수
 private: 

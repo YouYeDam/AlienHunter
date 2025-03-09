@@ -27,27 +27,27 @@ struct ALIENHUNTER_API FPerkData : public FTableRowBase
 
 public:
     // 퍽 이름
-    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Perk")
+    UPROPERTY(EditAnywhere, BlueprintReadWrite)
     FString PerkName;
 
     // 퍽 설명
-    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Perk")
+    UPROPERTY(EditAnywhere, BlueprintReadWrite)
     FString PerkDescription;
 
     // 퍽 효과 값
-    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Perk")
+    UPROPERTY(EditAnywhere, BlueprintReadWrite)
     float PerkValue;
 
 	// 퍽 요구 레벨
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Perk")
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	int32 PerkRequiredLevel;
 
 	// 퍽 종류
-    UPROPERTY(EditAnywhere, Category = "Perk")
+    UPROPERTY(EditAnywhere, BlueprintReadWrite)
     EPerkType PerkType;
 
     // 퍽 이미지
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Perk")
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	UTexture2D* PerkImage;
 
     FPerkData()

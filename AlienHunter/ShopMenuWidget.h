@@ -8,6 +8,7 @@
 #include "BaseItemData.h"
 #include "GunItemData.h"
 #include "SwordItemData.h"
+#include "GrenadeItemData.h"
 #include "PopupWidget.h"
 #include "GameManager.h"
 #include "ShopMenuWidget.generated.h"
@@ -30,6 +31,9 @@ public:
     UFUNCTION()
     void OnSwordTabClicked();
 
+    UFUNCTION()
+    void OnGrenadeTabClicked();
+
     UFUNCTION(BlueprintCallable)
     void UpdateItemDetails(const FBaseItemData& ItemData);
 
@@ -50,9 +54,13 @@ public:
 
     void SetSelectedSwordItem(const FSwordItemData& SwordItem);
 
+    void SetSelectedGrenadeItem(const FGrenadeItemData& GrenadeItem);
+
     void CreateGunInventorySlots();
 
     void CreateSwordInventorySlots();
+
+    void CreateGrenadeInventorySlots();
     
 protected:
     virtual void NativeConstruct() override;
@@ -64,11 +72,17 @@ private:
     UPROPERTY(EditAnywhere)
     UDataTable* SwordItemDataTable;// 도검류 아이템 데이터 테이블
 
+    UPROPERTY(EditAnywhere)
+    UDataTable* GrenadeItemDataTable;// 도검류 아이템 데이터 테이블
+
     UPROPERTY()
     TArray<FGunItemData> GunItemDataArray; // 총기류 아이템 데이터 배열
 
     UPROPERTY()
     TArray<FSwordItemData> SwordItemDataArray; // 도검류 아이템 데이터 배열
+
+    UPROPERTY()
+    TArray<FGrenadeItemData> GrenadeItemDataArray; // 도검류 아이템 데이터 배열
 
 	UPROPERTY()
 	UGameManager* GameManager;
@@ -81,6 +95,9 @@ private:
 
     UPROPERTY()
     FSwordItemData SelectedSwordItem; // 선택된 도검류 아이템 데이터
+
+    UPROPERTY()
+    FGrenadeItemData SelectedGrenadeItem; // 선택된 수류탄류 아이템 데이터
 
 	UPROPERTY(EditAnywhere)
 	TSubclassOf<UUserWidget> PopupWidgetClass;
@@ -99,6 +116,9 @@ private:
 
     UPROPERTY(meta = (BindWidget))
     class UButton* SwordTabButton;
+
+    UPROPERTY(meta = (BindWidget))
+    class UButton* GrenadeTabButton;
 
     UPROPERTY(meta = (BindWidget))
     class UScrollBox* ShopScrollBox;

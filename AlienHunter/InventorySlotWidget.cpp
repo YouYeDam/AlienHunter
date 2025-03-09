@@ -54,6 +54,24 @@ void UInventorySlotWidget::InitializeSwordSlot(UInventoryMenuWidget* InInventory
     }
 }
 
+// 수류탄류 슬롯을 설정하는 메소드
+void UInventorySlotWidget::InitializeGrenadeSlot(UInventoryMenuWidget* InInventoryMenuWidget, const FGrenadeItemData& InGrenadeItemData)
+{
+    InventoryMenuWidgetRef = InInventoryMenuWidget;
+    ItemData = InGrenadeItemData;
+    GrenadeItemData = InGrenadeItemData;
+
+    if (ItemNameText)
+    {
+        ItemNameText->SetText(FText::FromString(GrenadeItemData.ItemName));
+    }
+
+    if (ItemImage && ItemData.ItemImage)
+    {
+        ItemImage->SetBrushFromTexture(ItemData.ItemImage);
+    }
+}
+
 // 슬롯 클릭 시 인벤토리 위젯의 아이템 세부사항을 업데이트하는 메소드
 void UInventorySlotWidget::OnSlotClicked()
 {
@@ -68,6 +86,10 @@ void UInventorySlotWidget::OnSlotClicked()
         else if (ItemData.ItemType == TEXT("도검류"))
         {
             InventoryMenuWidgetRef->SetSelectedSwordItem(SwordItemData);
+        }
+        else if (ItemData.ItemType == TEXT("수류탄류"))
+        {
+            InventoryMenuWidgetRef->SetSelectedGrenadeItem(GrenadeItemData);
         }
 
         InventoryMenuWidgetRef->UpdateItemDetails(ItemData);

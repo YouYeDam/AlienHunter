@@ -5,6 +5,7 @@
 #include "Kismet/GameplayStatics.h"
 #include "PlayerCharacter.h"
 #include "Gun.h"
+#include "Grenade.h"
 #include "PerkEffector.h"
 
 void ASupplyBox::Collect(AActor* Collector)
@@ -14,16 +15,23 @@ void ASupplyBox::Collect(AActor* Collector)
     CalculatRandomValue();
 
     APlayerCharacter* PlayerCharacter = Cast<APlayerCharacter>(Collector);
-    if (PlayerCharacter)
+
+    if (PlayerCharacter && HealKitCount > 0)
     {
         PlayerCharacter->IncreaseHealKitCount(HealKitCount);
     }
 
     AGun* PlayerGun = PlayerCharacter->GetEquippedGun();
-    if (PlayerGun)
+    if (PlayerGun && AmmoValue > 0)
     {
         int32 AmmoCount = PlayerGun->GetMagazineSize() * AmmoValue;
         PlayerGun->IncreaseSpareAmmoCount(AmmoCount);
+    }
+
+    AGrenade* PlayerGrenade = PlayerCharacter->GetEquippedGrenade();
+    if (PlayerGrenade && GrenadeCount > 0)
+    {
+        PlayerGrenade->IncreaseTotalGrenadeCount(GrenadeCount);
     }
 
     // 퍽 효과 실행
@@ -39,8 +47,11 @@ void ASupplyBox::Collect(AActor* Collector)
 void ASupplyBox::CalculatRandomValue()
 {
     HealKitCount = FMath::RandRange(0, 3); // 0 ~ 3 중 랜덤 선택
+
     float AmmoValues[] = {0.0f, 0.5f, 0.7f, 1.0f};
     AmmoValue = AmmoValues[FMath::RandRange(0, 3)]; // 0, 0.5, 0.7, 1 중 랜덤 선택
+
+    GrenadeCount = FMath::RandRange(0, 2); // 0 ~ 2 중 랜덤 선택
 
     // 둘 다 0이면 하나를 최소값으로 설정
     if (HealKitCount == 0 && AmmoValue == 0.0f)

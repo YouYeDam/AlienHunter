@@ -297,3 +297,13 @@ bool AGun::GetZoom() const
 {
 	return Zoom;
 }
+
+int32 AGun::GetDamage() const
+{
+	return Damage;
+}
+
+void AGun::SetDamage(int32 NewDamage)
+{
+	Damage = NewDamage;
+}

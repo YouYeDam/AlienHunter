@@ -8,6 +8,7 @@
 #include "InteractableActor.h"
 #include "PerkData.h"
 #include "PerkEffector.h"
+#include "GrenadeEffector.h"
 #include "Kismet/GameplayStatics.h"
 #include "Components/CapsuleComponent.h"
 #include "GameFramework/CharacterMovementComponent.h"
@@ -77,6 +78,9 @@ void APlayerCharacter::BeginPlay()
             }
         }
     }
+
+    // 수류탄 이펙터 생성
+    GrenadeEffector = GetWorld()->SpawnActor<AGrenadeEffector>(GrenadeEffectorClass);
 }
 
 void APlayerCharacter::SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent)
@@ -95,13 +99,18 @@ void APlayerCharacter::SetupPlayerInputComponent(class UInputComponent* PlayerIn
 	PlayerInputComponent->BindAction(TEXT("Jump"), EInputEvent::IE_Pressed, this, &APlayerCharacter::Jump);
 	PlayerInputComponent->BindAction(TEXT("Shoot"), EInputEvent::IE_Pressed, this, &APlayerCharacter::Shoot);
 	PlayerInputComponent->BindAction(TEXT("Swing"), EInputEvent::IE_Pressed, this, &APlayerCharacter::Swing);
+    PlayerInputComponent->BindAction(TEXT("Throw"), EInputEvent::IE_Pressed, this, &APlayerCharacter::ChargeThrowing);
+    PlayerInputComponent->BindAction(TEXT("Throw"), EInputEvent::IE_Released, this, &APlayerCharacter::ReleaseThrowing);
+
 	PlayerInputComponent->BindAction(TEXT("SwapGun"), EInputEvent::IE_Pressed, this, &APlayerCharacter::SwapGun);
 	PlayerInputComponent->BindAction(TEXT("SwapSword"), EInputEvent::IE_Pressed, this, &APlayerCharacter::SwapSword);
     PlayerInputComponent->BindAction(TEXT("SwapGrenade"), EInputEvent::IE_Pressed, this, &APlayerCharacter::SwapGrenade);
+
 	PlayerInputComponent->BindAction(TEXT("Interact"), EInputEvent::IE_Pressed, this, &APlayerCharacter::Interact);
+    PlayerInputComponent->BindAction(TEXT("UseHealKit"), EInputEvent::IE_Pressed, this, &APlayerCharacter::UseHealKit);
+
 	PlayerInputComponent->BindAction(TEXT("Reload"), EInputEvent::IE_Pressed, this, &APlayerCharacter::Reload);
 	PlayerInputComponent->BindAction(TEXT("Shoot"), EInputEvent::IE_Released, this, &APlayerCharacter::StopShoot);
-    PlayerInputComponent->BindAction(TEXT("UseHealKit"), EInputEvent::IE_Pressed, this, &APlayerCharacter::UseHealKit);
     PlayerInputComponent->BindAction(TEXT("Zoom"), EInputEvent::IE_Pressed, this, &APlayerCharacter::ZoomIn);
     PlayerInputComponent->BindAction(TEXT("Zoom"), EInputEvent::IE_Released, this, &APlayerCharacter::ZoomOut);
 }
@@ -184,9 +193,16 @@ bool APlayerCharacter::IsAttacking() const
     return bIsAttacking;
 }
 
+// 캐릭터가 투척 중인지를 체크하는 메소드
 bool APlayerCharacter::IsThrowing() const
 {
     return bIsThrowing;
+}
+
+// 캐릭터가 수류탄을 실제로 들고 있는지 체크하는 메소드
+bool APlayerCharacter::IsGrenadeReady() const
+{
+    return bIsGrenadeReady;
 }
 
 void APlayerCharacter::Heal(int32 HealAmount)
@@ -256,7 +272,7 @@ void APlayerCharacter::Swing()
 // 플레이어의 현재 무기를 총기류로 바꾸는 메소드
 void APlayerCharacter::SwapGun()
 {
-    if (IsUsingGun)
+    if (IsUsingGun || bIsAttacking || bIsThrowing)
     {
         return;
     }
@@ -273,7 +289,7 @@ void APlayerCharacter::SwapGun()
 // 플레이어의 현재 무기를 도검류로 바꾸는 메소드
 void APlayerCharacter::SwapSword()
 {
-    if (IsZooming || IsUsingSword)
+    if (IsZooming || IsUsingSword || bIsThrowing)
     {
         return;
     }
@@ -289,7 +305,7 @@ void APlayerCharacter::SwapSword()
 // 플레이어의 현재 무기를 수류탄류로 바꾸는 메소드
 void APlayerCharacter::SwapGrenade()
 {
-    if (IsZooming || IsUsingGrenade)
+    if (IsZooming || IsUsingGrenade || bIsAttacking)
     {
         return;
     }
@@ -300,7 +316,15 @@ void APlayerCharacter::SwapGrenade()
 
 	Gun->SetMeshVisibility(false);
 	Sword->SetMeshVisibility(false);
-    Grenade->SetMeshVisibility(true);
+
+    if (Grenade->GetGrenadeCount() > 0)
+    {
+        Grenade->SetMeshVisibility(true);
+    }
+    else
+    {
+        Grenade->SetMeshVisibility(false);
+    }
 }
 
 // 상호작용 물체와 상호작용하는 메소드
@@ -327,6 +351,14 @@ void APlayerCharacter::Reload()
     if (Gun && IsUsingGun)
     {
         Gun->ReloadAmmo();
+    }
+
+    if (Grenade && IsUsingGrenade)
+    {
+        if (Grenade->ReloadGrenade())
+        {
+            bIsGrenadeReady = true;
+        }
     }
 }
 
@@ -387,6 +419,93 @@ void APlayerCharacter::ZoomOut()
         {
             FollowCamera->SetFieldOfView(90.0f);
         }
+    }
+}
+
+// 수류탄 던지기를 준비하는 메소드
+void APlayerCharacter::ChargeThrowing()
+{
+    if (Grenade && IsUsingGrenade && Grenade->GetGrenadeCount() > 0 && CanCharge)
+    {
+        IsThrowingReady = true;
+        ThrowChargeTime = 0.0f;
+
+        // 수류탄 차지 효과음 재생
+        Grenade->PlayChargeSound();
+
+        // 충전 시간 카운트 시작
+        GetWorld()->GetTimerManager().SetTimer(ThrowChargeTimerHandle, [this]() {
+            ThrowChargeTime += 0.1f;
+        }, 0.1f, true);
+    }
+}
+
+// 충전된 힘을 이용하여 수류탄을 투척하는 메소드
+void APlayerCharacter::ReleaseThrowing()
+{
+    if (Grenade && IsUsingGrenade && IsThrowingReady && Grenade->GetGrenadeCount() > 0)
+    {
+        IsThrowingReady = false;
+        bIsThrowing = true;
+        CanCharge = false;
+        CanMove = false;
+
+        float ThrowStrength = FMath::Clamp(ThrowChargeTime, 0.3f, 1.5f);
+        FVector ThrowDirection = FollowCamera->GetForwardVector();
+
+        // 기존 수류탄 위치에서 생성
+        FVector SpawnLocation = Grenade->GetActorLocation();
+        FRotator SpawnRotation = FollowCamera->GetComponentRotation();
+
+        // 플레이어 손에 들고 있는 수류탄 감추기
+        Grenade->SetMeshVisibility(false);
+
+        // 새로운 수류탄 스폰
+        FActorSpawnParameters SpawnParams;
+        SpawnParams.Owner = this;
+        SpawnParams.Instigator = GetInstigator();
+
+        AGrenade* NewGrenade = GetWorld()->SpawnActor<AGrenade>(
+            Grenade->GetClass(),
+            SpawnLocation,
+            SpawnRotation,
+            SpawnParams
+        );
+
+        if (NewGrenade)
+        {
+            // 새로운 수류탄만 물리 적용 및 충돌 활성화
+            NewGrenade->SetMeshVisibility(true);
+            NewGrenade->GetMesh()->SetSimulatePhysics(true);
+            NewGrenade->GetMesh()->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
+            NewGrenade->GetMesh()->SetCollisionObjectType(ECC_PhysicsBody);
+            NewGrenade->GetMesh()->SetCollisionResponseToAllChannels(ECR_Block);
+            NewGrenade->GetMesh()->SetUseCCD(true);
+            
+            // 폰과 충돌 오버랩으로 변경
+            NewGrenade->GetMesh()->SetCollisionResponseToChannel(ECC_Pawn, ECR_Overlap);
+
+            // 충격 가하기
+            NewGrenade->GetMesh()->AddImpulse(ThrowDirection * ThrowStrength * 700.0f, NAME_None, true);
+
+            // 수류탄 폭발 준비
+            NewGrenade->ReadyExplosion();
+        }
+
+        // 수류탄 개수 감소
+        Grenade->SetGrenadeCount(Grenade->GetGrenadeCount() - 1);
+
+        GetWorld()->GetTimerManager().ClearTimer(ThrowChargeTimerHandle);
+
+        // 던지는 상태 해제 타이머 설정
+        FTimerHandle ThrowingTimerHandle;
+        GetWorld()->GetTimerManager().SetTimer(ThrowingTimerHandle, [this]()
+        {
+            bIsThrowing = false;
+            CanCharge = true;
+            CanMove = true;
+            bIsGrenadeReady = false;
+        }, 0.6f, false);
     }
 }
 
@@ -480,7 +599,17 @@ AGun* APlayerCharacter::GetEquippedGun() const
 	return Gun;
 }
 
+AGrenade* APlayerCharacter::GetEquippedGrenade() const
+{
+    return Grenade;
+}
+
 APerkEffector* APlayerCharacter::GetPerkEffector() const
 {
     return PerkEffector;
+}
+
+AGrenadeEffector* APlayerCharacter::GetGrenadeEffector() const
+{
+    return GrenadeEffector;
 }

@@ -30,13 +30,17 @@ private:
     class UTextBlock* MissionProgress;
 
 	UPROPERTY(meta = (BindWidget))
+    class UTextBlock* HealKit;
+
+	UPROPERTY(meta = (BindWidget))
     class UTextBlock* Ammo;
 
 	UPROPERTY(meta = (BindWidget))
-    class UTextBlock* HealKit;
+    class UTextBlock* GrenadeCount;
 
 	void UpdateGainedEnergyText();
 	void UpdateGainedEXPText();
-	void UpdateAmmoText();
 	void UpdateHealKitText();
+	void UpdateAmmoText();
+	void UpdateGrenadeCountText();
 };

@@ -4,6 +4,7 @@
 #include "HUDWidget.h"
 #include "PlayerCharacter.h"
 #include "Gun.h"
+#include "Grenade.h"
 #include "Components/TextBlock.h"
 #include "Kismet/GameplayStatics.h"
 #include "CollectObjectGameMode.h"
@@ -23,8 +24,9 @@ void UHUDWidget::NativeTick(const FGeometry& MyGeometry, float InDeltaTime)
     UpdateGainedEnergyText();
     UpdateGainedEXPText();
 
-    UpdateAmmoText();
     UpdateHealKitText();
+    UpdateAmmoText();
+    UpdateGrenadeCountText();
 }
 
 // 획득한 에너지 텍스트를 갱신하는 메소드
@@ -51,6 +53,18 @@ void UHUDWidget::UpdateGainedEXPText()
     }
 }
 
+// 플레이어의 회복 키트 현황을 갱신하드 메소드
+void UHUDWidget::UpdateHealKitText()
+{
+    if (PlayerCharacter && HealKit)
+    {
+        HealKit->SetText(FText::Format(
+            NSLOCTEXT("HUD", "HealKitText", "회복 키트: {0}"),
+            FText::AsNumber(PlayerCharacter->GetHealKitCount())
+        ));
+    }
+}
+
 // 플레이어의 탄약 현황을 갱신하는 메소드
 void UHUDWidget::UpdateAmmoText()
 {
@@ -68,15 +82,19 @@ void UHUDWidget::UpdateAmmoText()
     }
 }
 
-// 플레이어의 회복 키트 현황을 갱신하드 메소드
-void UHUDWidget::UpdateHealKitText()
+void UHUDWidget::UpdateGrenadeCountText()
 {
-    if (PlayerCharacter && HealKit)
+    if (PlayerCharacter && GrenadeCount)
     {
-        HealKit->SetText(FText::Format(
-            NSLOCTEXT("HUD", "HealKitText", "회복 키트: {0}"),
-            FText::AsNumber(PlayerCharacter->GetHealKitCount())
-        ));
+        AGrenade* EquippedGrenade = PlayerCharacter->GetEquippedGrenade();
+        if (EquippedGrenade)
+        {
+            GrenadeCount->SetText(FText::Format(
+                NSLOCTEXT("HUD", "GrenadeText", "수류탄: {0} / {1}"),
+                FText::AsNumber(EquippedGrenade->GetGrenadeCount()),
+                FText::AsNumber(EquippedGrenade->GetTotalGrenadeCount())
+            ));
+        }
     }
 }
 

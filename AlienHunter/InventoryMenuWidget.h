@@ -7,6 +7,7 @@
 #include "BaseItemData.h"
 #include "GunItemData.h"
 #include "SwordItemData.h"
+#include "GrenadeItemData.h"
 #include "GameManager.h"
 #include "InventoryMenuWidget.generated.h"
 
@@ -30,6 +31,9 @@ public:
     void OnSwordTabClicked();
 
     UFUNCTION()
+    void OnGrenadeTabClicked();
+
+    UFUNCTION()
     void UpdateItemDetails(const FBaseItemData& ItemData);
 
     UFUNCTION()
@@ -39,10 +43,16 @@ public:
     void UpdateSwordDetails(const FSwordItemData& ItemData);
 
     UFUNCTION()
+    void UpdateGrenadeDetails(const FGrenadeItemData& ItemData);
+
+    UFUNCTION()
     void UpdateGunItemDataArray();
 
     UFUNCTION()
     void UpdateSwordItemDataArray();
+
+    UFUNCTION()
+    void UpdateGrenadeItemDataArray();
 
     void ResetSelectedItems();
 
@@ -50,9 +60,13 @@ public:
 
     void SetSelectedSwordItem(const FSwordItemData& SwordItem);
 
+    void SetSelectedGrenadeItem(const FGrenadeItemData& GrenadeItem);
+
     void CreateGunInventorySlots();
 
     void CreateSwordInventorySlots();
+
+    void CreateGrenadeInventorySlots();
     
 protected:
     virtual void NativeConstruct() override;
@@ -63,6 +77,9 @@ private:
 
     UPROPERTY()
     TArray<FSwordItemData> SwordItemDataArray; // 도검류 아이템 데이터 배열
+
+    UPROPERTY()
+    TArray<FGrenadeItemData> GrenadeItemDataArray; // 수류탄류 아이템 데이터 배열
 
 	UPROPERTY()
 	UGameManager* GameManager;
@@ -75,6 +92,9 @@ private:
 
     UPROPERTY()
     FSwordItemData SelectedSwordItem; // 선택된 도검류 아이템 데이터
+
+    UPROPERTY()
+    FGrenadeItemData SelectedGrenadeItem; // 선택된 수류류 아이템 데이터
 
 	UPROPERTY(EditAnywhere)
 	TSubclassOf<UUserWidget> PopupWidgetClass;
@@ -92,6 +112,9 @@ private:
     class UButton* SwordTabButton;
 
     UPROPERTY(meta = (BindWidget))
+    class UButton* GrenadeTabButton;
+
+    UPROPERTY(meta = (BindWidget))
     class UScrollBox* InventoryScrollBox;
 
     UPROPERTY(meta = (BindWidget))
@@ -104,6 +127,9 @@ private:
     class UImage* SwordImage;
 
     UPROPERTY(meta = (BindWidget))
+    class UImage* GrenadeImage;
+
+    UPROPERTY(meta = (BindWidget))
     class UTextBlock* ItemName;
 
     UPROPERTY(meta = (BindWidget))
@@ -113,6 +139,9 @@ private:
     class UTextBlock* SwordName;
 
     UPROPERTY(meta = (BindWidget))
+    class UTextBlock* GrenadeName;
+
+    UPROPERTY(meta = (BindWidget))
     class UTextBlock* ItemDamage;
 
     UPROPERTY(meta = (BindWidget))
@@ -120,6 +149,9 @@ private:
 
     UPROPERTY(meta = (BindWidget))
     class UTextBlock* SwordDamage;
+
+    UPROPERTY(meta = (BindWidget))
+    class UTextBlock* GrenadeDamage;
 
     UPROPERTY(meta = (BindWidget))
     class UTextBlock* ItemDescription;

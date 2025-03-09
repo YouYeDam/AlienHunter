@@ -9,6 +9,15 @@
 #include "NavigationSystem.h"
 #include "NavAreas/NavArea_Obstacle.h"
 #include "Components/CapsuleComponent.h"
+#include "MonsterData.h"
+
+AMonsterCharacter::AMonsterCharacter()
+{
+    if (MonsterDataTable)
+    {
+        InitializaeMonsterData();
+    }
+}
 
 void AMonsterCharacter::BeginPlay()
 {
@@ -21,6 +30,43 @@ void AMonsterCharacter::BeginPlay()
     if (AIController && AIController->GetBlackboardComponent())
     {
         AIController->GetBlackboardComponent()->SetValueAsBool(TEXT("IsRoaming"), bIsRoaming);
+    }
+}
+
+void AMonsterCharacter::OnConstruction(const FTransform& Transform)
+{
+    Super::OnConstruction(Transform);
+
+    if (MonsterDataTable)
+    {
+        InitializaeMonsterData();
+    }
+}
+
+void AMonsterCharacter::InitializaeMonsterData()
+{
+    if (!MonsterDataTable || MonsterID <= 0)
+    {
+        return;
+    }
+
+    // DataTable에서 몬스터 데이터를 검색
+    static const FString ContextString(TEXT("Monster Data Initialization"));
+    FMonsterData* MonsterData = MonsterDataTable->FindRow<FMonsterData>(FName(*FString::FromInt(MonsterID)), ContextString);
+
+    if (MonsterData)
+    {
+        // 몬스터 속성 초기화
+        MaxHP = MonsterData->MonsterMaxHP;
+        Energy = MonsterData->MonsterEnergy;
+        EXP = MonsterData->MonsterEXP;
+        Damage = MonsterData->MonsterWeaponDamage;
+
+        // 캐릭터 이동 속도 조절
+        if (GetCharacterMovement())
+        {
+            GetCharacterMovement()->MaxWalkSpeed = MonsterData->MonsterSpeed;
+        }
     }
 }
 
@@ -37,7 +83,6 @@ void AMonsterCharacter::PlayHeadShotEffect(const FVector& HitLocation, const FRo
 float AMonsterCharacter::TakeDamage(float DamageAmount, struct FDamageEvent const& DamageEvent, class AController* EventInstigator, AActor* DamageCauser)
 {
     float TakedDamageAmount = Super::TakeDamage(DamageAmount, DamageEvent, EventInstigator, DamageCauser);
-
     ABaseAIController* AIController = Cast<ABaseAIController>(GetController());
     if (AIController)
     {

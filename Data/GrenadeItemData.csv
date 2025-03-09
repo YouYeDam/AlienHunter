@@ -1,3 +1,3 @@
-﻿ID,ItemName,ItemDescription,ItemType,ItemPrice,ItemDamage,ItemImage,ItemBlueprint,GrenadeCount,EffectRange,SpecialEffectValue
-1,"폭발탄","강한 폭발을 일으키는 수류탄입니다.","수류탄류",0,100,"/Game/Image/Weapon/Bomb.Bomb","/Game/Weapon/Grenade/BP_Bomb.BP_Bomb_C",3,300,0
-2,"화염탄","적을 연소시키는 수류탄입니다.","수류탄류",200,50,"/Game/Image/Weapon/FlameBomb.FlameBomb","/Game/Weapon/Grenade/BP_FlameBomb.BP_FlameBomb_C",3,300,25
+﻿ID,ItemName,ItemDescription,ItemType,ItemPrice,ItemDamage,ItemImage,ItemBlueprint,TotalGrenadeCount,EffectRange,SpecialEffectValue,SpecialEffectDuration,GrenadeType
+1,"폭발탄","강한 폭발을 일으키는 수류탄입니다.","수류탄류",0,100,"/Game/Image/Weapon/Bomb.Bomb","/Game/Weapon/Grenade/BP_Bomb.BP_Bomb_C",3,500,0,0,None
+2,"화염탄","적을 연소시키는 수류탄입니다.","수류탄류",200,50,"/Game/Image/Weapon/FlameBomb.FlameBomb","/Game/Weapon/Grenade/BP_FlameBomb.BP_FlameBomb_C",3,500,25,5,FireBomb

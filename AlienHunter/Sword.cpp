@@ -29,29 +29,6 @@ ASword::ASword()
     }
 }
 
-// 에디터에서 SwordItemData의 값을 즉시 반영하게 하는 메소드
-#if WITH_EDITOR
-void ASword::PostEditChangeProperty(FPropertyChangedEvent& PropertyChangedEvent)
-{
-    Super::PostEditChangeProperty(PropertyChangedEvent);
-
-    // 변경된 속성 확인
-    FName PropertyName = (PropertyChangedEvent.Property != nullptr)
-                             ? PropertyChangedEvent.Property->GetFName()
-                             : NAME_None;
-
-    if (PropertyName == GET_MEMBER_NAME_CHECKED(ASword, SwordDataTable) ||
-        PropertyName == GET_MEMBER_NAME_CHECKED(ASword, WeaponID))
-    {
-        // SwordDataTable 또는 WeaponID가 변경된 경우 처리
-        if (bIsPlayerWeapon && SwordDataTable)
-        {
-            InitializeWeaponData(); // 데이터 초기화 함수 호출
-        }
-    }
-}
-#endif
-
 void ASword::BeginPlay()
 {
 	Super::BeginPlay();
@@ -86,6 +63,16 @@ void ASword::InitializeWeaponData()
     }
 }
 
+int32 ASword::GetDamage() const
+{
+    return Damage;
+}
+
+void ASword::SetDamage(int32 NewDamage)
+{
+    Damage = NewDamage;
+}
+
 // 조건에 따라 메시의 가시성을 재설정하는 메소드
 void ASword::SetMeshVisibility(bool bVisible)
 {
@@ -105,7 +92,7 @@ void ASword::StartSwing()
 	IsSwinging = true;
 	CollisionBox->SetCollisionEnabled(ECollisionEnabled::QueryOnly); // 충돌 활성화
 
-	UGameplayStatics::SpawnSoundAttached(SwingSound, Mesh, TEXT("SwingSoundSocket"));
+	UGameplayStatics::SpawnSoundAtLocation(GetWorld(), SwingSound, GetActorLocation());
 }
 
 // 휘두르기 동작의 끝을 처리하는 메소드
