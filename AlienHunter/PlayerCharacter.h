@@ -20,6 +20,7 @@ class ALIENHUNTER_API APlayerCharacter : public AMainCharacter
 
 protected:
 	virtual void BeginPlay() override;
+	virtual void PostInitializeComponents() override;
 
 private:
 	UPROPERTY(VisibleAnywhere)
@@ -133,7 +134,7 @@ public:
 
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 
-	// 플레이어의 입력에 동작
+	// 플레이어의 입력 동작
 	virtual void Jump() override;
 	void Shoot();
 	void Swing();
@@ -148,6 +149,8 @@ public:
 	void ZoomOut();
 	void ChargeThrowing();
 	void ReleaseThrowing();
+
+	void SwingInAir();
 
 	int32 GetGainedEnergy() const;
 	void SetGainedEnergy(int32 NewEnergy);
@@ -170,4 +173,29 @@ public:
 	APerkEffector* GetPerkEffector() const;
 
 	AGrenadeEffector* GetGrenadeEffector() const;
+
+// 플레이어 콤보 공격용
+private:
+	UPROPERTY(EditAnywhere)
+	UAnimMontage* PrimaryAttackMontage; // 공격 몽타주
+
+	int32 CurrentComboIndex; // 현재 콤보 인덱스
+	bool ContinueCombo;      // 다음 공격을 이어갈지 여부
+	bool CanCombo;           // 콤보 입력을 받을 수 있는 상태인지
+
+	void StartCombo();
+	void ContinueComboAttack();
+	void ResetCombo();
+
+	UFUNCTION()
+	void OnComboWindowOpened();
+
+	UFUNCTION()
+	void OnAttackHit();
+
+	UFUNCTION()
+	void OnMontageEnded(UAnimMontage* Montage, bool bInterrupted);
+
+	UFUNCTION()
+	void OnNotifyBegin(FName NotifyName, const FBranchingPointNotifyPayload& BranchingPointPayload);
 };

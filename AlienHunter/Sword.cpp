@@ -91,7 +91,6 @@ void ASword::StartSwing()
 	
 	IsSwinging = true;
 	CollisionBox->SetCollisionEnabled(ECollisionEnabled::QueryOnly); // 충돌 활성화
-
 	UGameplayStatics::SpawnSoundAtLocation(GetWorld(), SwingSound, GetActorLocation());
 }
 

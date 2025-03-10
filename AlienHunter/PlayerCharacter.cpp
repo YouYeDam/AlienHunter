@@ -83,6 +83,20 @@ void APlayerCharacter::BeginPlay()
     GrenadeEffector = GetWorld()->SpawnActor<AGrenadeEffector>(GrenadeEffectorClass);
 }
 
+void APlayerCharacter::PostInitializeComponents()
+{
+    Super::PostInitializeComponents();
+
+    // 몽타주 바인딩
+    UAnimInstance* AnimInstance =GetMesh()->GetAnimInstance();
+
+    if (AnimInstance)
+    {
+        AnimInstance->OnMontageEnded.AddDynamic(this, &APlayerCharacter::OnMontageEnded);
+        AnimInstance->OnPlayMontageNotifyBegin.AddDynamic(this, &APlayerCharacter::OnNotifyBegin);
+    }
+}
+
 void APlayerCharacter::SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent)
 {
 	Super::SetupPlayerInputComponent(PlayerInputComponent);
@@ -117,6 +131,12 @@ void APlayerCharacter::SetupPlayerInputComponent(class UInputComponent* PlayerIn
 
 void APlayerCharacter::Jump()
 {
+    // 도검류 및 수류탄류 공격 중이라면 점프 불가능
+    if (bIsAttacking || bIsThrowing)
+    {
+        return;
+    }
+
     // 땅에 있을 때만 점프 사운드 실행
     if (GetCharacterMovement() && GetCharacterMovement()->IsMovingOnGround())
     {
@@ -238,35 +258,37 @@ void APlayerCharacter::Shoot()
 // 캐릭터의 휘두르기 메소드
 void APlayerCharacter::Swing()
 {
-    // 공중에 있다면 공격 불가
-    if (GetCharacterMovement()->IsFalling())
+    if (!Sword || !IsUsingSword || !CanAttack)
     {
         return;
     }
 
-    if (Sword && IsUsingSword && !bIsAttacking && CanAttack)
+    if (GetCharacterMovement()->IsFalling())
     {
-        Sword->StartSwing(); // 공격 중 상태 켜기
-        bIsAttacking = true;
-        CanAttack = false;
-        CanMove = false; // 공격 중일 경우 이동 불가
-
-		// 공격 중 상태 해제를 위해 타이머 설정
-        FTimerHandle TimerHandle;
-        GetWorld()->GetTimerManager().SetTimer(TimerHandle, [this]() 
-        {
-            Sword->EndSwing(); // 공격 중 상태 끄기
-            bIsAttacking = false;
-
-			// 공격 후 이동 불가 상태 해제를 위해 타이머 설정
-            FTimerHandle CanAttackTimerHandle;
-            GetWorld()->GetTimerManager().SetTimer(CanAttackTimerHandle, [this]()
-            {
-                CanAttack = true;
-                CanMove = true;
-            }, 0.7f, false); 
-        }, 0.4f, false); //
+        SwingInAir();
+        return;
     }
+
+    UAnimInstance* AnimInstance = GetMesh()->GetAnimInstance();
+    if (!AnimInstance)
+    {
+        return;
+    }
+
+    if (CurrentComboIndex >= 4) // 마지막 콤보 이후 초기화
+    {
+        ResetCombo();
+    }
+
+    // 다음 콤보 이어가기
+    if (CanCombo)
+    {
+        ContinueComboAttack();
+        return;
+    }
+        
+    // 첫 번째 공격 시작
+    StartCombo();
 }
 
 // 플레이어의 현재 무기를 총기류로 바꾸는 메소드
@@ -509,6 +531,34 @@ void APlayerCharacter::ReleaseThrowing()
     }
 }
 
+// 공중에서 Swing 입력시 실행되는 메소드
+void APlayerCharacter::SwingInAir()
+{
+    if (Sword && IsUsingSword && !bIsAttacking && CanAttack)
+    {
+        Sword->StartSwing(); // 공격 중 상태 켜기
+        bIsAttacking = true;
+        CanAttack = false;
+        CanMove = false; // 공격 중일 경우 이동 불가
+
+		// 공격 중 상태 해제를 위해 타이머 설정
+        FTimerHandle TimerHandle;
+        GetWorld()->GetTimerManager().SetTimer(TimerHandle, [this]() 
+        {
+            Sword->EndSwing(); // 공격 중 상태 끄기
+            bIsAttacking = false;
+
+			// 공격 후 이동 불가 상태 해제를 위해 타이머 설정
+            FTimerHandle CanAttackTimerHandle;
+            GetWorld()->GetTimerManager().SetTimer(CanAttackTimerHandle, [this]()
+            {
+                CanAttack = true;
+                CanMove = true;
+            }, 0.7f, false); 
+        }, 0.4f, false); //
+    }
+}
+
 // 적 처치 시 발생하는 메소드
 void APlayerCharacter::KillEnemy()
 {
@@ -612,4 +662,94 @@ APerkEffector* APlayerCharacter::GetPerkEffector() const
 AGrenadeEffector* APlayerCharacter::GetGrenadeEffector() const
 {
     return GrenadeEffector;
+}
+
+// 콤보 공격을 시작하는 메소드
+void APlayerCharacter::StartCombo()
+{
+    if (!PrimaryAttackMontage || !Sword)
+    {
+        return;
+    }
+
+    bIsAttacking = true;
+    CanAttack = false;
+    CanMove = false;
+    CanCombo = false;
+    CurrentComboIndex = 0;
+
+    PlayAnimMontage(PrimaryAttackMontage, 1.0f, FName(TEXT("Attack1")));
+}
+
+// 콤보 가능 시간에서 입력을 감지하는 메소드
+void APlayerCharacter::OnComboWindowOpened()
+{
+    CanCombo = true;
+    CanAttack = true;
+
+    Sword->EndSwing();
+}
+
+// 공격 판정을 실행하는 메소드
+void APlayerCharacter::OnAttackHit()
+{
+    if (!Sword)
+    {
+        return;
+    }
+
+    Sword->StartSwing();
+}
+
+// 콤보 공격을 이어가는 메소드
+void APlayerCharacter::ContinueComboAttack()
+{
+    CanCombo = false;
+    CanAttack = false;
+    CurrentComboIndex++;
+
+    // 다음 공격 섹션으로 이동
+    UAnimInstance* AnimInstance = GetMesh()->GetAnimInstance();
+    if (AnimInstance)
+    {
+        AnimInstance->Montage_JumpToSection(FName(*FString::Printf(TEXT("Attack%d"), CurrentComboIndex + 1)), PrimaryAttackMontage);
+    }
+}
+
+// 몽타주 종료 시 처리하는 메소드
+void APlayerCharacter::OnMontageEnded(UAnimMontage* Montage, bool bInterrupted)
+{
+    if (Montage != PrimaryAttackMontage)
+    {
+        return;
+    }
+
+    ResetCombo();
+}
+
+// 콤보를 초기화하는 메소드
+void APlayerCharacter::ResetCombo()
+{
+    CurrentComboIndex = 0;
+    CanCombo = false;
+    CanAttack = true;
+    CanMove = true;
+    bIsAttacking = false;
+
+    Sword->EndSwing();
+}
+
+//Notify 이벤트를 감지하는 메소드
+void APlayerCharacter::OnNotifyBegin(FName NotifyName, const FBranchingPointNotifyPayload& BranchingPointPayload)
+{
+    if (NotifyName == "ComboWindow")
+    {
+        UE_LOG(LogTemp, Warning, TEXT("A"));
+        OnComboWindowOpened();
+    }
+    else if (NotifyName == "AttackHit")
+    {
+        UE_LOG(LogTemp, Warning, TEXT("B"));
+        OnAttackHit();
+    }
 }
