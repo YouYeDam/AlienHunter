@@ -1,5 +1,6 @@
 
 
+
 #pragma once
 
 #include "CoreMinimal.h"
@@ -16,12 +17,11 @@ class ALIENHUNTER_API UBTTask_Roam : public UBTTaskNode
 public:
 	UBTTask_Roam();
 
+	void OnTaskCompleted(class ABaseAIController* AIController, EPathFollowingResult::Type Result);
+
 protected:
     virtual EBTNodeResult::Type ExecuteTask(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory) override;
 
 private:
-	AAIController* AIController;
-
-	UFUNCTION()
-	void OnMoveCompleted(FAIRequestID RequestID, EPathFollowingResult::Type Result);
+	float RoamingRange = 1000.0f;
 };

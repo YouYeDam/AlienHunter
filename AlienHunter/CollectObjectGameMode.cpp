@@ -1,4 +1,4 @@
-// Fill out your copyright notice in the Description page of Project Settings.
+
 
 
 #include "CollectObjectGameMode.h"
@@ -13,7 +13,7 @@ void ACollectObjectGameMode::BeginPlay()
     TArray<AActor*> MissionObjectActors;
     UGameplayStatics::GetAllActorsWithTag(GetWorld(), FName("Mission Object"), MissionObjectActors);
 
-    RequiredCollectingCount = MissionObjectActors.Num();
+    RequiredCollectingCount = FMath::CeilToInt(MissionObjectActors.Num() * 0.7);
 }
 
 void ACollectObjectGameMode::ItemCollected()

@@ -29,7 +29,7 @@ void AMonsterCharacter::BeginPlay()
     ABaseAIController* AIController = Cast<ABaseAIController>(GetController());
     if (AIController && AIController->GetBlackboardComponent())
     {
-        AIController->GetBlackboardComponent()->SetValueAsBool(TEXT("IsRoaming"), bIsRoaming);
+        AIController->GetBlackboardComponent()->SetValueAsBool(TEXT("IsRoamingMonster"), bIsRoaming);
     }
 }
 
@@ -87,10 +87,10 @@ float AMonsterCharacter::TakeDamage(float DamageAmount, struct FDamageEvent cons
     if (AIController)
     {
         AIController->SetInCombat(true);
+
+        AIController->OnMonsterDamaged();
     }
 
-    OnMonsterDamaged.Broadcast(); 
-    
     // 주변 몬스터들에게 전투 상태 전파
     LinkNearbyMonsters();
 
@@ -123,13 +123,18 @@ void AMonsterCharacter::LinkNearbyMonsters()
                 if (NearbyAIController)
                 {
                     NearbyAIController->SetInCombat(true);
-                }
 
-                // 주변 몬스터도 OnMonsterDamaged 이벤트 발생
-                NearbyMonster->OnMonsterDamaged.Broadcast();
+                    // 주변 몬스터도 OnMonsterDamaged 메소드 실행
+                    NearbyAIController->OnMonsterDamaged();
+                }
             }
         }
     }
+}
+
+float AMonsterCharacter::GetRoamingRange() const
+{
+    return RoamingRange;
 }
 
 int32 AMonsterCharacter::GetEnergy() const

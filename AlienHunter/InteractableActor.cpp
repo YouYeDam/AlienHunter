@@ -61,8 +61,11 @@ void AInteractableActor::Interact(AActor* InteractingActor)
     }	
 }
 
-// 아이템 수집 시 실행하는 메소드(인터페이스용 -> 자식에서 구현)
+// 아이템 수집 시 실행하는 메소드
 void AInteractableActor::Collect(AActor* Collector)
 {
-    // No Action.
+    if (PickupSound)
+    {
+        UGameplayStatics::SpawnSoundAtLocation(GetWorld(), PickupSound, GetActorLocation());
+    }
 }

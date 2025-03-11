@@ -57,3 +57,49 @@ bool ABaseAIController::IsDead() const
 
     return true;
 }
+
+// 로밍을 시작할 때 태스크를 저장하는 메소드
+void ABaseAIController::StartRoaming(UBTTask_Roam* Task)
+{
+    if (!Task)
+    {
+        return;
+    }
+
+    CurrentTask_Roam = Task;
+    ReceiveMoveCompleted.AddDynamic(this, &ABaseAIController::OnMoveCompleted);
+}
+
+// 로밍 이동이 끝나고 결과를 전달하는 메소드
+void ABaseAIController::OnMoveCompleted(FAIRequestID RequestID, EPathFollowingResult::Type Result)
+{
+    if (CurrentTask_Roam)
+    {
+        CurrentTask_Roam->OnTaskCompleted(this, Result);
+    }
+
+    ReceiveMoveCompleted.RemoveDynamic(this, &ABaseAIController::OnMoveCompleted);
+    CurrentTask_Roam = nullptr;
+}
+
+// 피격 장소에서 대기를 시작할 때 태스크를 저장하는 메소드
+void ABaseAIController::StartCheckingCombatLocationWait(UBTTask_CombatLocationWait* Task)
+{
+    if (!Task)
+    {
+        return;
+    }
+
+    CurrentTask_CombatLocationWait = Task;
+}
+
+ // 몬스터가 피격될 때 실행되는 메소드
+void ABaseAIController::OnMonsterDamaged()
+{
+    if (CurrentTask_CombatLocationWait)
+    {
+        CurrentTask_CombatLocationWait->StopWait(this);
+    }
+
+    CurrentTask_CombatLocationWait = nullptr;
+}

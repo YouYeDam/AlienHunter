@@ -42,6 +42,9 @@ private:
 	UPROPERTY(VisibleAnywhere)
 	class USphereComponent* InteractionSphere;	// 상호작용 범위 컴포넌트
 
+	UPROPERTY(EditAnywhere)
+	USoundBase* PickupSound; // 획득 사운드
+	
 	bool bCanInteract = false; // 현재 상호작용 가능한 상태
 
 	float InteractableRadius = 200; // 상호작용 범위 한계

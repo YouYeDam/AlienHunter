@@ -11,11 +11,12 @@
 UBTTask_Roam::UBTTask_Roam()
 {
     NodeName = "Roam";
+    bNotifyTick = true;
 }
 
 EBTNodeResult::Type UBTTask_Roam::ExecuteTask(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory)
 {
-    AIController = OwnerComp.GetAIOwner();
+    ABaseAIController* AIController = Cast<ABaseAIController>(OwnerComp.GetAIOwner());
     if (AIController == nullptr) 
     {
         return EBTNodeResult::Failed;
@@ -42,18 +43,24 @@ EBTNodeResult::Type UBTTask_Roam::ExecuteTask(UBehaviorTreeComponent& OwnerComp,
     }
 
     FVector RoamLocation;
-    bool bFoundLocation = NavSys->K2_GetRandomReachablePointInRadius(AIPawn->GetWorld(), StartLocation, RoamLocation, 1000.0f);
-    
-    if (bFoundLocation == false)
+    AMonsterCharacter* MonsterCharacter = Cast<AMonsterCharacter>(AIPawn);
+    if (MonsterCharacter)
+    {
+        RoamingRange = MonsterCharacter->GetRoamingRange();
+    }
+
+    bool bFoundLocation = NavSys->K2_GetRandomReachablePointInRadius(AIPawn->GetWorld(), StartLocation, RoamLocation, RoamingRange);
+    if (!bFoundLocation)
     {
         return EBTNodeResult::Failed;
     }
 
     BlackboardComp->SetValueAsVector(TEXT("RoamLocation"), RoamLocation);
 
-    FAIRequestID RequestID = AIController->MoveToLocation(RoamLocation);
+    AIController->StartRoaming(this);
 
-    if (RequestID.IsValid() == false)
+    FAIRequestID RequestID = AIController->MoveToLocation(RoamLocation);
+    if (!RequestID.IsValid())
     {
         return EBTNodeResult::Failed;
     }
@@ -64,14 +71,19 @@ EBTNodeResult::Type UBTTask_Roam::ExecuteTask(UBehaviorTreeComponent& OwnerComp,
         MovementComp->MaxWalkSpeed *= 0.35f; // 이동속도 감소(걷기 모션으로 로밍)
     }
 
-    AIController->ReceiveMoveCompleted.AddDynamic(this, &UBTTask_Roam::OnMoveCompleted);
-
     return EBTNodeResult::InProgress;
 }
 
-void UBTTask_Roam::OnMoveCompleted(FAIRequestID RequestID, EPathFollowingResult::Type Result)
+// 로밍 완료를 처리하는 메소드
+void UBTTask_Roam::OnTaskCompleted(ABaseAIController* AIController, EPathFollowingResult::Type Result)
 {
     if (AIController == nullptr)
+    {
+        return;
+    }
+
+    UBehaviorTreeComponent* BTComp = Cast<UBehaviorTreeComponent>(AIController->GetBrainComponent());
+    if (BTComp == nullptr)
     {
         return;
     }
@@ -82,24 +94,17 @@ void UBTTask_Roam::OnMoveCompleted(FAIRequestID RequestID, EPathFollowingResult:
         UCharacterMovementComponent* MovementComp = AIPawn->FindComponentByClass<UCharacterMovementComponent>();
         if (MovementComp)
         {
-            MovementComp->MaxWalkSpeed *= (1 / 0.35f); // 원래 속도로 복구
+            // 이동 속도 원래대로 복구
+            MovementComp->MaxWalkSpeed *= (1 / 0.35f);
         }
     }
 
-    UBehaviorTreeComponent* BTComp = Cast<UBehaviorTreeComponent>(AIController->GetBrainComponent());
-    if (BTComp == nullptr) 
-    {
-        return;
-    }
-    if (Result == EPathFollowingResult::Success) 
+    if (Result == EPathFollowingResult::Success)
     {
         FinishLatentTask(*BTComp, EBTNodeResult::Succeeded);
     }
-    else 
+    else
     {
         FinishLatentTask(*BTComp, EBTNodeResult::Failed);
     }
-
-    AIController->ReceiveMoveCompleted.RemoveDynamic(this, &UBTTask_Roam::OnMoveCompleted);
 }
-

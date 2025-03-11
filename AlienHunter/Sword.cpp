@@ -91,7 +91,11 @@ void ASword::StartSwing()
 	
 	IsSwinging = true;
 	CollisionBox->SetCollisionEnabled(ECollisionEnabled::QueryOnly); // 충돌 활성화
-	UGameplayStatics::SpawnSoundAtLocation(GetWorld(), SwingSound, GetActorLocation());
+
+    if (SwingSound)
+    {
+        UGameplayStatics::SpawnSoundAtLocation(GetWorld(), SwingSound, GetActorLocation());
+    }
 }
 
 // 휘두르기 동작의 끝을 처리하는 메소드

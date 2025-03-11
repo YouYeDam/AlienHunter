@@ -257,8 +257,13 @@ void AGun::IncreaseSpareAmmoCount(int32 Count)
     int32 AmmoToAdd = FMath::Min(Count, NeededAmmo);
 
     // 탄창을 우선적으로 채움
-    AmmoCount += AmmoToAdd;
-    Count -= AmmoToAdd;
+	if (AmmoToAdd > 0)
+	{
+		AmmoCount += AmmoToAdd;
+		Count -= AmmoToAdd;
+
+		UGameplayStatics::SpawnSoundAttached(ReloadSound, Mesh, TEXT("MuzzleFlashSocket"));
+	}
 
     // 남은 탄약이 있다면 SpareAmmoCount에 추가
     if (Count > 0)

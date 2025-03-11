@@ -41,9 +41,16 @@ private:
 	UPROPERTY(EditAnywhere)
 	bool bIsRoaming = false; // 몬스터가 로밍을 하는지 여부
 
+	UPROPERTY(EditAnywhere)
+	float RoamingRange = 1000.0f; // 로밍 범위
+
+	UPROPERTY(EditAnywhere)
 	float LinkRange = 500.0f; // 링크 범위
 
 public:
+	UPROPERTY()
+	FOnMonsterDamaged OnMonsterDamaged;
+
 	AMonsterCharacter();
 
 	void InitializaeMonsterData();
@@ -60,6 +67,5 @@ public:
 
 	void LinkNearbyMonsters();
 	
-    UPROPERTY()
-    FOnMonsterDamaged OnMonsterDamaged;
+	float GetRoamingRange() const;
 };
