@@ -1,3 +1,3 @@
 ﻿ID,MissionName,MissionObject,MissionDescription,MissionLevel,MissionImage,MissionEnergyReward,MissionEXPReward
-1,"숲의 안전 확보하기","임무 목표 : 적 처치하기","외딴 섬의 숲에 외계 세력이 등장했다는 보고가 들어왔습니다. 난폭해진 동물들과 외계인 침입자를 제압하세요.","Mission1","/Game/Image/Background/Forest_Ingame.Forest_Ingame",300,100
-2,"쓰레기장의 안전 확보하기","임무 목표 : 적 처치하기","쓰레기장에 외계 세력이 숨어 공격을 준비한다는 보고가 들어왔습니다. 이들에게 본때를 보여주세요.","Mission2","/Game/Image/Background/Junkyard.Junkyard",500,200
+1,"숲 지역 확보하기","적 처치하기","외딴 섬의 숲에 외계 세력이 등장했다는 보고가 들어왔습니다. 난폭해진 동물들과 외계인 침입자를 제압하여 숲을 되찾으세요.","Mission1","/Game/Image/Background/Forest_Ingame.Forest_Ingame",200,100
+2,"쓰레기장의 물건 되찾기","아이템 수집하기","쓰레기장에 숨어든 외계 세력이 우리의 물건을 빼았아 갔다는 보고가 들어왔습니다. 이들을 제압하고, 물건을 되찾으세요.","Mission2","/Game/Image/Background/Junkyard_Ingame.Junkyard_Ingame",350,150

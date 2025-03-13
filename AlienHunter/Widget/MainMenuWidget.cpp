@@ -123,5 +123,6 @@ void UMainMenuWidget::GameStart()
         PlayerController->bShowMouseCursor = false;
     }
 
+    OnPopupClose();
     UGameplayStatics::OpenLevel(this, FName("GameMenu"));
 }

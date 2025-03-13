@@ -51,16 +51,19 @@ void UShopMenuWidget::NativeConstruct()
 
 void UShopMenuWidget::OnGunTabClicked()
 {
+    OnPopupClose();
     CreateGunInventorySlots();
 }
 
 void UShopMenuWidget::OnSwordTabClicked()
 {
+    OnPopupClose();
     CreateSwordInventorySlots();
 }
 
 void UShopMenuWidget::OnGrenadeTabClicked()
 {
+    OnPopupClose();
     CreateGrenadeInventorySlots();
 }
 
@@ -196,6 +199,7 @@ void UShopMenuWidget::OnMoveToGameMenuClicked()
     AGameMenuGameMode* GameMode = Cast<AGameMenuGameMode>(UGameplayStatics::GetGameMode(GetWorld()));
     if (GameMode)
     {
+        OnPopupClose();
         GameMode->ShowGameMenu();
     }
 }

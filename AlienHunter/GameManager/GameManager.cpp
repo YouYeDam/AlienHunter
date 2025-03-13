@@ -8,7 +8,7 @@
 #include "Engine/World.h"
 #include "GameSaveData.h"
 #include "InventoryMenuWidget.h"
-#include "Gun.h"
+#include "Weapon/Gun.h"
 #include "Sword.h"
 #include "Grenade.h"
 #include "MainPlayerController.h"
@@ -254,8 +254,8 @@ void UGameManager::Levelup()
 {
 	EXP -= EXPRequirementForLevelup;
 	PlayerLevel++;
-	EXPRequirementForLevelup *= 1.1; // 레벨업 시 필요한 경험치 1.1배 증가시키기
-	Health += 50; // 레벨업마다 체력 50 증가
+	EXPRequirementForLevelup *= 1.25; // 레벨업 시 필요한 경험치 1.1배 증가시키기
+	Health += 10; // 레벨업마다 체력 10 증가
 
 	// 2단 레벨업 방지 설정
 	if (EXP >= EXPRequirementForLevelup)

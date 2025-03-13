@@ -421,7 +421,8 @@ void APlayerCharacter::ZoomIn()
         IsZooming = true;
         if (FollowCamera)
         {
-            FollowCamera->SetFieldOfView(10.0f);
+            float ZoomValue = Gun->GetZoomValue();
+            FollowCamera->SetFieldOfView(ZoomValue);
         }
     }
 }

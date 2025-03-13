@@ -118,29 +118,46 @@ void UMissionMenuWidget::UpdateMissionDetails(const FMissionData& MissionData)
     
     if (MissionName)
     {
-        MissionName->SetText(FText::FromString(MissionData.MissionName));
+        FText FormattedText = FText::Format(
+            NSLOCTEXT("MissionMenu", "MissionName", "임무명: {0}"),
+            FText::FromString(MissionData.MissionName)
+        );
+        MissionName->SetText(FormattedText);
     }
+
     if (MissionObject)
     {
-        MissionObject->SetText(FText::FromString(MissionData.MissionObject));
+        FText FormattedText = FText::Format(
+            NSLOCTEXT("MissionMenu", "MissionObject", "임무 목표: {0}"),
+            FText::FromString(MissionData.MissionObject)
+        );
+        MissionObject->SetText(FormattedText);
     }
+
     if (MissionReward)
     {
         FText FormattedText = FText::Format(
-            NSLOCTEXT("MissionMenu", "MissionReward", "미션보상: {0}에너지 {1}경험치"),
+            NSLOCTEXT("MissionMenu", "MissionReward", "미션보상: {0} 에너지 {1} 경험치"),
             FText::AsNumber(MissionData.MissionEnergyReward),
             FText::AsNumber(MissionData.MissionEXPReward)
         );
         MissionReward->SetText(FormattedText);
     }
+
     if (MissionDescription)
     {
-        MissionDescription->SetText(FText::FromString(MissionData.MissionDescription));
+        FText FormattedText = FText::Format(
+            NSLOCTEXT("MissionMenu", "MissionDescription", "임무 설명: {0}"),
+            FText::FromString(MissionData.MissionDescription)
+        );
+        MissionDescription->SetText(FormattedText);
     }
+
     if (!MissionData.MissionLevel.IsEmpty())
     {
         SelectedMissionLevel = FName(*MissionData.MissionLevel);
     }
+    
     if (MissionImage && MissionData.MissionImage)
     {
         MissionImage->SetBrushFromTexture(MissionData.MissionImage);

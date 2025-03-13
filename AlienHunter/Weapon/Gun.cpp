@@ -303,6 +303,11 @@ bool AGun::GetZoom() const
 	return Zoom;
 }
 
+float AGun::GetZoomValue() const
+{
+	return ZoomValue;
+}
+
 int32 AGun::GetDamage() const
 {
 	return Damage;

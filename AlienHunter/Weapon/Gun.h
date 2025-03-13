@@ -74,6 +74,9 @@ private:
 
 	UPROPERTY(EditAnywhere)
     bool Zoom; // 줌 가능 여부
+
+	UPROPERTY(EditAnywhere)
+	float ZoomValue = 10.0f; // 줌 값
 	
 	UPROPERTY(EditAnywhere)
 	int32 MaxAmmoCount; // 최대 탄약 개수
@@ -104,6 +107,8 @@ public:
 	bool GetBarrage() const;
 
 	bool GetZoom() const;
+
+	float GetZoomValue() const;
 
 	int32 GetDamage() const;
 	void SetDamage(int32 NewDamage);

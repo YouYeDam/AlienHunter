@@ -13,7 +13,7 @@ void ACollectObjectGameMode::BeginPlay()
     TArray<AActor*> MissionObjectActors;
     UGameplayStatics::GetAllActorsWithTag(GetWorld(), FName("Mission Object"), MissionObjectActors);
 
-    RequiredCollectingCount = FMath::CeilToInt(MissionObjectActors.Num() * 0.7);
+    RequiredCollectingCount = FMath::CeilToInt(MissionObjectActors.Num() * 0.5);
 }
 
 void ACollectObjectGameMode::ItemCollected()

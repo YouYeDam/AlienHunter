@@ -74,4 +74,7 @@ private:
 
     UPROPERTY(meta = (BindWidget))
     class UButton* QuitGameButton;
+
+private:
+    bool bIsGameQuit = false;
 };

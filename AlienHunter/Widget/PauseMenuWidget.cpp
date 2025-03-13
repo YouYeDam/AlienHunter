@@ -99,18 +99,18 @@ void UPauseMenuWidget::OnReturnToGameClicked()
 // 임무 포기 버튼 클릭 후 확인 버튼 클릭 시 실행되는 메소드
 void UPauseMenuWidget::OnConfirmMissionGiveup()
 {
-    AAlienHunterGameMode* GameMode = Cast<AAlienHunterGameMode>(UGameplayStatics::GetGameMode(GetWorld()));
-    if (GameMode)
-    {
-        GameMode->EndGame(false); // 게임 패배 처리 (임무 포기)
-    }
-
     if (PopupWidget)
     {
         PopupWidget->ConfirmClicked.RemoveDynamic(this, &UPauseMenuWidget::OnConfirmMissionGiveup);
         PopupWidget->CancelClicked.RemoveDynamic(this, &UPauseMenuWidget::OnPopupClose);
         PopupWidget->RemoveFromParent();
         PopupWidget = nullptr;
+    }
+
+    AAlienHunterGameMode* GameMode = Cast<AAlienHunterGameMode>(UGameplayStatics::GetGameMode(GetWorld()));
+    if (GameMode)
+    {
+        GameMode->EndGame(false); // 게임 패배 처리 (임무 포기)
     }
 }
 

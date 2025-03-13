@@ -93,6 +93,7 @@ void UPerkMenuWidget::OnMoveToCharacterMenuButtonClicked()
     AGameMenuGameMode* GameMode = Cast<AGameMenuGameMode>(UGameplayStatics::GetGameMode(GetWorld()));
     if (GameMode)
     {
+        OnPopupClose();
         GameMode->ShowCharacterMenu();
     }
 }

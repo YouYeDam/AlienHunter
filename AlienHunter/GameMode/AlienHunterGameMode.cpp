@@ -74,12 +74,14 @@ void AAlienHunterGameMode::EndGame(bool bIsPlayerWinner)
     {
         return;
     }
-    
+
     for (AController* Controller : TActorRange<AController>(GetWorld()))
     {
         bool bIsWinner = Controller->IsPlayerController() == bIsPlayerWinner;
         Controller->GameHasEnded(Controller->GetPawn(), bIsWinner);
     }
+
+    bIsGameEnded = true;
 }
 
 // HUD 미션 진행 상태 갱신 메소드

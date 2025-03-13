@@ -53,6 +53,7 @@ void UGameMenuWidget::OnMoveToMissionMenuClicked()
 {
     if (GameMode)
     {
+        OnPopupClose();
         GameMode->ShowMissionMenu();
     }
 }
@@ -62,6 +63,7 @@ void UGameMenuWidget::OnMoveToShopMenuClicked()
 {
     if (GameMode)
     {
+        OnPopupClose();
         GameMode->ShowShopMenu();
     }
 }
@@ -71,6 +73,7 @@ void UGameMenuWidget::OnMoveToInventoryMenuClicked()
 {
     if (GameMode)
     {
+        OnPopupClose();
         GameMode->ShowInventoryMenu();
     }
 }
@@ -80,7 +83,18 @@ void UGameMenuWidget::OnMoveToCharacterMenuClicked()
 {
     if (GameMode)
     {
+        OnPopupClose();
         GameMode->ShowCharacterMenu();
+    }
+}
+
+// 사운드 메뉴로 이동하는 메소드
+void UGameMenuWidget::OnMoveToSoundMenuClicked()
+{
+    if (GameMode)
+    {
+        OnPopupClose();
+        GameMode->ShowSoundMenu();
     }
 }
 
@@ -92,7 +106,7 @@ void UGameMenuWidget::OnSaveGameClicked()
     {
         bool bSaveSuccessful = GameManager->SaveGame();
 
-        if (PopupWidgetClass)
+        if (PopupWidgetClass && !bIsGameQuit)
         {
             PopupWidget = CreateWidget<UPopupWidget>(this, PopupWidgetClass);
             if (PopupWidget)
@@ -100,7 +114,7 @@ void UGameMenuWidget::OnSaveGameClicked()
                 FText FormattedText;
                 if (bSaveSuccessful)
                 {
-                    FormattedText = NSLOCTEXT("GameMenu", "SaveSuccessful", "게임이 성공적으로 저장되었습니다!");
+                    FormattedText = NSLOCTEXT("GameMenu", "SaveSuccessful", "게임이 성공적으로\n 저장되었습니다!");
                 }
                 else
                 {
@@ -113,15 +127,6 @@ void UGameMenuWidget::OnSaveGameClicked()
                 PopupWidget->ConfirmClicked.AddDynamic(this, &UGameMenuWidget::OnPopupClose);
             }
         }
-    }
-}
-
-// 사운드 메뉴로 이동하는 메소드
-void UGameMenuWidget::OnMoveToSoundMenuClicked()
-{
-    if (GameMode)
-    {
-        GameMode->ShowSoundMenu();
     }
 }
 
@@ -154,6 +159,7 @@ void UGameMenuWidget::OnConfirmQuitGame()
         PopupWidget->RemoveFromParent();
         PopupWidget = nullptr;
     }
+    bIsGameQuit = true;
     OnSaveGameClicked();
     UKismetSystemLibrary::QuitGame(this, nullptr, EQuitPreference::Quit, true);
 }

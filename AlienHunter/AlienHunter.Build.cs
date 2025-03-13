@@ -1,6 +1,7 @@
 // Copyright Epic Games, Inc. All Rights Reserved.
 
 using UnrealBuildTool;
+using System.IO;
 
 public class AlienHunter : ModuleRules
 {
@@ -10,6 +11,22 @@ public class AlienHunter : ModuleRules
 	
 		PublicDependencyModuleNames.AddRange(new string[] { "Core", "CoreUObject", "Engine", "InputCore", "EnhancedInput", "GameplayTasks", "UMG", "Slate", "SlateCore", 
 		"NavigationSystem", "AIModule" });
+
+        PublicIncludePaths.AddRange(new string[] {
+			ModuleDirectory,
+			Path.Combine(ModuleDirectory, "BTService"),
+			Path.Combine(ModuleDirectory, "BTTask"),
+			Path.Combine(ModuleDirectory, "DataStruct"),
+			Path.Combine(ModuleDirectory, "GameManager"),
+			Path.Combine(ModuleDirectory, "GameMode"),
+			Path.Combine(ModuleDirectory, "InteractableActor"),
+			Path.Combine(ModuleDirectory, "Monster"),
+			Path.Combine(ModuleDirectory, "Player"),
+			Path.Combine(ModuleDirectory, "Weapon"),
+			Path.Combine(ModuleDirectory, "Widget"),
+
+            Path.Combine(ModuleDirectory, "Data")
+        });
 
 #if WITH_EDITOR
         PrivateDependencyModuleNames.AddRange(new string[] {
