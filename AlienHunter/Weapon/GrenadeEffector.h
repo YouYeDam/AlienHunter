@@ -14,6 +14,11 @@ class ALIENHUNTER_API AGrenadeEffector : public AActor
 {
 	GENERATED_BODY()
 
+protected:
+	virtual void EndPlay(const EEndPlayReason::Type EndPlayReason) override;
+	
+    virtual void BeginDestroy() override;
+
 public:
 	void ApplayGrenadeEffect(APlayerCharacter* InPlayerCharacter, FGrenadeItemData* GrenadeData, const TArray<AActor*>& AffectedActors);
 

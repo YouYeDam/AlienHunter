@@ -209,7 +209,7 @@ void UShopMenuWidget::OnBuyItemClicked()
 {
 	if (SelectedItem.ItemName.IsEmpty())
 	{
-		return;
+		return; // 아이템 미선택시 반환
 	}
 
 	if (GameManager->GetEnergy() < SelectedItem.ItemPrice) // 보유 에너지가 아이템 가격보다 낮으면 구매 불가

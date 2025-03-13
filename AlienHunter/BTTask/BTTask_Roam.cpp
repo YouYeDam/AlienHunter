@@ -14,6 +14,7 @@ UBTTask_Roam::UBTTask_Roam()
     bNotifyTick = true;
 }
 
+// AI의 로밍 동작 실행을 수행하는 메소드
 EBTNodeResult::Type UBTTask_Roam::ExecuteTask(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory)
 {
     ABaseAIController* AIController = Cast<ABaseAIController>(OwnerComp.GetAIOwner());
@@ -42,7 +43,7 @@ EBTNodeResult::Type UBTTask_Roam::ExecuteTask(UBehaviorTreeComponent& OwnerComp,
         return EBTNodeResult::Failed;
     }
 
-    FVector RoamLocation;
+    FVector RoamLocation; // 로밍 지점
     AMonsterCharacter* MonsterCharacter = Cast<AMonsterCharacter>(AIPawn);
     if (MonsterCharacter)
     {
@@ -52,12 +53,12 @@ EBTNodeResult::Type UBTTask_Roam::ExecuteTask(UBehaviorTreeComponent& OwnerComp,
     bool bFoundLocation = NavSys->K2_GetRandomReachablePointInRadius(AIPawn->GetWorld(), StartLocation, RoamLocation, RoamingRange);
     if (!bFoundLocation)
     {
-        return EBTNodeResult::Failed;
+        return EBTNodeResult::Failed; // 로밍 지점을 찾지 못하면 실패
     }
 
     BlackboardComp->SetValueAsVector(TEXT("RoamLocation"), RoamLocation);
 
-    AIController->StartRoaming(this);
+    AIController->StartRoaming(this); // 태스크를 요청한 AI에게 태스크를 넘겨 로밍을 시작할 수 있도록 설정
 
     FAIRequestID RequestID = AIController->MoveToLocation(RoamLocation);
     if (!RequestID.IsValid())
@@ -71,7 +72,7 @@ EBTNodeResult::Type UBTTask_Roam::ExecuteTask(UBehaviorTreeComponent& OwnerComp,
         MovementComp->MaxWalkSpeed *= 0.35f; // 이동속도 감소(걷기 모션으로 로밍)
     }
 
-    return EBTNodeResult::InProgress;
+    return EBTNodeResult::InProgress; // 태스크를 끝내면 안되므로 진행 중으로 설정
 }
 
 // 로밍 완료를 처리하는 메소드
@@ -99,6 +100,7 @@ void UBTTask_Roam::OnTaskCompleted(ABaseAIController* AIController, EPathFollowi
         }
     }
 
+    // 태스크를 중단시켜 다음 동작으로 넘어갈 수 있도록 설정
     if (Result == EPathFollowingResult::Success)
     {
         FinishLatentTask(*BTComp, EBTNodeResult::Succeeded);

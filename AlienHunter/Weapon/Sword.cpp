@@ -129,5 +129,3 @@ void ASword::OnOverlapBegin(UPrimitiveComponent* OverlappedComp, AActor* OtherAc
     }
 }
 
-
-

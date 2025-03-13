@@ -51,10 +51,10 @@ void ALoadingScreenManager::BeginPlay()
 
     MissionLevel = CurrentMissionLevel;
 
-    FMissionData CurrentMissionData = GameManager->GetCurrentMissionData();
-    LoadingScreen->UpdateBackground(CurrentMissionData.MissionImage);
+    FMissionData CurrentMissionData = GameManager->GetCurrentMissionData(); // 현재 미션 데이터 받아오기
+    LoadingScreen->UpdateBackground(CurrentMissionData.MissionImage); // 로딩 스크린 배경 설정
 
-    LoadingScreen->UpdateLoadingText(false);
+    LoadingScreen->UpdateLoadingText(false); // 로딩 진행 상태 텍스트를 로딩 중으로 설정
 
     // 비동기 로드 시작
     FString LevelPath = FString::Format(TEXT("/Game/Levels/Missions/{0}"), {MissionLevel.ToString()});
@@ -67,11 +67,12 @@ void ALoadingScreenManager::BeginPlay()
 
         if (LoadingScreen)
         {
-            LoadingScreen->UpdateLoadingText(true);
+            LoadingScreen->UpdateLoadingText(true); // 로딩 진행 상태 텍스트를 로딩 완료로 설정
         }
     }));
 }
 
+// 아무 키 입력을 받을 수 있도록 설정하는 메소드
 void ALoadingScreenManager::WaitForAnyKey()
 {
     if (!bIsMissionReady)
@@ -89,6 +90,7 @@ void ALoadingScreenManager::WaitForAnyKey()
     }   
 }
 
+// 키 입력을 감지한 후, 레벨을 로드하는 메소드
 void ALoadingScreenManager::OnKeyPressed()
 {
     if (LoadingWidget)

@@ -14,7 +14,7 @@ void ULoadingScreenWidget::NativeConstruct()
     GameManager = Cast<UGameManager>(UGameplayStatics::GetGameInstance(GetWorld()));
 }
 
-// 로딩화면 로딩 진행율을 업데이트하는 메소드
+// 로딩 진행 상태를 업데이트하는 메소드
 void ULoadingScreenWidget::UpdateLoadingText(bool bIsComplete)
 {
     if (!LoadingText)

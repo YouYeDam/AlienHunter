@@ -15,6 +15,11 @@ class ALIENHUNTER_API APerkEffector : public AActor
 public:
     void ApplyPerks(APlayerCharacter* PlayerCharacter, const TArray<FPerkData>& Perks);
 
+protected:
+    virtual void EndPlay(const EEndPlayReason::Type EndPlayReason) override;
+
+    virtual void BeginDestroy() override;
+
 private:
     FTimerHandle ShieldTimerHandle; // 보호막 생성을 위한 타이머
 

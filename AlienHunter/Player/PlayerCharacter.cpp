@@ -745,12 +745,10 @@ void APlayerCharacter::OnNotifyBegin(FName NotifyName, const FBranchingPointNoti
 {
     if (NotifyName == "ComboWindow")
     {
-        UE_LOG(LogTemp, Warning, TEXT("A"));
         OnComboWindowOpened();
     }
     else if (NotifyName == "AttackHit")
     {
-        UE_LOG(LogTemp, Warning, TEXT("B"));
         OnAttackHit();
     }
 }

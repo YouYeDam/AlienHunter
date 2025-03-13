@@ -35,7 +35,7 @@ void AEnemyKillGameMode::PawnKilled(APawn* PawnKilled)
 
     if (DeadEnemyCount >= TargetEnemyCount) 
     {
-        EndGame(true); // 모든 적 처치 시 게임 승리
+        EndGame(true); // 목표치만큼 적 처치 시 게임 승리
     }
 }
 

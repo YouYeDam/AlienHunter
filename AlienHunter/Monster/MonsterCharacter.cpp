@@ -97,7 +97,7 @@ float AMonsterCharacter::TakeDamage(float DamageAmount, struct FDamageEvent cons
     return TakedDamageAmount;
 }
 
-// 몬스터 피격 시 주변 몬스터도 전투 상태에 돌입하는 링크 시스템을 활성화하는 메소드
+// 몬스터 피격 혹은 적 발견 시 주변 몬스터도 전투 상태에 돌입하는 링크 시스템을 활성화하는 메소드
 void AMonsterCharacter::LinkNearbyMonsters()
 {
     if (!GetWorld())
@@ -122,6 +122,7 @@ void AMonsterCharacter::LinkNearbyMonsters()
                 ABaseAIController* NearbyAIController = Cast<ABaseAIController>(NearbyMonster->GetController());
                 if (NearbyAIController)
                 {
+                    // 주변 몬스터도 전투 상태 돌입
                     NearbyAIController->SetInCombat(true);
 
                     // 주변 몬스터도 OnMonsterDamaged 메소드 실행

@@ -24,27 +24,27 @@ void APerkEffector::ApplyPerks(APlayerCharacter* InPlayerCharacter, const TArray
     {
         switch (Perk.PerkType)
         {
-        case EPerkType::ReinforcedBody:
+        case EPerkType::ReinforcedBody: // 강화된 신체
             ApplyReinforcedBody(Perk.PerkValue);
             break;
 
-        case EPerkType::PlentifulAmmo:
+        case EPerkType::PlentifulAmmo: // 넉넉한 탄약
             ApplyPlentifulAmmo(Perk.PerkValue);
             break;
 
-        case EPerkType::BonusLoot:
+        case EPerkType::BonusLoot: // 추가 전리품
             ApplyBonusLoot(Perk.PerkValue);
             break;
 
-        case EPerkType::AutoShield:
+        case EPerkType::AutoShield: // 자동 보호막
             ApplyAutoShield(Perk.PerkValue);
             break;
 
-        case EPerkType::TacticalRush:
+        case EPerkType::TacticalRush: // 전술적 돌입
             ApplyTacticalRush(Perk.PerkValue);
             break;
 
-        case EPerkType::FieldScavenger:
+        case EPerkType::FieldScavenger: // 야전 수색자
             ApplyFieldScavenger(Perk.PerkValue);
             break;
 
@@ -208,4 +208,26 @@ void APerkEffector::TriggerFieldScavenger()
     }
 
     PlayerCharacter->SetGainedEnergy(PlayerCharacter->GetGainedEnergy() + FieldScavengerValue);
+}
+
+// 퍽 이펙터가 제거될 경우 실행하는 메소드
+void APerkEffector::EndPlay(const EEndPlayReason::Type EndPlayReason)
+{
+    if (GetWorld())
+    {
+        GetWorld()->GetTimerManager().ClearTimer(ShieldTimerHandle); // 자동 보호막 타이머 삭제
+        GetWorld()->GetTimerManager().ClearTimer(TacticalRushTimerHandle); // 전술적 돌입 타이머 삭제
+    }
+}
+
+// 퍽 이펙터가 소멸될 경우 실행하는 메소드
+void APerkEffector::BeginDestroy()
+{
+    Super::BeginDestroy();
+
+    if (GetWorld())
+    {
+        GetWorld()->GetTimerManager().ClearTimer(ShieldTimerHandle); // 자동 보호막 타이머 삭제
+        GetWorld()->GetTimerManager().ClearTimer(TacticalRushTimerHandle); // 전술적 돌입 타이머 삭제
+    }
 }

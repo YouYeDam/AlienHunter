@@ -37,7 +37,6 @@ void AGrenadeEffector::ApplyFireBombEffect(float Value, float Duration, const TA
 	// 지속기간 동안 1초마다 효과 적용
     GetWorldTimerManager().SetTimer(FireBombTimerHandle, [this, AffectedActors, Value, Duration]()
     {
-		UE_LOG(LogTemp, Warning, TEXT("%d"), FireBombTick);
         for (AActor* Actor : AffectedActors)
         {
             FDamageEvent DamageEvent;
@@ -54,3 +53,25 @@ void AGrenadeEffector::ApplyFireBombEffect(float Value, float Duration, const TA
 
     }, 1.0f, true);
 }
+
+// 수류탄 이펙터가 제거될 경우 실행하는 메소드
+void AGrenadeEffector::EndPlay(const EEndPlayReason::Type EndPlayReason)
+{
+    if (GetWorld())
+    {
+        GetWorld()->GetTimerManager().ClearTimer(FireBombTimerHandle); // 화염탄 타이머 삭제
+    }
+}
+
+
+// 수류탄 이펙터가 GC에 의해 소멸될 경우 실행하는 메소드
+void AGrenadeEffector::BeginDestroy()
+{
+    Super::BeginDestroy();
+
+    if (GetWorld())
+    {
+        GetWorld()->GetTimerManager().ClearTimer(FireBombTimerHandle); // 화염탄 타이머 삭제
+    }
+}
+

@@ -153,6 +153,7 @@ void AGrenade::Explode()
         HitActor->TakeDamage(AppliedDamage, DamageEvent, OwnerController, this);
     }
 
+    // 수류탄의 고유 효과 실행
     if (PlayerCharacter && PlayerCharacter->GetGrenadeEffector())
     {
         PlayerCharacter->GetGrenadeEffector()->ApplayGrenadeEffect(PlayerCharacter, GrenadeData, FilteredActors);
