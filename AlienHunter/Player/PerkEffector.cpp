@@ -118,22 +118,30 @@ void APerkEffector::ApplyAutoShield(float Value)
     int32 ShieldAmount = PlayerCharacter->GetMaxHP() * 0.2f;
     if (PlayerCharacter->GetPlayerShield() < ShieldAmount)
     {
-        
         PlayerCharacter->SetPlayerShield(ShieldAmount);
     }
 
+    // 퍽 이펙터를 안전하게 참조하는 `TWeakObjectPtr` 생성
+    TWeakObjectPtr<APerkEffector> WeakThis = this;
+
     // 일정 시간마다 보호막을 갱신하는 타이머 실행
-    GetWorld()->GetTimerManager().SetTimer(ShieldTimerHandle, [this, ShieldAmount]()
+    GetWorld()->GetTimerManager().SetTimer(ShieldTimerHandle, [WeakThis, ShieldAmount]()
     {
-        if (!PlayerCharacter)
+        // 퍽 이펙터가 유효한지 먼저 확인
+        if (!WeakThis.IsValid())
         {
             return;
         }
-        
-        if (PlayerCharacter->GetPlayerShield() < ShieldAmount)
+
+        APerkEffector* PerkEffector = WeakThis.Get();
+        if (!PerkEffector || !PerkEffector->PlayerCharacter)
         {
-            
-            PlayerCharacter->SetPlayerShield(ShieldAmount);
+            return;
+        }
+
+        if (PerkEffector->PlayerCharacter->GetPlayerShield() < ShieldAmount)
+        {
+            PerkEffector->PlayerCharacter->SetPlayerShield(ShieldAmount);
         }
 
     }, 10.0f, true); // 10초마다 반복 실행
